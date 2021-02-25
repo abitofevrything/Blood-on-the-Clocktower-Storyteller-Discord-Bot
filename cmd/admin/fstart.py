@@ -28,7 +28,7 @@ class Fstart(Admin, name = language["system"]["admin_cog"]):
 
         import globvars
 
-        game = botutils.GameChooser().get_selected_game()
+        game = globvars.master_state.game_chooser.get_selected_game()
 
         # Make sure all the players are still in the guild
         globvars.master_state.pregame.remove_left_guild_players()

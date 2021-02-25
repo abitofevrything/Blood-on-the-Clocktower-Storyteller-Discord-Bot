@@ -3,6 +3,7 @@
 import time
 from .Pregame import Pregame
 from .BotState import BotState
+from .GameChooser import GameChooser
 
 
 class State:
@@ -97,6 +98,7 @@ class MasterState:
         self._game = None
         self._session = BotState.empty
         self._game_packs = dict()
+        self._game_chooser = GameChooser()
 
         self.state_machine = StateMachine(self)
         self.state_machine.run(self)
@@ -129,6 +131,10 @@ class MasterState:
     def game_packs(self):
         return self._game_packs
     
+    @property
+    def game_chooser(self):
+        return self._game_chooser
+
     def add_pack(self, pack):
         self._game_packs.update(pack)
     

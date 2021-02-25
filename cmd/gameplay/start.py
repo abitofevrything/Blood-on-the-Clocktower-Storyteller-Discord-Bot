@@ -39,7 +39,7 @@ class Start(Gameplay, name = language["system"]["gameplay_cog"]):
         if ctx.author.id in globvars.start_votes:
             return
 
-        game = botutils.GameChooser().get_selected_game()
+        game = globvars.master_state.game_chooser.get_selected_game()
 
         if len(globvars.master_state.pregame) < game.MIN_PLAYERS:
             msg = fstart_min.format(
