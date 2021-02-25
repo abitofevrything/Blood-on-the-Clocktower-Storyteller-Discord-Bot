@@ -1,7 +1,8 @@
 """Contains the Devil's Advocate Character class"""
 
 import json
-from botc import Character, Minion
+import globvars
+from botc import Character, Minion, ActionTypes
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -32,3 +33,12 @@ class DevilsAdvocate(Minion, BadMoonRising, Character):
 
         self._role_enum = BMRRole.devilsadvocate
         self._emoji = "<:bmrdevilsadvocate:781151556493639680>"
+
+    def has_finished_night_action(self, player):
+        """Return True if the devil's advocate has submitted the protect action"""
+
+        if player.is_alive():
+            current_phase_id = globvars.master_state.game._chrono.phase_id
+            received_action = player.action_grid.retrieve_an_action(current_phase_id)
+            return received_action is not None and received_action.action_type == ActionTypes.protect
+        return True

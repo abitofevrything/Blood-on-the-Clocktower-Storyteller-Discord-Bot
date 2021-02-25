@@ -5,13 +5,30 @@ import enum
 
 class ActionTypes(enum.Enum):
     """Ability commands:
+
+    ==== TROUBLE BREWING ====
     - serve: butler
     - poison: poisoner
-    - learn: ravenkeeper
+    - l earn: ravenkeeper
     - read: fortune teller
     - kill: imp
     - slay: slayer
     - protect: monk
+
+    ==== BAD MOON RISING ====
+    - assasinate: assassin
+    - host: innkeeper
+    - see: chambermaid
+    - poison: courtier
+    - protect: devil's advocate
+    - exorcise: exorcist
+    - guess: gambler
+    - gossip: gossip
+    - choose: moonchild
+    - kill: po, shabaloth and zombuul (all three would use the same command, since there can only be one per game)
+    - examine: professor
+    - curse: pukka
+    - visit: sailor
     """
 
     serve = "serve"
@@ -21,7 +38,17 @@ class ActionTypes(enum.Enum):
     kill = "kill"
     slay = "slay"
     protect = "protect"
+
     assassinate = "assassinate"
+    host = "host"
+    see = "see"
+    exorcise = "exorcise"
+    guess = "guess"
+    gossip = "gossip"
+    choose = "choose"
+    examine = "examine"
+    curse = "curse"
+    visit = "visit"
 
 
 class Action:

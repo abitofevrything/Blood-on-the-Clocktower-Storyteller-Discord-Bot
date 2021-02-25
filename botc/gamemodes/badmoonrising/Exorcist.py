@@ -1,7 +1,8 @@
 """Contains the Exorcist Character class"""
 
 import json
-from botc import Character, Townsfolk
+import globvars
+from botc import Character, Townsfolk, ActionTypes
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -32,4 +33,15 @@ class Exorcist(Townsfolk, BadMoonRising, Character):
 
         self._role_enum = BMRRole.exorcist
         self._emoji = "<:bmrexorcist:781151556442521620>"
+
+    def has_finished_night_action(self, player):
+        """Return True if the exorcist has submitted the exorcise action"""
+
+        if player.is_alive():
+            if globvars.master_state.game._chrono.is_night_1():
+                return True
+            current_phase_id = globvars.master_state.game._chrono.phase_id
+            received_action = player.action_grid.retrieve_an_action(current_phase_id)
+            return received_action is not None and received_action.action_type == ActionTypes.see
+        return True
         

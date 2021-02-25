@@ -1,7 +1,8 @@
 """Contains the Sailor Character class"""
 
 import json
-from botc import Character, Townsfolk
+import globvars
+from botc import Character, Townsfolk, ActionTypes
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -33,3 +34,11 @@ class Sailor(Townsfolk, BadMoonRising, Character):
         self._role_enum = BMRRole.sailor
         self._emoji = "<:bmrsailor:781152054906716161>"
         
+    def has_finished_night_action(self, player):
+        """Return True if sailor has submitted the visit action"""
+        
+        if player.is_alive():
+            current_phase_id = globvars.master_state.game._chrono.phase_id
+            received_action = player.action_grid.retrieve_an_action(current_phase_id)
+            return received_action is not None and received_action.action_type == ActionTypes.visit
+        return True

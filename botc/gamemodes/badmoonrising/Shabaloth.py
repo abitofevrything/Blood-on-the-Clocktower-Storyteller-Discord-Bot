@@ -2,7 +2,8 @@
 
 import random
 import json
-from botc import Character, Demon, BOTCUtils, Townsfolk, Outsider
+import globvars
+from botc import Character, Demon, BOTCUtils, Townsfolk, Outsider, ActionTypes
 from ._utils import BadMoonRising, BMRRole
 import globvars
 
@@ -98,4 +99,14 @@ class Shabaloth(Demon, BadMoonRising, Character):
         globvars.logging.info(f">>> Shabaloth: Received three demon bluffs {bluff_1}, {bluff_2} and {bluff_3}.")
         return (bluff_1, bluff_2, bluff_3)
     
+    def has_finished_night_action(self, player):
+        """Return True if shabaloth has submitted the kill action"""
         
+        if player.is_alive():
+            # First night, shabaloth does not act
+            if globvars.master_state.game._chrono.is_night_1():
+                return True
+            current_phase_id = globvars.master_state.game._chrono.phase_id
+            received_action = player.action_grid.retrieve_an_action(current_phase_id)
+            return received_action is not None and received_action.action_type == ActionTypes.kill
+        return True
