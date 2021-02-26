@@ -1,14 +1,14 @@
 """Contains the Lunatic Character class"""
 
 import json
-from botc import Character, Outsider
+from botc import Character, Outsider, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.lunatic.value.lower()]
 
 
-class Lunatic(Outsider, BadMoonRising, Character):
+class Lunatic(Outsider, BadMoonRising, Character, NonRecurringAction):
     """Lunatic: You think you are a Demon, but your abilities malfunction. 
     The Demon knows who you are & who you attack.
     """
@@ -32,4 +32,6 @@ class Lunatic(Outsider, BadMoonRising, Character):
 
         self._role_enum = BMRRole.lunatic
         self._emoji = "<:bmrlunatic:781152055455776798>"
-        
+       
+    def create_n1_instr_str(self):
+        return "not_implemented" 

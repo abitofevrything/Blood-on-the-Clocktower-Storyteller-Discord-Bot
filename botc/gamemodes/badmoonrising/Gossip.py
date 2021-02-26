@@ -1,14 +1,14 @@
 """Contains the Gossip Character class"""
 
 import json
-from botc import Character, Townsfolk
+from botc import Character, Townsfolk, RecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.gossip.value.lower()]
 
 
-class Gossip(Townsfolk, BadMoonRising, Character):
+class Gossip(Townsfolk, BadMoonRising, Character, RecurringAction):
     """Gossip: Each day, you may make a public statement. Tonight, if it was true, a player dies.
     """
 
@@ -32,3 +32,5 @@ class Gossip(Townsfolk, BadMoonRising, Character):
         self._role_enum = BMRRole.gossip
         self._emoji = "<:bmrgossip:781151556409098240>"
         
+    def create_n1_instr_str(self):
+        return "not_implemented"

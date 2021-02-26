@@ -2,14 +2,14 @@
 
 import json
 import globvars
-from botc import Character, Townsfolk, ActionTypes
+from botc import Character, Townsfolk, ActionTypes, RecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.innkeeper.value.lower()]
 
 
-class Innkeeper(Townsfolk, BadMoonRising, Character):
+class Innkeeper(Townsfolk, BadMoonRising, Character,RecurringAction):
     """Innkeeper: Each night*, choose 2 players: they cannot die tonight, but 1 is drunk until dusk.
     """
 
@@ -44,3 +44,6 @@ class Innkeeper(Townsfolk, BadMoonRising, Character):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.host
         return True
+
+    def create_n1_instr_str(self):
+        return "not_implemented"

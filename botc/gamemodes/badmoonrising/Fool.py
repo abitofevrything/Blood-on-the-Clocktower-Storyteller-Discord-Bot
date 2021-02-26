@@ -1,14 +1,14 @@
 """Contains the Fool Character class"""
 
 import json
-from botc import Character, Townsfolk
+from botc import Character, Townsfolk, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.fool.value.lower()]
 
 
-class Fool(Townsfolk, BadMoonRising, Character):
+class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     """Fool: The first time you die, you don't.
     """
 
@@ -31,3 +31,6 @@ class Fool(Townsfolk, BadMoonRising, Character):
 
         self._role_enum = BMRRole.fool
         self._emoji = "<:bmrfool:781151556254564353>"
+
+    def create_n1_instr_str(self):
+        return "not_implemented"

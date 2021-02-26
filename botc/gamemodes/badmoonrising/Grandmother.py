@@ -1,14 +1,14 @@
 """Contains the Grandmother Character class"""
 
 import json
-from botc import Character, Townsfolk
+from botc import Character, Townsfolk, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.grandmother.value.lower()]
 
 
-class Grandmother(Townsfolk, BadMoonRising, Character):
+class Grandmother(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     """Grandmother: You start knowing a good player & character. If the Demon kills them, you die too.
     """
 
@@ -32,3 +32,5 @@ class Grandmother(Townsfolk, BadMoonRising, Character):
         self._role_enum = BMRRole.grandmother
         self._emoji = "<:bmrgrandmother:781019504427008010>"
         
+    def create_n1_instr_str(self):
+        return "not_implemented"

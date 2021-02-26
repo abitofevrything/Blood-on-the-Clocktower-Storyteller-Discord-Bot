@@ -1,14 +1,14 @@
 """Contains the Tinker Character class"""
 
 import json
-from botc import Character, Outsider
+from botc import Character, Outsider, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.tinker.value.lower()]
 
 
-class Tinker(Outsider, BadMoonRising, Character):
+class Tinker(Outsider, BadMoonRising, Character, NonRecurringAction):
     """Tinker: You might die at any time.
     """
 
@@ -31,4 +31,6 @@ class Tinker(Outsider, BadMoonRising, Character):
 
         self._role_enum = BMRRole.tinker
         self._emoji = "<:bmrtinker:781672313066225675>"
-        
+    
+    def create_n1_instr_str(self):
+        return "not_implemented"    

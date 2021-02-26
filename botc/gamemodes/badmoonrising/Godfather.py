@@ -1,14 +1,14 @@
 """Contains the Godfather Character class"""
 
 import json
-from botc import Character, Minion
+from botc import Character, Minion, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.godfather.value.lower()]
 
 
-class Godfather(Minion, BadMoonRising, Character):
+class Godfather(Minion, BadMoonRising, Character, NonRecurringAction):
     """Godfather: You start knowing which Outsiders are in-play. If 1 died today, 
     choose a player tonight: they die. [-1 or +1 Outsider]
     """
@@ -32,3 +32,6 @@ class Godfather(Minion, BadMoonRising, Character):
 
         self._role_enum = BMRRole.godfather
         self._emoji = "<:bmrgodfather:781151556204625930>"
+
+    def create_n1_instr_str(self):
+        return "not_implemented"

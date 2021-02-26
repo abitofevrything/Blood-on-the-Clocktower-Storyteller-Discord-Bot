@@ -2,14 +2,14 @@
 
 import json
 import globvars
-from botc import Character, Townsfolk, ActionTypes
+from botc import Character, Townsfolk, ActionTypes, RecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.chambermaid.value.lower()]
 
 
-class Chambermaid(Townsfolk, BadMoonRising, Character):
+class Chambermaid(Townsfolk, BadMoonRising, Character, RecurringAction):
     """Chambermaid Each night, choose 2 alive players (not yourself): you learn how many woke 
     tonight due to their ability.
     """
@@ -42,3 +42,6 @@ class Chambermaid(Townsfolk, BadMoonRising, Character):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.see
         return True
+
+    def create_n1_instr_str(self):
+        return "not_implemented"
