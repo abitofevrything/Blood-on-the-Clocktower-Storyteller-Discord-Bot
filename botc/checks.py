@@ -67,8 +67,8 @@ def check_if_can_poison(ctx):
 
 
 def can_use_learn(user_id):
-    """Return true if the user can use the command "poison"
-    Characters that can poison:
+    """Return true if the user can use the command "learn"
+    Characters that can learn:
     - Ravenkeeper
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
@@ -90,7 +90,7 @@ def check_if_can_learn(ctx):
 
 def can_use_read(user_id):
     """Return true if the user can use the command "read"
-    Characters that can poison:
+    Characters that can read:
     - Fortune teller
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
@@ -112,7 +112,7 @@ def check_if_can_read(ctx):
 
 def can_use_kill(user_id):
     """Return true if the user can use the command "kill"
-    Characters that can poison:
+    Characters that can kill:
     - Imp
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
@@ -152,7 +152,7 @@ def check_if_can_slay(ctx):
 
 def can_use_protect(user_id):
     """Return true if the user can use the command "protect"
-    Characters that can poison:
+    Characters that can protect:
     - Monk
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
@@ -170,6 +170,26 @@ def check_if_can_protect(ctx):
         return True
     else:
         raise RoleCannotUseCommand("Cannot use protect command (BoTC)")
+
+def can_use_assassinate(user_id):
+    """Return true if the user can use the command "assassinate"
+    Characters that can assassinate:
+    - Assassin
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.assassin.value]:
+       return True
+    return False
+
+def check_if_can_assassinate(ctx):
+    """Return True if the user can use the command "assassinate"
+    Command check function
+    """
+    if can_use_assassinate(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use assassinate command (BoTC)")
 
 
 def check_if_is_night(ctx):
