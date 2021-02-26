@@ -2,14 +2,14 @@
 
 import json
 import globvars
-from botc import Character, Townsfolk, ActionTypes
+from botc import Character, Townsfolk, ActionTypes, RecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.exorcist.value.lower()]
 
 
-class Exorcist(Townsfolk, BadMoonRising, Character):
+class Exorcist(Townsfolk, BadMoonRising, Character, RecurringAction):
     """Exorcist: Each night*, choose a player (not the same as last night): the Demon, if chosen, 
     learns who you are & does not act tonight.
     """
@@ -44,4 +44,6 @@ class Exorcist(Townsfolk, BadMoonRising, Character):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.see
         return True
-        
+
+    def create_n1_instr_str(self):
+        return "not_implemented"

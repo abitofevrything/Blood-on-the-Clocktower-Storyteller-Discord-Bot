@@ -3,7 +3,7 @@
 import random
 import json
 import globvars
-from botc import Character, Demon, BOTCUtils, Townsfolk, Outsider, ActionTypes
+from botc import Character, Demon, BOTCUtils, Townsfolk, Outsider, ActionTypes, RecurringAction
 from ._utils import BadMoonRising, BMRRole
 import globvars
 
@@ -15,7 +15,7 @@ with open('botc/game_text.json') as json_file:
     demon_bluff_str = strings["gameplay"]["demonbluffs"]
 
 
-class Po(Demon, BadMoonRising, Character):
+class Po(Demon, BadMoonRising, Character, RecurringAction):
     """Po: Each night*, you may choose a player: they die. If you chose no-one last night, 
     choose 3 players tonight.
     """

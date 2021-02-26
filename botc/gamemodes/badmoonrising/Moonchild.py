@@ -1,14 +1,14 @@
 """Contains the Moonchild Character class"""
 
 import json
-from botc import Character, Outsider
+from botc import Character, Outsider, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.moonchild.value.lower()]
 
 
-class Moonchild(Outsider, BadMoonRising, Character):
+class Moonchild(Outsider, BadMoonRising, Character, NonRecurringAction):
     """Moonchild: When you learn you are dead, choose 1 alive player: if good, they die tonight.
     """
 
@@ -31,4 +31,6 @@ class Moonchild(Outsider, BadMoonRising, Character):
 
         self._role_enum = BMRRole.moonchild
         self._emoji = "<:bmrmoonchild:781152055011049552>"
-        
+  
+    def create_n1_instr_str(self):
+        return "not_implemented"      

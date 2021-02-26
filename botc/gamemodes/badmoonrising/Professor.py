@@ -1,14 +1,14 @@
 """Contains the Professor Character class"""
 
 import json
-from botc import Character, Townsfolk
+from botc import Character, Townsfolk, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.professor.value.lower()]
 
 
-class Professor(Townsfolk, BadMoonRising, Character):
+class Professor(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     """Professor: Once per game, at night, choose a dead player: if they are a Townsfolk, 
     they are resurrected.
     """
@@ -32,3 +32,6 @@ class Professor(Townsfolk, BadMoonRising, Character):
 
         self._role_enum = BMRRole.professor
         self._emoji = "<:bmrprofessor:781152055208574986>"
+
+    def create_n1_instr_str(self):
+        return "not_implemented"

@@ -2,14 +2,14 @@
 
 import json
 import globvars
-from botc import Character, Townsfolk, ActionTypes
+from botc import Character, Townsfolk, ActionTypes, RecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.gambler.value.lower()]
 
 
-class Gambler(Townsfolk, BadMoonRising, Character):
+class Gambler(Townsfolk, BadMoonRising, Character, RecurringAction):
     """Gambler: Each night*, choose a player & guess their character: if you guess wrong, you die.
     """
 
@@ -44,3 +44,6 @@ class Gambler(Townsfolk, BadMoonRising, Character):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.guess
         return True
+
+    def create_n1_instr_str(self):
+        return "not_implemented"

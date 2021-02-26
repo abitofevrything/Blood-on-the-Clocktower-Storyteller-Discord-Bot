@@ -1,14 +1,14 @@
 """Contains the Mastermind Character class"""
 
 import json
-from botc import Character, Minion
+from botc import Character, Minion, NonRecurringAction
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.mastermind.value.lower()]
 
 
-class Mastermind(Minion, BadMoonRising, Character):
+class Mastermind(Minion, BadMoonRising, Character, NonRecurringAction):
     """Mastermind: If the Demon dies by execution, play for 1 more day. If a player 
     is then executed, their team loses
     """
@@ -33,3 +33,5 @@ class Mastermind(Minion, BadMoonRising, Character):
         self._role_enum = BMRRole.mastermind
         self._emoji = "<:bmrmastermind:781152055179214869>"
         
+    def create_n1_instr_str(self):
+        return "not_implemented"      
