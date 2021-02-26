@@ -8,6 +8,8 @@ class Flags(enum.Enum):
     slayer_unique_attempt = "slayer_unique_attempt"
     virgin_first_nomination = "virgin_first_nomination"
 
+    assassin_unique_kill = "assassin_unique_kill"
+
 
 class Inventory:
     """Inventory class
