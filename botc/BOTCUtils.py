@@ -315,6 +315,12 @@ class GameLogic:
                 if ability_type == ActionTypes.slay:
                     if not player.role.ego_self.inventory.has_item_in_inventory(Flags.slayer_unique_attempt):
                         raise UniqueAbilityError(unique_ability_used.format(player.user.mention, x_emoji))
+
+                # Assassin's unique "assasinate" ability
+                elif ability_type == ActionTypes.assassinate:
+                    if not player.role.ego_self.inventory.has_item_in_inventory(Flags.assassin_unique_kill):
+                        raise UniqueAbilityError(unique_ability_used.format(player.user.mention, x_emoji))
+                    
                 # Future roles that have a unique ability must go into elif blocks, or else the uncaught
                 # ones will automatically trigger an assertion error.
                 else:

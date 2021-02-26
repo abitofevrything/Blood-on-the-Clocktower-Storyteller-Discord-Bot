@@ -498,3 +498,11 @@ class Character:
     async def register_protect(self, player, targets):
         """Protect command. Override by child classes"""
         raise NotImplementedError
+
+    async def register_assassinate(self, player, targets):
+        """Assassinate command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_assassinate(self, player, targets):
+        """Assassinate command. Override by child classes"""
+        raise NotImplementedError

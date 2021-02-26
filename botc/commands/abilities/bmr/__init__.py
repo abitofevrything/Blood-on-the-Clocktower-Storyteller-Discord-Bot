@@ -1,2 +1,4 @@
+from .assassinate import Assassinate
+
 def setup(client):
-	pass
+	client.add_cog(Assassinate(client))
