@@ -204,10 +204,10 @@ class GameLog:
 class Game(GameMeta):
     """BoTC Game class"""
 
-    MIN_PLAYERS = 5
-    MAX_PLAYERS = 15
-
     def __init__(self, gamemode = Gamemode.trouble_brewing):
+
+        self.MIN_PLAYERS = 5 if gamemode == Gamemode.trouble_brewing else 7
+        self.MAX_PLAYERS = 15
 
         self._gamemode = gamemode  # default gamemode will always be trouble brewing
 
