@@ -129,7 +129,7 @@ class Assassin(Minion, BadMoonRising, Character, NonRecurringAction):
 
             # The assassin submitted their unique kill. Kill the target player
             if action:
-                assert action.action_type == ActionTypes.assassinate
+                assert action.action_type == ActionTypes.assassinate,  f"Wrong action type {action} in assassin"
                 targets = action.target_player
                 killed_player = targets[0]
                 await self.exec_assassinate(player, killed_player)
