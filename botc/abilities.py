@@ -16,7 +16,7 @@ class ActionTypes(enum.Enum):
     - protect: monk
 
     ==== BAD MOON RISING ====
-    - assasinate: assassin
+    - assassinate: assassin
     - host: innkeeper
     - see: chambermaid
     - poison: courtier
