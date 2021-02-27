@@ -506,3 +506,11 @@ class Character:
     async def exec_assassinate(self, player, targets):
         """Assassinate command. Override by child classes"""
         raise NotImplementedError
+
+    async def register_see(self, player, targets):
+        """See command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_see(self, player, targets):
+        """See command. Override by child classes"""
+        raise NotImplementedError

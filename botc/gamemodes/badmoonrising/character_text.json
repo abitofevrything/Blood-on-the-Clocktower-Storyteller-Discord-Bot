@@ -28,8 +28,8 @@
         "examples" : "- The Chambermaid chooses the Exorcist and the Innkeeper, and learns a '2.' The next night, the Exorcist chooses the Shabaloth, and the Chambermaid chooses the Shabaloth and the Fool. Since the Shabaloth only woke due to the Exorcist ability, the Chambermaid learns a '0'.\n- It is the second night. The Chambermaid chooses the Grandmother and the evil Goon, and learns a '2.' The Goon will wake tonight, but the Chambermaid is drunk.\n- It is the first night. The Chambermaid chooses the Assassin and the Moonchild, and learns a '0.' The next night, they choose the Assassin and the Moonchild. The Assassin woke but did not use their ability. The Moonchild ability is used, but the Moonchild does not wake to use it. The Chambermaid learns a '1.'",
         "instruction" : "Each night, choose 2 alive players (not yourself): you learn how many woke tonight due to their ability.",
         "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "action" : "Use `see <player1> and <player2>` in DM. They must be different players.",
+        "feedback" : "You have chosen to learn if {} and {} have woken tonight.",
         "brief" : "The Chambermaid learns who wakes at night."
     },
 

@@ -234,6 +234,7 @@
         "librarian_init" : "You learn that one of the following two players is the ``{}``: ", 
         "librarian_init_zero" : "You learn that there is no Outsider in play.",
         "washerwoman_init" : "You learn that one of the following two players is the ``{}``: ",
+        "chambermaid_nightly" : "Tonight, you learn a `{}`.",
         "tb_lore" : "*Clouds roll in over Ravenswood Bluff, engulfing this sleepy town and its superstitious inhabitants in foreboding shadow. Anxious mothers call their children home from play, as thunder begins to clap on the horizon. Those who can read the signs know there is...* ***Trouble Brewing***.",
         "bmr_lore" : "*The sun is swallowed by a jagged horizon as another winter's day surrenders to the night. Travelers hurry into the inn, seeking shelter from the gathering chill. They warm themselves with hot tea, sweet strains of music and hearty ale, unaware that strange and nefarious eyes stalk them from the ruins of this once great city. Tonight, even the livestock know there is a...* ***Bad Moon Rising***.",
         "snv_lore" : "*Vibrant spring gives way to a warm and inviting summer. As the townsfolk bask in frivolity and mischief, indulging themselves in fine entertainment and even finer wine, dark and clandestine forces are assembling. Witches and cults lurk in majestic ruins on the fringes of the community, hosting secret meetings in underground caves and malevolently plotting the downfall of Ravenswood Bluff and its revelers. The time is ripe for...* ***Sects & Violets***.",
@@ -405,7 +406,13 @@
         "assassinate" : {
             "brief" : "pick an 'assassinate' target",
             "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
-            "description" : "[ASSASSINATE] command - BoTC"
+            "description" : "[ASSASSINATE] command - BOTC"
+        },
+
+        "see" : {
+            "brief" : "pick a 'see' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[SEE] command - BOTC"
         },
 
         "nominate" : {

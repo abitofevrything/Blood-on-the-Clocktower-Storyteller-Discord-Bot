@@ -191,6 +191,27 @@ def check_if_can_assassinate(ctx):
     else:
         raise RoleCannotUseCommand("Cannot use assassinate command (BoTC)")
 
+def can_use_see(user_id):
+    """Return true if the user can use the command "see"
+    Characters that can see:
+    - Chambermaid
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.chambermaid.value]:
+        return True
+    return False
+
+def check_if_can_see(ctx):
+    """Return true if the user can use the command "see"
+    Characters that can see:
+    - Chambermaid
+    """
+    if can_use_see(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use see command (BoTC)")
+
 
 def check_if_is_night(ctx):
     """Check if the game is in night phase"""

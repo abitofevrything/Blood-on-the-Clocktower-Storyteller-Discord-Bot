@@ -9,6 +9,8 @@ class Flags(enum.Enum):
     virgin_first_nomination = "virgin_first_nomination"
 
     assassin_unique_kill = "assassin_unique_kill"
+    courtier_unique_poison = "courtier_unique_poison"
+    professor_unique_resurrect = "professor_unique_resurrect"
 
 
 class Inventory:
