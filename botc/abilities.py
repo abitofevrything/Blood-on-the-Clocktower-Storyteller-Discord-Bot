@@ -9,7 +9,7 @@ class ActionTypes(enum.Enum):
     ==== TROUBLE BREWING ====
     - serve: butler
     - poison: poisoner
-    - l earn: ravenkeeper
+    - learn: ravenkeeper
     - read: fortune teller
     - kill: imp
     - slay: slayer
