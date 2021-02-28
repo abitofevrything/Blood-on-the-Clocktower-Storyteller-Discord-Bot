@@ -320,8 +320,8 @@
         "whisper_too_long" : "{} {} The content of your whisper is too long.",
         "recipient_blocked" : "{} Your whisper cannot be delivered because the recipient has blocked me.",
         "cannot_be_nominated_again" : "{} {} {} cannot be nominated, because they have been nominated once today already.",
-        "cannot_nominate_again" : "{} {} You cannot nominate more than once per day."
-
+        "cannot_nominate_again" : "{} {} You cannot nominate more than once per day.",
+        "bmr_roles_only" : "{} {} You cannot choose roles from other editions."
     },
 
     "doc" : {
@@ -370,6 +370,12 @@
         "poison" : {
             "brief" : "pick a 'poison' target",
             "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[POISON] command - BOTC"
+        },
+
+        "courtier_poison" : {
+            "brief" : "pick a 'poison' target",
+            "help" : "The bot recognizes roles. These need to be typed out fully.",
             "description" : "[POISON] command - BOTC"
         },
 

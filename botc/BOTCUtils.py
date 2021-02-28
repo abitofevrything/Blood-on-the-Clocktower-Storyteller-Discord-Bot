@@ -26,6 +26,7 @@ with open('botc/game_text.json') as json_file:
     unique_ability_used = documentation["cmd_warnings"]["unique_ability_used"]
     not_under_status = documentation["cmd_warnings"]["not_under_status"]
     lore = documentation["lore"]
+    bmr_roles_only_str = documentation["cmd_warnings"]["bmr_roles_only"]
 
 
 # ========== TARGETS ===============================================================
@@ -272,6 +273,9 @@ class NoRepeatTargets(AbilityForbidden):
     """Does not allow repeat targets. Ex. kill player1 and player1"""
     pass
 
+class BMRRolesOnly(AbilityForbidden):
+    """Error for when a role argument is not from the bmr edition"""
+    pass
 
 class GameLogic:
     """Game logic decorators to be used on ability methods in character classes"""
@@ -320,7 +324,12 @@ class GameLogic:
                 elif ability_type == ActionTypes.assassinate:
                     if not player.role.ego_self.inventory.has_item_in_inventory(Flags.assassin_unique_kill):
                         raise UniqueAbilityError(unique_ability_used.format(player.user.mention, x_emoji))
-                    
+
+                # Courtier's unique "poison" ability
+                elif ability_type == ActionTypes.poison:
+                    if not player.role.ego_self.inventory.has_item_in_inventory(Flags.courtier_unique_poison):
+                        raise UniqueAbilityError(unique_ability_used.format(player.user.mention, x_emoji))
+
                 # Future roles that have a unique ability must go into elif blocks, or else the uncaught
                 # ones will automatically trigger an assertion error.
                 else:
@@ -387,6 +396,18 @@ class GameLogic:
             return func(self, player, targets)
         return inner
 
+    @staticmethod
+    def requires_bmr_roles(func):
+        """Decorator for abilities ony allow roles from the bmr edition"""
+        def inner(self, player, targets):
+            from .gamemodes.badmoonrising._utils import BMRRole
+            role_list = [x.value for x in BMRRole]
+            for character in targets:
+                if character.name not in role_list:
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            return func(self, player, targets)
+        return inner
+
 
 # ========== CONVERTERS ============================================================
 # ----------------------------------------------------------------------------------
@@ -440,6 +461,13 @@ class RoleConverter(commands.Converter):
         """
         import globvars
         editions = globvars.master_state.game_packs["botc"]["gamemodes"]
+        # First check for exact matches, otherwise looking for po might return poisoner ("po" in "POisoner")
+        for edition in editions:
+            role_pool = editions[edition]
+            for role in role_pool:
+                if argument.lower() == role.name.lower():
+                    return role
+
         for edition in editions:
             role_pool = editions[edition]
             for role in role_pool:

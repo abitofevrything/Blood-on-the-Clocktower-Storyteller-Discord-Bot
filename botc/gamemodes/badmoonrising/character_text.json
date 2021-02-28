@@ -83,8 +83,8 @@
         "examples" : "- For the first four nights, the Courtier wakes but does not use their ability. During the fifth night, they make the Shabaloth drunk. For the next three nights, the Shabaloth acts but cannot kill anybody.\n- The Courtier uses their ability while drunk. Nothing happens, but they are not woken again.\n- The Courtier makes the Mastermind drunk. The Demon is executed while the Mastermind still lives. The game ends and good wins.",
         "instruction" : "Once per game, at night, choose a character: they are drunk for 3 nights & 3 days.",
         "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "action" : "Use `poison <character>` in DM.",
+        "feedback" : "You have chosen to poison the {}.",
         "brief" : "The Courtier gets a character drunk, without knowing which player it is."
     },
 

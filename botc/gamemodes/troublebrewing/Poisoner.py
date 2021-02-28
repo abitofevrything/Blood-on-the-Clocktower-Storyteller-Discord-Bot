@@ -3,7 +3,7 @@
 import json 
 import discord
 import configparser
-from botc import Action, ActionTypes, Minion, Character, Poison, RecurringAction
+from botc import Action, ActionTypes, Minion, Character, PoisonerPoison, RecurringAction
 from botc.BOTCUtils import GameLogic
 from ._utils import TroubleBrewing, TBRole
 import globvars
@@ -119,7 +119,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
     async def exec_poison(self, poisoner_player, poisoned_player):
         """Execute the poison actions (night interaction)"""
         if not poisoner_player.is_droisoned() and poisoner_player.is_alive():
-            poisoned_player.add_status_effect(Poison(poisoner_player, poisoned_player))
+            poisoned_player.add_status_effect(PoisonerPoison(poisoner_player, poisoned_player))
     
     async def process_night_ability(self, player):
         """Process night actions for the poisoner character.

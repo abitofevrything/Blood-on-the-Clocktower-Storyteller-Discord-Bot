@@ -48,10 +48,12 @@ def can_use_poison(user_id):
     """Return true if the user can use the command "poison"
     Characters that can poison:
     - Poisoner
+    - Courtier
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
+    from botc.gamemodes.badmoonrising._utils import BMRRole
     player = BOTCUtils.get_player_from_id(user_id)
-    if player.role.ego_self.name in [TBRole.poisoner.value]:
+    if player.role.ego_self.name in [TBRole.poisoner.value, BMRRole.courtier.value]:
         return True
     return False
 
