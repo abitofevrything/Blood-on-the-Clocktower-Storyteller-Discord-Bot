@@ -2,15 +2,11 @@
 
 import json
 import globvars
-<<<<<<< HEAD
 import discord
 import configparser
 import datetime
 import random
 from botc import Character, Townsfolk, ActionTypes, RecurringAction, GameLogic, Action, Flags
-=======
-from botc import Character, Townsfolk, ActionTypes, RecurringAction
->>>>>>> db0cfaf0fcb930ba41046bb892537db816a5d67d
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -20,7 +16,6 @@ with open('botutils/bot_text.json') as json_file:
     bot_text = json.load(json_file)
     butterfly = bot_text["esthetics"]["butterfly"]
 
-<<<<<<< HEAD
 with open('botc/game_text.json') as json_file: 
     strings = json.load(json_file)
     chambermaid_nightly = strings["gameplay"]["chambermaid_nightly"]
@@ -34,10 +29,6 @@ DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 class Chambermaid(Townsfolk, BadMoonRising, Character, RecurringAction):
     """Chambermaid
     Each night, choose 2 alive players (not yourself): you learn how many woke 
-=======
-class Chambermaid(Townsfolk, BadMoonRising, Character, RecurringAction):
-    """Chambermaid Each night, choose 2 alive players (not yourself): you learn how many woke 
->>>>>>> db0cfaf0fcb930ba41046bb892537db816a5d67d
     tonight due to their ability.
     """
 
@@ -71,7 +62,6 @@ class Chambermaid(Townsfolk, BadMoonRising, Character, RecurringAction):
         return True
 
     def create_n1_instr_str(self):
-<<<<<<< HEAD
         """Create the instruction field on the opening dm card"""
 
         # First line is the character instruction string
@@ -208,6 +198,3 @@ class Chambermaid(Townsfolk, BadMoonRising, Character, RecurringAction):
             # We do not randomize the chambermaid read
             else:
                 pass
-=======
-        return "not_implemented"
->>>>>>> db0cfaf0fcb930ba41046bb892537db816a5d67d
