@@ -88,8 +88,6 @@ class Courtier(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         # Must be 1 target
         assert len(targets) == 1, "Received a number of targets different than 1 for courtier 'poison'"
 
-        print("Courtier: registered poison")
-
         player.role.ego_self.inventory.remove_item_from_inventory(Flags.courtier_unique_poison)
 
         possible_poisoned_players = BOTCUtils.get_players_from_role_name(targets[0]._role_enum)
@@ -110,9 +108,6 @@ class Courtier(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     async def exec_poison(self, poisoner_player, poisoned_player):
         """Execute the poison actions (night interaction)"""
         if not poisoner_player.is_droisoned() and poisoner_player.is_alive():
-
-            print(f"Courtier: poisoned {poisoned_player}")
-
             poisoned_player.add_status_effect(CourtierPoison(poisoner_player, poisoned_player))
     
     async def process_night_ability(self, player):
