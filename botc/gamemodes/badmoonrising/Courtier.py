@@ -98,7 +98,7 @@ class Courtier(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         if len(possible_poisoned_players) is not 0:
             poisoned_player = possible_poisoned_players[0]
 
-            action = Action(player, poisoned_player, ActionTypes.poison, globvars.master_state.game._chrono.phase_id)
+            action = Action(player, [poisoned_player], ActionTypes.poison, globvars.master_state.game._chrono.phase_id)
             player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
 
         if DISABLE_DMS:
@@ -125,7 +125,7 @@ class Courtier(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         # The courtier has submitted an action. We call the execution function immediately
         if action:
             assert action.action_type == ActionTypes.poison, f"Wrong action type {action} in courtier"
-            poisoned_player = action.target_player
+            poisoned_player = action.target_player[0]
             await self.exec_poison(player, poisoned_player)
         # The courtier has not submitted an action.
         else:
