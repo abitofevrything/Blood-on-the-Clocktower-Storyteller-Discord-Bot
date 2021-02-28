@@ -50,6 +50,7 @@ class Poison(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         """Poison command
         usage: poison <character> and <character> and...
         characters: courtier
+        """
 
         player = BOTCUtils.get_player_from_id(ctx.author.id)
         await player.role.ego_self.register_poison(player, [poisoned_character])
