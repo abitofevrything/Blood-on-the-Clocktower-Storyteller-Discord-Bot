@@ -75,8 +75,8 @@ with open('botc/game_text.json') as json_file:
     evilteammates = strings["gameplay"]["evilteammates"]
     copyrights_str = strings["misc"]["copyrights"]
     tb_lore = strings["gameplay"]["tb_lore"]
-    bmr_lore = strings["gameplay"]["bmr_lore"] # TODO add bmr lore
-    snv_lore = strings["gameplay"]["snv_lore"] # TODO add snv lore
+    bmr_lore = strings["gameplay"]["bmr_lore"]
+    snv_lore = strings["gameplay"]["snv_lore"]
     nightfall_image = strings["images"]["nightfall"]
     dawn_image = strings["images"]["dawn"]
     daybreak_image = strings["images"]["daybreak"]
