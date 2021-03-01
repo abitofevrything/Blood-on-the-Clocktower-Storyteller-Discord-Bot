@@ -12,6 +12,7 @@ class StatusList(enum.Enum):
     drunkenness = "drunkenness"
     poison = "poisoned"
     red_herring = "red_herring"
+    safety_from_execution = "safety_from_execution"
     butler_service = "butler_service"  # butler serving a master
     ravenkeeper_activated = "ravenkeeper_activated"  # activated ravenkeeper ability
 
@@ -183,3 +184,14 @@ class ButlerService(StatusEffect):
         """
         super().__init__(source_player, affected_player, pointer_player, duration)
         self._effect = StatusList.butler_service
+
+class SafetyFromExecution(StatusEffect):
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = DEFAULT_EFFECT_DURATION
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.safety_from_execution

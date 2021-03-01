@@ -111,4 +111,6 @@ class ActionGrid:
     
     def retrieve_an_action(self, phase_id):
         """Retrieve an action within the grid based on a phase ID"""
+        if phase_id not in range(0, len(self.grid)):
+            return None
         return self.grid[phase_id]

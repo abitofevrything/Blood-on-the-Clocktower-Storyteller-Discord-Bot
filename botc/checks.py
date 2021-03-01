@@ -156,10 +156,12 @@ def can_use_protect(user_id):
     """Return true if the user can use the command "protect"
     Characters that can protect:
     - Monk
+    - Devil's advocate
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
+    from botc.gamemodes.badmoonrising._utils import BMRRole
     player = BOTCUtils.get_player_from_id(user_id)
-    if player.role.ego_self.name in [TBRole.monk.value]:
+    if player.role.ego_self.name in [TBRole.monk.value, BMRRole.devilsadvocate.value]:
         return True
     return False
 

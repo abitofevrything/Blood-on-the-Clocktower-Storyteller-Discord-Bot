@@ -204,8 +204,8 @@
         "examples" : "- At night, the Devil’s Advocate protects themself. The next day, the Devil’s Advocate is executed but remains alive.\n- The Devil’s Advocate protects the Zombuul. The Zombuul is executed but remains alive, so their life token is not flipped. The next day, the Zombuul is executed again and registers as dead.\n- The Devil’s Advocate protects the Grandmother. The Grandmother is executed but remains alive. Later, the Devil’s Advocate protects the Tinker. The Tinker is executed, but the Storyteller kills the Tinker anyway, due to the Tinker ability. Later, the Devil’s Advocate protects the Moonchild, and the Judge forces the execution to succeed—the execution succeeds, but the Moonchild remains alive.",
         "instruction" : "Each night, choose a living player (not the same as last night): if executed tomorrow, they do not die.",
         "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "action" : "Use `protect <player>` in DM.",
+        "feedback" : "You have chosen to protect {} tonight.",
         "brief" : "The Devil's Advocate prevents players from dying by execution."
     },
 

@@ -8,7 +8,7 @@ import json
 import discord
 import datetime
 import configparser
-from botc import ChoppingBlock
+from botc import ChoppingBlock, StatusList
 from discord.ext import tasks
 
 Config = configparser.ConfigParser()
@@ -61,6 +61,7 @@ with open('botc/game_text.json') as json_file:
     nomination_countdown = documentation["gameplay"]["nomination_countdown"]
     day_over_soon = documentation["gameplay"]["day_over_soon"]
     no_execution = documentation["gameplay"]["no_execution"]
+    execution_no_death = documentation["gameplay"]["execution_no_death"]
     execution = documentation["gameplay"]["execution"]
     copyrights_str = documentation["misc"]["copyrights"]
 
@@ -457,11 +458,17 @@ async def day_loop(game):
                 if game.chopping_block:
                     player_about_to_die = game.chopping_block.player_about_to_die
                     if player_about_to_die:
-                        await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
-                        msg = botutils.BotEmoji.guillotine + " " + execution.format(
-                            game.chopping_block.player_about_to_die.game_nametag, 
-                            game.chopping_block.nb_votes
-                        )
+                        if not player_about_to_die.has_status_effect(StatusList.safety_from_execution):
+                            await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
+                            msg = botutils.BotEmoji.guillotine + " " + execution.format(
+                                game.chopping_block.player_about_to_die.game_nametag, 
+                                game.chopping_block.nb_votes
+                            )
+                        else:
+                            msg = botutils.BotEmoji.guillotine + " " + execution_no_death.format(
+                                game.chopping_block.player_about_to_die.game_nametag, 
+                                game.chopping_block.nb_votes
+                            )
                     else:
                         msg = botutils.BotEmoji.clocktower + " " + no_execution
                     await botutils.send_lobby(msg)

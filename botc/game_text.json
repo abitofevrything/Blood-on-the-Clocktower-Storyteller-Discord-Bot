@@ -267,6 +267,7 @@
         "day_over_soon" : "The Day Phase will be over in a few seconds if no one else is nominated.",
         "no_execution" : "Nominations are now closed, and no one is executed today. Goodnight everyone.",
         "execution" : "Nominations are now closed. {} is now executed with **{}** votes. Goodnight everyone.",
+        "execution_no_death" : "Nominations are now closed. {} is now executed with **{}** votes, but does not die. Goodnight everyone.",
         "no_one_wins" : "**Game over! No one has won.**",
         "good_wins" : "**Game over! The Good team has won.**",
         "evil_wins" : "**Game over! The Evil team has won.**",
@@ -321,7 +322,8 @@
         "recipient_blocked" : "{} Your whisper cannot be delivered because the recipient has blocked me.",
         "cannot_be_nominated_again" : "{} {} {} cannot be nominated, because they have been nominated once today already.",
         "cannot_nominate_again" : "{} {} You cannot nominate more than once per day.",
-        "bmr_roles_only" : "{} {} You cannot choose roles from other editions."
+        "bmr_roles_only" : "{} {} You cannot choose roles from other editions.",
+        "no_same_following_targets" : "{} {} You cannot choose the same target two times in a row."
     },
 
     "doc" : {

@@ -4,6 +4,7 @@ import asyncio
 import json
 import configparser
 import random
+import globvars
 from .Category import Category
 from discord.ext import commands, tasks
 
@@ -27,6 +28,7 @@ with open('botc/game_text.json') as json_file:
     not_under_status = documentation["cmd_warnings"]["not_under_status"]
     lore = documentation["lore"]
     bmr_roles_only_str = documentation["cmd_warnings"]["bmr_roles_only"]
+    no_same_following_targets_str = documentation["cmd_warnings"]["no_same_following_targets"]
 
 
 # ========== TARGETS ===============================================================
@@ -277,6 +279,10 @@ class BMRRolesOnly(AbilityForbidden):
     """Error for when a role argument is not from the bmr edition"""
     pass
 
+class NoSameFollowingTargets(AbilityForbidden):
+    """Error for when a role that connot choose the same target two times in a row does so"""
+    pass
+
 class GameLogic:
     """Game logic decorators to be used on ability methods in character classes"""
 
@@ -405,6 +411,18 @@ class GameLogic:
             for character in targets:
                 if character.name not in role_list:
                     raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            return func(self, player, targets)
+        return inner
+
+    @staticmethod
+    def no_same_following_targets(func):
+        """Decorator for abilities that do not allow the same target twice in a row"""
+        def inner(self, player, targets):
+            last_action = player.action_grid.retrieve_an_action(globvars.master_state.game._chrono.phase_id - 3) # Previous night, dawn or day, depending on current phase
+            if last_action:
+                for target in targets:
+                    if target in last_action.target_player:
+                        raise NoSameFollowingTargets(no_same_following_targets_str.format(player.user.mention, x_emoji))
             return func(self, player, targets)
         return inner
 
