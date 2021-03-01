@@ -287,7 +287,8 @@
         "time_day_base" : "It is currently **daytime**. The daytime discussion phase lasts `{}`. There {} **{}** left until nominations are open.",
         "time_voting" : "It is currently **daytime**. This is the nominations phase. Votes are being counted right now.",
         "time_debate" : "It is currently **daytime**. You have `{}` for discussion. The voting will start in **{}**.",
-        "time_nomination" : "It is currently **daytime**. You have `{}` to nominate someone. The game will progress to the night phase in **{}**."
+        "time_nomination" : "It is currently **daytime**. You have `{}` to nominate someone. The game will progress to the night phase in **{}**.",
+        "exorcist_chose_demon" : "You learn that {} is the exorcist."
 
     },
 
@@ -421,6 +422,12 @@
             "brief" : "pick a 'see' target",
             "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
             "description" : "[SEE] command - BOTC"
+        },
+
+        "exorcise" : {
+            "brief" : "pick a 'exorcise' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[EXORCISE] command - BOTC"  
         },
 
         "nominate" : {

@@ -216,6 +216,26 @@ def check_if_can_see(ctx):
     else:
         raise RoleCannotUseCommand("Cannot use see command (BoTC)")
 
+def can_use_exorcise(user_id):
+    """Return true if the user can use the command "exorcise"
+    Characters that can see:
+    - Exorcist
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.exorcist.value]:
+        return True
+    return False
+
+def check_if_can_exorcise(ctx):
+    """Return true if the user can use the command "exorcise"
+    Characters that can see:
+    - Exorcist
+    """
+    if can_use_exorcise(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use see command (BoTC)")
 
 def check_if_is_night(ctx):
     """Check if the game is in night phase"""

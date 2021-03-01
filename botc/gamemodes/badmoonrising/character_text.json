@@ -38,9 +38,9 @@
         "description" : "The Exorcist prevents the Demon from attacking.\n- Each night, the Exorcist chooses a player. If they choose a player who is not the Demon, the Demon may still attack. If they choose the Demon, the Demon does not attack tonight. The Demon learns that they cannot attack and who the Exorcist is.\n- Any other Demon abilities still function—such as the Zombuul staying alive if killed, the Pukka killing a player it attacked on a previous night, or the Shabaloth regurgitating a player.\n- The Exorcist may not choose the same player two nights in a row.",
         "examples" : "- The Exorcist chooses the Shabaloth. The Shabaloth does not kill tonight. At dawn, the Storyteller declares that nobody died that night.\n- The Exorcist chooses the Pukka. The Pukka does not wake to attack tonight, but a player still dies because of the Pukka’s attack during the previous night.\n- The Exorcist chooses the Po. The Po does not wake to act tonight. The next night, the Exorcist chooses the Assassin. The Assassin can still attack tonight, and the Po must choose either 0 or 1 players to kill. It cannot choose 3 players, because it did not act during the previous night.",
         "instruction" : "Each night*, choose a player (not the same as last night): the Demon, if chosen, learns who you are & does not act tonight.",
-        "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "n1_addendum" : "You do not act on the first night.",
+        "action" : "Use `exorcise <player>` in DM.",
+        "feedback" : "You have chosen to exorcise {} tonight.",
         "brief" : "The Exorcist prevents the Demon from attacking."
     },
 
