@@ -420,8 +420,8 @@ class GameLogic:
         def inner(self, player, targets):
             last_action = player.action_grid.retrieve_an_action(globvars.master_state.game._chrono.phase_id - 3) # Previous night, dawn or day, depending on current phase
             if last_action:
-                for target in targets:
-                    if target in last_action.target_player:
+                for target in targets.target_list:
+                    if target in last_action.target_player.target_list:
                         raise NoSameFollowingTargets(no_same_following_targets_str.format(player.user.mention, x_emoji))
             return func(self, player, targets)
         return inner
