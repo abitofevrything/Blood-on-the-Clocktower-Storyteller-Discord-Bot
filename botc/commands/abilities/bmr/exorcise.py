@@ -32,7 +32,7 @@ class Exorcise(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         """
         return check_if_is_player(ctx)  # Registered non-quit player -> NotAPlayer
     
-    # ---------- PROTECT COMMAND (Monk) ----------------------------------------
+    # ---------- EXORCISE COMMAND (Exocrist) ----------------------------------------
     @commands.command(
         pass_context = True, 
         name = "exorcise",
