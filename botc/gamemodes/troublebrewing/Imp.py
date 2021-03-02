@@ -187,7 +187,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         if demon_player.is_alive() and not demon_player.is_droisoned():
             # Players who have received a status effect granting them safety from the demon 
             # do not die
-            if killed_player.has_status_effect(StatusList.safety_from_demon):
+            if not killed_player.role.true_self.can_be_demon_killed(killed_player):
                 return
             await killed_player.role.ego_self.on_being_demon_killed(killed_player)
     
