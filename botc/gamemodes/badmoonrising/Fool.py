@@ -33,4 +33,17 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         self._emoji = "<:bmrfool:781151556254564353>"
 
     def create_n1_instr_str(self):
-        return "not_implemented"
+        """Create the instruction field on the opening dm card"""
+
+        # First line is the character instruction string
+        msg = f"{self.emoji} {self.instruction}"
+        addendum = character_text["n1_addendum"]
+        
+        # Some characters have a line of addendum
+        if addendum:
+            with open("botutils/bot_text.json") as json_file:
+                bot_text = json.load(json_file)
+                scroll_emoji = bot_text["esthetics"]["scroll"]
+            msg += f"\n{scroll_emoji} {addendum}"
+            
+        return msg
