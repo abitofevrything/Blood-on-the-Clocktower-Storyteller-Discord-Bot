@@ -4,7 +4,7 @@ from .abilities import ActionTypes, Action, ActionGrid
 from .BOTCUtils import BOTCUtils, PlayerParser, NotAPlayer, RoleCannotUseCommand, NotDMChannel, \
     NotLobbyChannel, NotDay, NotDawn, NotNight, DeadOnlyCommand, AliveOnlyCommand, GameLogic, \
     get_number_image, AbilityForbidden, PlayerConverter, RoleConverter, PlayerNotFound, \
-    RoleNotFound, LorePicker, WhisperConverter, WhisperTooLong
+    RoleNotFound, LorePicker, WhisperConverter, WhisperTooLong, BMRRolesOnly
 from .Category import Category
 from .Character import Character
 from .checks import check_if_is_player, can_use_serve, check_if_can_serve, can_use_poison, \
@@ -13,7 +13,7 @@ from .checks import check_if_is_player, can_use_serve, check_if_can_serve, can_u
     check_if_can_protect, check_if_is_night, check_if_is_dawn, check_if_is_day, \
     check_if_dm, check_if_lobby, check_if_player_apparently_alive, \
     check_if_player_apparently_dead, check_if_player_really_alive, check_if_player_really_dead, \
-    check_if_can_assassinate, check_if_can_see, check_if_can_exorcise
+    check_if_can_assassinate, check_if_can_see, check_if_can_exorcise, check_if_can_guess
 from .ChoppingBlock import ChoppingBlock
 from .chrono import GameChrono
 from .Demon import Demon

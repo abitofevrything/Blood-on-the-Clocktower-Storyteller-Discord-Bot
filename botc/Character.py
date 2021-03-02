@@ -543,3 +543,11 @@ class Character:
     async def exec_exorcise(self, player, targets):
         """Exorcise command. Override by child classes"""
         raise NotImplementedError
+
+    async def register_guess(self, player, targets):
+        """Guess command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_guess(self, player, targets):
+        """Guess command. Override by child classes"""
+        raise NotImplementedError

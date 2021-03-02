@@ -60,9 +60,9 @@
         "description" : "The Gambler can guess who is who... but pays the ultimate price if they guess wrong.\n- Each night except the first, the Gambler chooses a player and guesses their character by pointing to its icon on the character sheet. If the guess is correct, nothing happens. If the guess is incorrect, the Gambler dies.\n- The Gambler does not learn from the Storyteller whether their guess is correct or incorrect.\n- The Gambler may choose any player, dead or alive, even themself.",
         "examples" : "- The Gambler points to the Minstrel player, then to the Minstrel icon. This guess is correct, so the Gambler remains alive, but is killed by the Demon tonight anyway.\n- The Devil's Advocate is bluffing as the Pacifist. That night, the Gambler points to the Devil's Advocate player, then to the Pacifist icon. This guess is wrong, so the Gambler dies.",
         "instruction" : "Each night*, choose a player & guess their character: if you guess wrong, you die.",
-        "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "n1_addendum" : "You do not act on the first night.",
+        "action" : "Use `guess <player> is <character>` in DM.",
+        "feedback" : "You have chose to gamble that {} is the **{}** tonight.",
         "brief" : "The Gambler can guess who is who... but pays the ultimate price if they guess wrong."
     },
 
