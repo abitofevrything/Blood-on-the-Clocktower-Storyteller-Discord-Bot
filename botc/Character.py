@@ -287,20 +287,20 @@ class Character:
     def can_be_executed(self, player):
         """Can the player be executed?
         Default is to check whether the player has the safety_from_execution status.
-        To be overriden in child classes.
+        To be overriden in child classes. Should only be called when no other means of death avoidance is possible.
         """
         return not player.has_status_effect(StatusList.safety_from_execution)
 
     def can_be_demon_killed(self, player):
         """Can the player be demon killed?
         Default is to check if the player has the safety_from_demon status.
-        To  be overriden in child classes.
+        To be overriden in child classes. Should only be called when no other means of death avoidance is possible.
         """
         return not player.has_status_effect(StatusList.safety_from_demon)
 
     def can_be_killed(self, player):
         """Can the player be killed in any way other than execution or demon kill?
-        To be overriden by child classes.
+        To be overriden by child classes. Should only be called when no other means of death avoidance is possible.
         """
         return True
 

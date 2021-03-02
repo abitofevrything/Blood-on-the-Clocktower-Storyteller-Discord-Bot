@@ -11,6 +11,7 @@ class Flags(enum.Enum):
     assassin_unique_kill = "assassin_unique_kill"
     courtier_unique_poison = "courtier_unique_poison"
     professor_unique_resurrect = "professor_unique_resurrect"
+    fool_death_evasion = "fool_death_evasion"
 
 
 class Inventory:

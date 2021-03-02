@@ -1,7 +1,7 @@
 """Contains the Fool Character class"""
 
 import json
-from botc import Character, Townsfolk, NonRecurringAction
+from botc import Character, Townsfolk, NonRecurringAction, StatusList, Flags, Inventory
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -32,6 +32,10 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         self._role_enum = BMRRole.fool
         self._emoji = "<:bmrfool:781151556254564353>"
 
+        self.inventory = Inventory(
+            Flags.fool_death_evasion
+        )
+
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
 
@@ -47,3 +51,45 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg
+
+    # The following three methods are only as the last check before death,
+    # so we can safely assume that we should remove the flag if these
+    # methods are called
+
+    def can_be_executed(self, player):
+        """Can the player be executed?
+        Default is to check whether the player has the safety_from_execution status.
+        To be overriden in child classes.
+        """
+        if player.has_status_effect(StatusList.safety_from_execution):
+            return False
+
+        if player.role.true_self.has_item_in_inventory(Flags.fool_death_evasion):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
+            return False
+
+        return True
+
+    def can_be_demon_killed(self, player):
+        """Can the player be demon killed?
+        Default is to check if the player has the safety_from_demon status.
+        To  be overriden in child classes.
+        """
+        if player.has_status_effect(StatusList.safety_from_demon):
+            return False
+
+        if player.role.true_self.has_item_in_inventory(Flags.fool_death_evasion):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
+            return False
+
+        return True
+
+    def can_be_killed(self, player):
+        """Can the player be killed in any way other than execution or demon kill?
+        To be overriden by child classes.
+        """
+        if player.role.true_self.has_item_in_inventory(Flags.fool_death_evasion):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
+            return False
+
+        return True
