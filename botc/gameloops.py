@@ -458,7 +458,7 @@ async def day_loop(game):
                 if game.chopping_block:
                     player_about_to_die = game.chopping_block.player_about_to_die
                     if player_about_to_die:
-                        if not player_about_to_die.has_status_effect(StatusList.safety_from_execution):
+                        if player_about_to_die.role.true_self.can_be_executed(player_about_to_die):
                             await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
                             msg = botutils.BotEmoji.guillotine + " " + execution.format(
                                 game.chopping_block.player_about_to_die.game_nametag, 

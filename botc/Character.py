@@ -12,6 +12,7 @@ from .BOTCUtils import LorePicker
 from .flag_inventory import Inventory, Flags
 from .abilities import ActionTypes, Action
 from .BOTCUtils import GameLogic
+from .status import StatusList
 import globvars
 
 Preferences = configparser.ConfigParser()
@@ -280,6 +281,26 @@ class Character:
     def has_finished_dawn_action(self, player):
         """Has the player finished their dawn action? (For phase fastforwarding)
         To be overriden in child classes
+        """
+        return True
+
+    def can_be_executed(self, player):
+        """Can the player be executed?
+        Default is to check whether the player has the safety_from_execution status.
+        To be overriden in child classes.
+        """
+        return not player.has_status_effect(StatusList.safety_from_execution)
+
+    def can_be_demon_killed(self, player):
+        """Can the player be demon killed?
+        Default is to check if the player has the safety_from_demon status.
+        To  be overriden in child classes.
+        """
+        return not player.has_status_effect(StatusList.safety_from_demon)
+
+    def can_be_killed(self, player):
+        """Can the player be killed in any way other than execution or demon kill?
+        To be overriden by child classes.
         """
         return True
 
