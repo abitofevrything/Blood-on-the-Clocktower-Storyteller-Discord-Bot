@@ -258,6 +258,27 @@ def check_if_can_guess(ctx):
     else:
         raise RoleCannotUseCommand("Cannot use guess command (BoTC)")
 
+def can_use_execute(user_id):
+    """Return true if the user can use the command "execute"
+    Characters that can execute:
+    - Godfather
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.godfather.value]:
+        return True
+    return False
+
+def check_if_can_execute(ctx):
+    """Return true if the user can use the command "execute"
+    Characters that can execute:
+    - Godfather
+    """
+    if can_use_execute(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use execute command (BoTC)")
+
 def check_if_is_night(ctx):
     """Check if the game is in night phase"""
     import globvars

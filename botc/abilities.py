@@ -23,6 +23,7 @@ class ActionTypes(enum.Enum):
     - protect: devil's advocate
     - exorcise: exorcist
     - guess: gambler
+    - execute: godfather
     - gossip: gossip
     - choose: moonchild
     - kill: po, shabaloth and zombuul (all three would use the same command, since there can only be one per game)
@@ -44,6 +45,7 @@ class ActionTypes(enum.Enum):
     see = "see"
     exorcise = "exorcise"
     guess = "guess"
+    execute = "execute"
     gossip = "gossip"
     choose = "choose"
     examine = "examine"
