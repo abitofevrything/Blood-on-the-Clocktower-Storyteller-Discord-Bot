@@ -28,6 +28,7 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True, 
         name = "fnomination",
         hidden = False,
+        aliases = ["fnom"],
         brief = documentation["doc"]["fnomination"]["brief"],
         help = documentation["doc"]["fnomination"]["help"],
         description = documentation["doc"]["fnomination"]["description"]
