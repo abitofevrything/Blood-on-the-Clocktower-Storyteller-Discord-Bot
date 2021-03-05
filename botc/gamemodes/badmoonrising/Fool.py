@@ -64,6 +64,9 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         if player.has_status_effect(StatusList.safety_from_execution):
             return False
 
+        if player.is_droisoned():
+            return True
+
         if player.role.true_self.has_item_in_inventory(Flags.fool_death_evasion):
             player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
             return False
@@ -78,6 +81,9 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         if player.has_status_effect(StatusList.safety_from_demon):
             return False
 
+        if player.is_droisoned():
+            return True
+
         if player.role.true_self.has_item_in_inventory(Flags.fool_death_evasion):
             player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
             return False
@@ -88,6 +94,9 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         """Can the player be killed in any way other than execution or demon kill?
         To be overriden by child classes.
         """
+        if player.is_droisoned():
+            return True
+
         if player.role.true_self.has_item_in_inventory(Flags.fool_death_evasion):
             player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
             return False
