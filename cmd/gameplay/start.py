@@ -82,8 +82,9 @@ class Start(Gameplay, name = language["system"]["gameplay_cog"]):
                 await globvars.master_state.game.start_game()
                 botutils.update_state_machine()
 
-                # Clear the start votes
+                # Clear the start and gamemode votes
                 globvars.start_votes.clear()
+                globvars.master_state.game_chooser.clear_votes()
                 
                 return
             

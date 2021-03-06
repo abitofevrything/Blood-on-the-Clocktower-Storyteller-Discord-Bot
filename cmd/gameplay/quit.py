@@ -40,6 +40,7 @@ class Quit(Gameplay, name = language["system"]["gameplay_cog"]):
         # The command user has joined; make them quit
         if globvars.master_state.pregame.is_joined(ctx.author.id):
             globvars.master_state.pregame.safe_remove_player(ctx.author.id)
+            globvars.master_state.game_chooser.remove_vote(ctx.author.id)
             botutils.update_state_machine()
             await ctx.send(quit_str.format(ctx.author.name, len(globvars.master_state.pregame)))
             # If you are the last player to leave, then cancel the lobby timeout loop

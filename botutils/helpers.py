@@ -89,3 +89,47 @@ def find_role_in_all(role_name):
                 elif role_name.lower() in role.name.lower() and not match:
                     match = role
     return match
+
+def get_gamemode_from_str(string):
+    """
+    Get the gamemode enum from a given string
+    If no gamemode is found, then None is returned
+    """
+
+    from botc.gamemodes.Gamemode import Gamemode
+
+    matches = {
+        Gamemode.trouble_brewing : [
+            "tb",
+            "troublebrewing",
+            "trouble brewing",
+            "t b"
+        ],
+        Gamemode.bad_moon_rising : [
+            "bmr",
+            "badmoonrising",
+            "b m r"
+        ],
+        Gamemode.sects_and_violets : [
+            "snv",
+            "sv",
+            "s&v",
+            "sectsandviolets",
+            "sectsnviolets",
+            "sects&violets",
+            "sects and violets",
+            "sects n violets",
+            "sects & violets",
+            "s n v",
+            "s v",
+            "s & v"
+        ]
+    }
+
+    string = string.lower()
+
+    for gm in matches:
+        if string in matches[gm]:
+            return gm
+
+    return None

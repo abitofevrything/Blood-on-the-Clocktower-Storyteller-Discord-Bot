@@ -4,15 +4,20 @@ import botutils
 import json
 import random
 import traceback
+from library.fancytext import fancy
 from discord.ext import commands
 from ._gameplay import Gameplay
 from botutils import lobby_timeout
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
+    vote_str = language["cmd"]["vote"]
+    gm_not_found_str = language["cmd"]["gm_not_found"]
 
 joined_str = language["cmd"]["joined"]
 error_str = language["system"]["error"]
+
+x_emoji = botutils.BotEmoji.cross
 
 emojis = [
     botutils.BotEmoji.char1,
@@ -45,7 +50,7 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
     )
     @commands.check(botutils.check_if_lobby)
     @commands.check(botutils.check_if_not_in_game)
-    async def join(self, ctx):
+    async def join(self, ctx, vote: str = None):
         """Join command"""
         
         import globvars
@@ -89,6 +94,23 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
             if len(globvars.master_state.pregame) == 1:
                 lobby_timeout.start()
 
+            # Handle votes
+            if vote:
+
+                gm = botutils.get_gamemode_from_str(vote)
+
+                # Bad string passed
+                if gm is None:
+                    await ctx.send(gm_not_found_str.format(x_emoji, ctx.author.mention, vote))
+                else:
+                    globvars.master_state.game_chooser.register_vote(ctx.author.id, gm)
+
+                    current_votes = globvars.master_state.game_chooser.votes
+
+                    votes_str = '\n'.join([f"{gm.value}: {current_votes[gm]}" for gm in current_votes])
+
+                    await ctx.send(vote_str.format(ctx.author.mention, fancy.bold(gm.value), votes_str))
+
         # Still give everyone the role just in case of discord sync issue
         await botutils.add_alive_role(ctx.author)
     
@@ -99,6 +121,9 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
+        elif isinstance(error, commands.BadArgument):
+            error = getattr(error, 'original', error)
+            await ctx.send(error)
         
         # For other cases we will want to see the error logged
         else:

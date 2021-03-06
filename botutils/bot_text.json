@@ -55,7 +55,11 @@
         "top_usage": "Argument must be one of `games`, `wins` or `winrate`.",
         "frestart": "{} {} Restarting",
         "frestart_confirm": "{} {} A game is currently in progress. If you still want to restart the bot, please use `!frestart --force`.",
-        "update_exitcode": ":x: Process exited with return code {}"
+        "update_exitcode": ":x: Process exited with return code {}",
+        "vote": "{} You have voted to play the **{}** gamemode. The current votes are:```css\n{}```",
+        "gm_not_found": "{} {} Gamemode `{}` not found.",
+        "not_joined": "{} {} You are not in the lobby.",
+        "vote_not_registered": "{} You have not voted to play any gamemode. The current votes are: ```css\n{}```"
 
     },
 
@@ -382,8 +386,19 @@
               "outputs": [],
               "weights": []
 
-        }
+        },
 
+        "vote" : {
+            "brief": "vote to play a gamemode",
+            "help": "vote to play a gamemode",
+            "description" : "[VOTE] command"
+        },
+
+        "votes" : {
+            "brief": "see the current vote tally",
+            "help": "see the current vote tally",
+            "description": "[VOTES] command"
+        }
     },
 
     "errors" : {

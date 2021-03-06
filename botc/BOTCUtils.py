@@ -439,6 +439,10 @@ class RoleNotFound(commands.BadArgument):
     """Error for when a role argument passed is not found"""
     pass
 
+class GamemodeNotFound(commands.BadArgument):
+    """Error for when a gamemode argument passed is not found"""
+    pass
+
 
 class PlayerConverter(commands.Converter):
     """Parse the player name input arguments from commands"""

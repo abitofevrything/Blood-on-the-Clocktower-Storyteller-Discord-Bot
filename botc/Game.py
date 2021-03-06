@@ -1247,7 +1247,7 @@ class Game(GameMeta):
         globvars.logging.info(f"Sitting Order {str(self._sitting_order)}")
 
     def __repr__(self):
-        return "Blood on the Clocktower"
+        return f"Blood on the Clocktower played using the {fancy.bold(self.gamemode.value)} edition"
 
     async def remove_left_guild_players(self):
         for member in self.member_obj_list:

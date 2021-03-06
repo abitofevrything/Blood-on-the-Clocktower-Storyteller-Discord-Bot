@@ -2,6 +2,7 @@
 
 import botutils
 import json
+from botutils import get_gamemode_from_str
 from discord.ext import commands
 from ._admin import Admin
 
@@ -23,10 +24,15 @@ class Fstart(Admin, name = language["system"]["admin_cog"]):
         description = language["doc"]["fstart"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
-    async def fstart(self, ctx):
+    async def fstart(self, ctx, gm: str = None):
         """Force start command"""
 
         import globvars
+
+        if gm:
+            parsed_gamemode = get_gamemode_from_str(gm)
+            if parsed_gamemode:
+                globvars.master_state.game_chooser.select_gamemode(parsed_gamemode)
 
         game = globvars.master_state.game_chooser.get_selected_game()
 
@@ -57,5 +63,6 @@ class Fstart(Admin, name = language["system"]["admin_cog"]):
         await globvars.master_state.game.start_game()
         botutils.update_state_machine()
 
-        # Clear the start votes
+        # Clear the start and gamemode votes
         globvars.start_votes.clear()
+        globvars.master_state.game_chooser.clear_votes()
