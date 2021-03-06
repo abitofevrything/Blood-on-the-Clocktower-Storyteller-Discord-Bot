@@ -580,6 +580,7 @@ class Character:
         from botc.gamemodes.badmoonrising._utils import BadMoonRising
         from BOTCUtils import BOTCUtils, BMRRolesOnly, bmr_roles_only_str, x_emoji, \
             PlayerNotFound, player_not_found, RoleNotFound # Being lazy and importing these from BOTCUtils
+        from botc import Player, Character
 
         def player_is_role(args):
             player = BOTCUtils.get_player_from_string(args[0])
@@ -599,7 +600,7 @@ class Character:
             
             player = BOTCUtils.get_player_from_string(args[0])
 
-            return player.is_dead() and role_matches
+            return player.is_apparenty_dead() and role_matches
 
         def player_is_alignement(args):
             player = BOTCUtils.get_player_from_string(args[0])
@@ -639,7 +640,127 @@ class Character:
 
             return role.name in roles
 
+        def n_outsiders_in_game(args):
+            num_outsiders = int(args[0])
+
+            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.outsider])
+
+            return num_outsiders == actual_num_outsiders
+
+        def n_townsfolk_in_game(args):
+            num_townsfolk = int(args[0])
+
+            actual_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.townsfolk])
+
+            return num_townsfolk == actual_num_townsfolk
+
+        def n_minions_in_game(args):
+            num_minions = int(args[0])
+
+            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.minion])
+
+            return num_minions == actual_num_minions
+
+        def n_demons_in_game(args):
+            num_demons = int(args[0])
+
+            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.demon])
+
+            return num_demons == actual_num_demons
         
+        def less_than_n_outsiders(args):
+            num_outsiders = int(args[0])
+
+            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.outsider])
+
+            return actual_num_outsiders < num_outsiders
+
+        def less_than_n_townsfolk(args):
+            num_townsfolk = int(args[0])
+
+            acutal_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.townsfolk])
+
+            return acutal_num_townsfolk < num_townsfolk
+
+        def less_than_n_minions(args):
+            num_minions = int(args[0])
+
+            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.minion])
+
+            return actual_num_minions < num_minions
+
+        def less_than_n_demons(args):
+            num_demons = int(args[0])
+
+            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.demon])
+
+            return actual_num_demons < num_demons
+        
+        def more_than_n_outsiders(args):
+            num_outsiders = int(args[0])
+
+            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.outsider])
+
+            return actual_num_outsiders > num_outsiders
+
+        def more_than_n_townsfolk(args):
+            num_townsfolk = int(args[0])
+
+            acutal_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.townsfolk])
+
+            return acutal_num_townsfolk > num_townsfolk
+
+        def more_than_n_minions(args):
+            num_minions = int(args[0])
+
+            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.minion])
+
+            return actual_num_minions > num_minions
+
+        def more_than_n_demons(args):
+            num_demons = int(args[0])
+
+            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.demon])
+
+            return actual_num_demons > num_demons
+
+        def neighbour_check(args):
+            arg1 = botutils.find_role_in_all(args[0])
+            if arg1 is None:
+                arg1 = BOTCUtils.get_player_from_string(args[0])
+                if arg1 is None:
+                    raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+            else:
+                if not isinstance(arg1, BadMoonRising):
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+
+            arg2 = botutils.find_role_in_all(args[1])
+            if arg2 is None:
+                arg2 = BOTCUtils.get_player_from_string(args[1])
+                if arg2 is None:
+                    raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+            else:
+                if not isinstance(arg2, BadMoonRising):
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji)) 
+
+            if isinstance(arg1, Player) and isinstance(arg2, Player):
+                return abs(globvars.master_state.game.sitting_order.index(arg1) - globvars.master_state.game.sitting_order.index(arg2)) == 1
+            elif isinstance(arg1, Character) and isinstance(arg2, Player):
+                i = globvars.master_state.game.sitting_order.index(arg2)
+                l = len(globvars.master_state.game.sitting_order)
+                return globvars.master_state.game.sitting_order[(i + 1) % l].role.social_self.name == arg1.name or globvars.master_state.game.sitting_order[(i - 1) % l].role.social_self.name == arg1.name
+            elif isinstance(arg1, Player) and isinstance(arg2, Character):
+                i = globvars.master_state.game.sitting_order.index(arg1)
+                l = len(globvars.master_state.game.sitting_order)
+                return globvars.master_state.game.sitting_order[(i + 1) % l].role.social_self.name == arg2.name or globvars.master_state.game.sitting_order[(i - 1) % l].role.social_self.name == arg2.name
+            else:
+                l = len(globvars.master_state.game.sitting_order)
+                so = globvars.master_state.game.sitting_order
+                for i in range(l + 1):
+                    if (so[i % l].role.social_self.name == arg1.name and so[(i + 1) % l].role.social_self.name == arg2.name) or (so[i % l].role.social_self.name == arg2.name and so[(i + 1) % l].role.social_self.name == arg1.name):
+                        return True
+                return False
+
         statement_checks = [
             # (match_checker, splitter, validator)
 
@@ -679,27 +800,42 @@ class Character:
             (r"(the |).+ is not in play", r"^(?!the ).+(?= is not in play)|(?<=the ).+(?= is not in play)", lambda args: not role_is_ingame(args)),
 
             # there (are|is) <n> outsider(s) in play
+            (r"there (is|are) [0-9]+ outsider(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= outsider)", n_outsiders_in_game),
             # there (are|is) <n> (town|townsfolk) in play
+            (r"there (is|are) [0-9]+ (town|townsfolk) (in game|in play|ingame|in-game)", r"[0-9]+ (?=(town |townsfolk ))", n_townsfolk_in_game),
             # there (are|is) <n> minion(s) in play
-            # there (are|is) <n> demon(s)
+            (r"there (is|are) [0-9]+ minion(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= minion)", n_minions_in_game),
+            # there (are|is) <n> demon(s) in play
+            (r"there (is|are) [0-9]+ demon(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= demon)", n_demons_in_game),
 
-            # <player> is neighbouring <player>
-            # <player> is <player>'s neighbour
-            # <player> has <player> as a neighbour
+            # there (are|is) less than <n> (town|townsfolk) in play
+            (r"there (is|are) less than [0-9]+ (town|townsfolk) (in game|in play|ingame|in-game)", r"[0-9]+(?= (town |townsfolk))", less_than_n_townsfolk),
+            # there (are|is) less than <n> outsider(s) in play
+            (r"there (is|are) less than [0-9]+ outsider(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= outsider)", less_than_n_outsiders),
+            # there (are|is) less than <n> minion(s) in play
+            (r"there (is|are) less than [0-9]+ minion(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= minion)", less_than_n_minions),
+            # there (are|is) less than <n> demon(s) in play
+            (r"there (is|are) less than [0-9]+ demon(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= demon)", less_than_n_demons),
 
-            # <player> has <player> as an alive neighbour
+            # there (are|is) more than <n> (town|townsfolk) in play
+            (r"there (is|are) more than [0-9]+ (town|townsfolk) (in game|in play|ingame|in-game)", r"[0-9]+(?= (town |townsfolk))", more_than_n_townsfolk),
+            # there (are|is) more than <n> outsider(s) in play
+            (r"there (is|are) more than [0-9]+ outsider(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= outsider)", more_than_n_outsiders),
+            # there (are|is) more than <n> minion(s) in play
+            (r"there (is|are) more than [0-9]+ minion(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= minion)", more_than_n_minions),
+            # there (are|is) more than <n> demon(s) in play
+            (r"there (is|are) more than [0-9]+ demon(s|) (in game|in play|ingame|in-game)", r"[0-9]+(?= demon)", more_than_n_demons),
 
-            # <player> is neighbouring (the) <role>
-            # <player> is (the) <role>'s neighbour
-            # <player> has (the) <role> as a neighbour
+            # (the) <player/role> is neighbouring (the) <player/role>
+            # (the) <player/role> is (the) <player/role>'s neighbour
+            # (the) <player/role> has (the) <player/role> as a neighbour
 
-            # (the) <role> is neighbouring (the) <role>
-            # (the) <role> is (the) <role>'s neighboir
-            # (the) <role> has (the) <role> as a neighbour
-
-            # (the) <role> is neighbouring <player>
-            # (the) <role> is <player>'s neighbour
-            # (the) <role> has <player> as a neighbour
+            (
+                r"(.+ is neighbouring .+)|(.+ is .+'s neighbour)|(.+ has .+ as a neighbour)",
+                # Very long regex, but it handles all possible neighbour configs mentioned above
+                r"^(?!the).+(?= (is neighbouring |is |has ))|(?<=the ).+(?= (is neighbouring |is |has ))|(?<=is neighbouring )(?!the).+|(?<=is neighbouring the ).+|(?<=is )(?!the ).+(?='s neighbour)|(?<=is the ).+(?='s neighbour)|(?<=has )(?!the).+(?= as a neighbour)|(?<=has the ).+(?= as a neighbour)",
+                neighbour_check
+            )
 
             # (the) <role> whispered today
             # (the) <role> has whispered today
@@ -740,6 +876,8 @@ class Character:
             # (the) <role>'s nickname contains <c>
 
             # (the) <role> is (dead|alive)
+
+            # there are <n> player alive
 
         ]
 
