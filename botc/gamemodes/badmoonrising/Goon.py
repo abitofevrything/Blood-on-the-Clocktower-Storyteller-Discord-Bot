@@ -1,14 +1,14 @@
 """Contains the Goon Character class"""
 
 import json
-from botc import Character, Outsider, NonRecurringAction
+from botc import Character, Outsider, RecurringAction, Inventory, Flags
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.goon.value.lower()]
 
 
-class Goon(Outsider, BadMoonRising, Character, NonRecurringAction): # Not sure what to put here, should it be RecurringAction? Probably will depend on implementation
+class Goon(Outsider, BadMoonRising, Character, RecurringAction):
     """Goon: Each night, the 1st player to choose you with their ability is drunk until dusk. 
     You become their alignment.
     """
@@ -33,5 +33,49 @@ class Goon(Outsider, BadMoonRising, Character, NonRecurringAction): # Not sure w
         self._role_enum = BMRRole.goon
         self._emoji = "<:bmrgoon:781151556330192966>"
 
+        self.registered_as_good = True
+
+        self.inventory = Inventory(
+            Flags.goon_alignement_take
+        )
+
     def create_n1_instr_str(self):
-        return "not_implemented"
+        """Create the instruction field on the opening dm card"""
+
+        # First line is the character instruction string
+        msg = f"{self.emoji} {self.instruction}"
+        addendum = character_text["n1_addendum"]
+        
+        # Some characters have a line of addendum
+        if addendum:
+            with open("botutils/bot_text.json") as json_file:
+                bot_text = json.load(json_file)
+                scroll_emoji = bot_text["esthetics"]["scroll"]
+            msg += f"\n{scroll_emoji} {addendum}"
+            
+        return msg
+
+    def is_good(self):
+        return self.registered_as_good
+
+    def is_evil(self):
+        return not self.registered_as_good
+
+    async def process_dawn_ability(self, player):
+        self.inventory.add_item_to_inventory(Flags.goon_alignement_take)
+
+    async def on_being_targeted(self, target_player, action):
+        print(f"Goon: targeted action {action}")
+
+        if self.inventory.has_item_in_inventory(Flags.goon_alignement_take):
+            self.inventory.remove_item_from_inventory(Flags.goon_alignement_take)
+
+            self.registered_as_good = action.source_player.role.true_self.is_good()
+
+            print(f"Goon: registered as good? {self.registered_as_good}")
+
+    async def send_n1_end_message(self, recipient):
+        pass
+
+    async def send_regular_night_start_dm(self, recipient):
+        pass

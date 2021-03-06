@@ -433,6 +433,13 @@ class Character:
             pass
         else:
             globvars.master_state.game.night_deaths.append(killed_player)
+
+    async def on_being_targeted(self, targeted_player, action):
+        """Function that runs when the player is the target of another player's action
+        Default behaviour is to do nothing.
+        Override by child classes and / or other classes inherited by child classes
+        """
+        pass
     
     # -------------------- Character ABILITIES --------------------
 

@@ -688,16 +688,48 @@ class Game(GameMeta):
 
             ]
 
-            for character_enum in order:
-                list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
-                for character in list_of_characters:
-                    await character.role.ego_self.process_dawn_ability(character)
+        elif self.gamemode == Gamemode.bad_moon_rising:
+            
+            from botc.gamemodes.badmoonrising._utils import BMRRole
 
-        elif self.gamemode == Gamemode.trouble_brewing:
-            pass
+            order = [
+
+                BMRRole.goon
+
+            ]
 
         elif self.gamemode == Gamemode.sects_and_violets:
-            pass
+
+            from botc.gamemodes.sectsandviolets._utils import SnVRole
+
+            order = [
+
+            ]
+
+        else: 
+            raise GameError("Gamemode is not one of available BoTC editions.")
+
+
+        for character_enum in order:
+            list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
+            for character in list_of_characters:
+                
+                from botc import Character
+
+                action = character.action_grid.retrieve_an_action(self._chrono.phase_id)
+                if action:
+                    for target in action.target_player:
+                        if isinstance(target, Player):
+                            await target.role.true_self.on_being_targeted(target, action)
+                        elif isinstance(target, Character):
+                            target_players = BOTCUtils.get_players_from_role_name(target._role_enum)
+                            for player in target_players:
+                                await player.role.true_self.on_being_targeted(player, action)
+                        elif isinstance(target, tuple):
+                            # Gambler
+                            await target[0].role.true_self.on_being_targeted(target[0], action)
+
+                await character.role.ego_self.process_dawn_ability(character)
 
     async def compute_night_ability_interactions(self):
         """
@@ -903,11 +935,28 @@ class Game(GameMeta):
         else:
             raise GameError("Gamemode is not one of available BoTC editions.")
 
+        from .Character import Character
+
         # Night 1 order
         if self._chrono.is_night_1():
             for character_enum in night_1_order:
                 list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
                 for character in list_of_characters:
+
+                    action = character.action_grid.retrieve_an_action(self._chrono.phase_id)
+                    if action:
+                        for target in action.target_player:
+                            if isinstance(target, Player):
+                                await target.role.true_self.on_being_targeted(target, action)
+                            elif isinstance(target, Character):
+                                target_players = BOTCUtils.get_players_from_role_name(target._role_enum)
+                                for player in target_players:
+                                    await player.role.true_self.on_being_targeted(player, action)
+                            elif isinstance(target, tuple):
+                                # Gambler
+                                await target[0].role.true_self.on_being_targeted(target[0], action)
+
+
                     await character.role.ego_self.process_night_ability(character)
 
         # Regular night order
@@ -915,6 +964,20 @@ class Game(GameMeta):
             for character_enum in night_regular_order:
                 list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
                 for character in list_of_characters:
+
+                    action = character.action_grid.retrieve_an_action(self._chrono.phase_id)
+                    if action:
+                        for target in action.target_player:
+                            if isinstance(target, Player):
+                                await target.role.true_self.on_being_targeted(target, action)
+                            elif isinstance(target, Character):
+                                target_players = BOTCUtils.get_players_from_role_name(target._role_enum)
+                                for player in target_players:
+                                    await player.role.true_self.on_being_targeted(player, action)
+                            elif isinstance(target, tuple):
+                                # Gambler
+                                await target[0].role.true_self.on_being_targeted(target[0], action)
+
                     await character.role.ego_self.process_night_ability(character)
 
     def has_received_all_expected_dawn_actions(self):
