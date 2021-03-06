@@ -92,7 +92,7 @@ class Courtier(Townsfolk, BadMoonRising, Character, NonRecurringAction):
 
         possible_poisoned_players = BOTCUtils.get_players_from_role_name(targets[0]._role_enum)
 
-        # Courtier can poison non in-game characters, but we only process the poison if the characetr is in game
+        # Courtier can poison non in-game characters, but we only process the poison if the character is in game
         if len(possible_poisoned_players) != 0:
             poisoned_player = possible_poisoned_players[0]
 

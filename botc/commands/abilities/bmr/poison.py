@@ -8,6 +8,7 @@ from discord.ext import commands
 from botc import check_if_is_player, check_if_is_night, check_if_dm, RoleCannotUseCommand, \
     check_if_player_really_alive, check_if_can_poison, RoleConverter, AbilityForbidden, \
     RoleNotFound, BOTCUtils, AliveOnlyCommand, NotNight, NotDMChannel
+from BOTCUtils import Targets
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
@@ -53,7 +54,7 @@ class Poison(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         """
 
         player = BOTCUtils.get_player_from_id(ctx.author.id)
-        await player.role.ego_self.register_poison(player, [poisoned_character])
+        await player.role.ego_self.register_poison(player, Targets([poisoned_character]))
 
     @poison.error
     async def poison_error(self, ctx, error):
