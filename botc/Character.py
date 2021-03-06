@@ -8,11 +8,11 @@ import configparser
 from .Category import Category
 from .Team import Team
 from .errors import AlreadyDead
-from .BOTCUtils import LorePicker
+from .BOTCUtils import LorePicker, InvalidGossipStatement, GameLogic
 from .flag_inventory import Inventory, Flags
 from .abilities import ActionTypes, Action
-from .BOTCUtils import GameLogic
 from .status import StatusList
+from botutils import BotEmoji
 import globvars
 
 Preferences = configparser.ConfigParser()
@@ -41,7 +41,9 @@ with open('botc/game_text.json') as json_file:
     role_dm = strings["gameplay"]["role_dm"]
     welcome_dm = strings["gameplay"]["welcome_dm"]
     blocked = strings["gameplay"]["blocked"]
+    statement_unrecognized = strings["cmd_warning"]["statement_unrecognized"]
 
+x_emoji = BotEmoji.cross
 
 class Character:
     """Character class
@@ -565,4 +567,192 @@ class Character:
 
     async def exec_execute(self, player, targets):
         """Execute command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_gossip(self, player, statement):
+        """Gossip command.
+        Returns True if the statement is true, False otherwise.
+        Raises an exception if the statement could not be parsed.
+        """
+        statement = statement.lower()
+
+        import botutils
+        from botc.gamemodes.badmoonrising._utils import BadMoonRising
+        from BOTCUtils import BOTCUtils, BMRRolesOnly, bmr_roles_only_str, x_emoji, \
+            PlayerNotFound, player_not_found, RoleNotFound # Being lazy and importing these from BOTCUtils
+
+        def player_is_role(args):
+            player = BOTCUtils.get_player_from_string(args[0])
+            role = botutils.find_role_in_all(args[1])
+
+            if not isinstance(role, BadMoonRising):
+                raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            if player is None:
+                raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+            if role is None:
+                raise RoleNotFound(f"Role {args[1]} not found.")
+
+            return player.role.true_self.name == role.name
+
+        def player_was_role(args):
+            role_matches = player_is_role(args)
+            
+            player = BOTCUtils.get_player_from_string(args[0])
+
+            return player.is_dead() and role_matches
+
+        def player_is_alignement(args):
+            player = BOTCUtils.get_player_from_string(args[0])
+            guess_good = args[0] == "true"
+
+            if player is None:
+                raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+
+            return guess_good == player.role.true_self.is_good()
+
+        def player_is_category(args):
+            player = BOTCUtils.get_player_from_string(args[0])
+
+            if args[1] == "town" or args[1] == "townsfolk":
+                guess_category = Category.townsfolk
+            elif args[1] == "outsider":
+                guess_category = Category.outsider
+            elif args[1] == "minion":
+                guess_category = Category.minion
+            else:
+                guess_category = Category.demon
+
+            if player is None:
+                raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+
+            return player.role.true_self.category == guess_category
+        
+        def role_is_ingame(args):
+            role = botutils.find_role_in_all(args[0])
+
+            if not isinstance(role, BadMoonRising):
+                raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            elif role is None:
+                raise RoleNotFound(f"Role {args[0]} not found.")
+
+            roles = [player.role.true_self.name for player in globvars.master_state.game.sitting_order]
+
+            return role.name in roles
+
+        
+        statement_checks = [
+            # (match_checker, splitter, validator)
+
+            # <player> is the <role>
+            (r".+ is the .+", r".+(?= is the)|(?<=is the ).+", player_is_role),
+            # <player> is <role>
+            (r".+ is .+", r".+(?= is)|(?<=is ).+", player_is_role),
+            # <player> was <role>
+            (r".+ was .+", r".+(?= was)|(?<=was ).+", player_was_role),
+
+            # <player> is <alignement>
+            (r".+ is (good|evil)", r".+(?= is )|(?<= is ).+", player_is_alignement),
+
+            # <player> is <category>
+            (r".+ is (town|townsfolk|outsider|minion|demon)", r".+(?= is )|(?<= is ).+", player_is_category),
+            # <player> is an <category>
+            (r".+ is an (town|townsfolk|outsider|minion|demon)", r".+(?= is an )|(?<= is an ).+", player_is_category),
+            # <player> is a <category>
+            (r".+ is a (town|townsfolk|outsider|minion|demon)", r".+(?= is a )|(?<= is a ).+", player_is_category),
+
+            # (the) <role> is in game
+            (r"(the |).+ is in game", r"^(?!the ).+(?= is in game)|(?<=the ).+(?= is in game)", role_is_ingame),
+            # (the) <role> is ingame
+            (r"(the |).+ is ingame", r"^(?!the ).+(?= is ingame)|(?<=the ).+(?= is ingame)", role_is_ingame),
+            # (the) <role> is in-game
+            (r"(the |).+ is in-game", r"^(?!the ).+(?= is in-game)|(?<=the ).+(?= is in-game)", role_is_ingame),
+            # (the) <role> is in play
+            (r"(the |).+ is in play", r"^(?!the ).+(?= is in play)|(?<=the ).+(?= is in play)", role_is_ingame),
+
+            # (the) <role> is not in game
+            (r"(the |).+ is not in game", r"^(?!the ).+(?= is not in game)|(?<=the ).+(?= is not in game)", lambda args: not role_is_ingame(args)),
+            # (the) <role> is not ingame
+            (r"(the |).+ is not ingame", r"^(?!the ).+(?= is not ingame)|(?<=the ).+(?= is not ingame)", lambda args: not role_is_ingame(args)),
+            # (the) <role> is not in-game
+            (r"(the |).+ is not in-game", r"^(?!the ).+(?= is not in-game)|(?<=the ).+(?= is not in-game)", lambda args: not role_is_ingame(args)),
+            # (the) <role> is not in play
+            (r"(the |).+ is not in play", r"^(?!the ).+(?= is not in play)|(?<=the ).+(?= is not in play)", lambda args: not role_is_ingame(args)),
+
+            # there (are|is) <n> outsider(s) in play
+            # there (are|is) <n> (town|townsfolk) in play
+            # there (are|is) <n> minion(s) in play
+            # there (are|is) <n> demon(s)
+
+            # <player> is neighbouring <player>
+            # <player> is <player>'s neighbour
+            # <player> has <player> as a neighbour
+
+            # <player> has <player> as an alive neighbour
+
+            # <player> is neighbouring (the) <role>
+            # <player> is (the) <role>'s neighbour
+            # <player> has (the) <role> as a neighbour
+
+            # (the) <role> is neighbouring (the) <role>
+            # (the) <role> is (the) <role>'s neighboir
+            # (the) <role> has (the) <role> as a neighbour
+
+            # (the) <role> is neighbouring <player>
+            # (the) <role> is <player>'s neighbour
+            # (the) <role> has <player> as a neighbour
+
+            # (the) <role> whispered today
+            # (the) <role> has whispered today
+
+            # (the) <role> has whispered
+
+            # (the) <role> has whispered to <player> today
+            # (the) <role> whispered to <player> today
+
+            # (the) <role> has whispered to <player>
+
+            # (the) <role> has whispered to (the) <role> today
+            # (the) <role> whispered to (the) <role> today
+
+            # (the) <role> has whispered to (the) <role>
+
+            # <player> has whispered to (the) <role> today
+            # <player> whispered to (the) <role> today
+
+            # <player> has whispered to (the) <role>
+
+            # <player> has whispered to <player> today
+            # <player> whispered to <player> today
+
+            # <player> has whispered to <player>
+
+            # (the) <role> has used their ability tonight
+            # (the) <role> has used their ability
+            # (the) <role> used their ability tonight
+            # (the) <role> used their ability
+
+            # <player> has used their ability tonight
+            # <player> has used their ability
+            # <player> used their ability tonight
+            # <player> used their ability
+
+            # (the) <role>'s name contains <c>
+            # (the) <role>'s nickname contains <c>
+
+            # (the) <role> is (dead|alive)
+
+        ]
+
+        import re
+
+        for check in statement_checks:
+            match_checker = re.compile(check[0], re.IGNORECASE)
+            if bool(match_checker.fullmatch(statement)):
+                splitter = re.compile(check[1], re.IGNORECASE)
+                return check[2](splitter.findall(statement))
+
+        raise InvalidGossipStatement(statement_unrecognized.format(player.user.mention, x_emoji))
+
+    async def exec_gossip(self, player, statement_truth):
+        """Gossip command. Override by child classes"""
         raise NotImplementedError

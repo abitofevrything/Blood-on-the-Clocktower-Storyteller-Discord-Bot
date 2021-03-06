@@ -279,6 +279,23 @@ def check_if_can_execute(ctx):
     else:
         raise RoleCannotUseCommand("Cannot use execute command (BoTC)")
 
+def can_use_gossip(user_id):
+    """Return true if the user can use the command "gossip"
+    Characters that can gossip:
+    - Everyone (to allow for fakeclaiming)
+    """
+    return True
+
+def check_if_can_gossip(ctx):
+    """Return true if the user can use the command "gossip"
+    Characters that can gossip:
+    - Everyone (to allow for fakeclaiming)
+    """
+    if can_use_gossip(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use gossip command (BoTC)")
+
 def check_if_is_night(ctx):
     """Check if the game is in night phase"""
     import globvars

@@ -283,6 +283,10 @@ class NoSameFollowingTargets(AbilityForbidden):
     """Error for when a role that connot choose the same target two times in a row does so"""
     pass
 
+class InvalidGossipStatement(AbilityForbidden):
+    """Error for when the gossip submits an invalid or non-recognized statement"""
+    pass
+
 class GameLogic:
     """Game logic decorators to be used on ability methods in character classes"""
 
