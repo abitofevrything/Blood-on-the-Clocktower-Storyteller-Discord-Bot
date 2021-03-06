@@ -51,14 +51,10 @@ class Guess(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         characters: exorcist
         """
 
-        print(f"Guess command : arguments are {guess}")
-
         split = guess.split(' is ')
         if len(split) != 2:
             await ctx.author.send(documentation["cmd_warnings"]["guess_invalid_syntax"].format(ctx.author.mention, x_emoji))
             return
-
-        print(f"Guess command : valid syntax pt 1")
 
         target_players = await PlayerParser().convert(ctx, split[0])
         target_role = await RoleConverter().convert(ctx, split[1])
@@ -68,8 +64,6 @@ class Guess(commands.Cog, name = documentation["misc"]["abilities_cog"]):
             return
 
         target_player = target_players[0]
-
-        print(f"Guess command : got {target_player} as {target_role}")
 
         player = BOTCUtils.get_player_from_id(ctx.author.id)
         await player.role.ego_self.register_guess(player, [(target_player, target_role)])
