@@ -71,9 +71,9 @@
         "description" : "The Gossip deliberately speaks lies in the hope of uncovering the truth.\n- Each day, the Gossip may make a public statement. If this statement is true, then the Storyteller must kill a player that night. If it is false, then no players die due to the Gossip.\n- Mumbled words, whispers, ambiguous statements, or statements that someone cannot hear don't count. Like with the Slayer’s ability, the Storyteller and every player must be able to hear and understand the Gossip and be aware that the Gossip is using their ability in order for the Storyteller to judge what happens next.\n- If the Gossip made a true statement during the day while drunk or poisoned, but is sober and healthy when their ability triggers that night, the Storyteller still kills a player.\n- If a player dies due to the Gossip ability, the Storyteller chooses a living player that can die tonight.",
         "examples" : "- During the day, the Gossip says, 'I am the Gossip. My public statement is: The Demon is wearing a hat.' The Demon is not wearing a hat. That night, nobody dies due to the Gossip’s ability.\n- The Gossip neighbors a good Traveler and the Pacifist. During the day, the drunk Gossip says, 'Both my neighbors are good.' At dusk, the drunk Gossip becomes sober. That night, the Chambermaid dies.\n- During the day, the Gossip makes a true statement. That night, the Gossip is killed by the Demon. They lose their ability, so their statement does not kill anyone tonight.",
         "instruction" : "Each day, you may make a public statement. Tonight, if it was true, a player dies.",
-        "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "n1_addendum" : "You act during the day.",
+        "action" : "Use `gossip <statement>` in public lobby.",
+        "feedback" : "You have chosen to state that **{}** today.",
         "brief" : "The Gossip deliberately speaks lies in the hope of uncovering the truth."
     },
 

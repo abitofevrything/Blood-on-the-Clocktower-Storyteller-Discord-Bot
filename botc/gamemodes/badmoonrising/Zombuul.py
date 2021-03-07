@@ -5,7 +5,7 @@ import json
 import random
 import botutils
 from botc import Character, Demon, Townsfolk, Outsider, BOTCUtils, ActionTypes, \
-    GameLogic, Action, StatusList, RecurringAction
+    GameLogic, Action, StatusList, RecurringAction, Inventory, Flags
 from ._utils import BadMoonRising, BMRRole
 import globvars
 
@@ -65,6 +65,10 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
 
         self._role_enum = BMRRole.zombuul
         self._emoji = "<:bmrzombuul:781152054910517291>"
+
+        self.inventory = Inventory(
+            Flags.zombuul_unique_death_escape
+        )
     
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""

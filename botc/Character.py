@@ -8,7 +8,7 @@ import configparser
 from .Category import Category
 from .Team import Team
 from .errors import AlreadyDead
-from .BOTCUtils import LorePicker, InvalidGossipStatement, GameLogic
+from .BOTCUtils import LorePicker, InvalidGossipStatement, GameLogic, validate_statement
 from .flag_inventory import Inventory, Flags
 from .abilities import ActionTypes, Action
 from .status import StatusList
@@ -41,6 +41,10 @@ with open('botc/game_text.json') as json_file:
     role_dm = strings["gameplay"]["role_dm"]
     welcome_dm = strings["gameplay"]["welcome_dm"]
     blocked = strings["gameplay"]["blocked"]
+
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
+    character_texts = json.load(json_file)
+    gossip_feedback = character_texts["gossip"]["feedback"]
 
 x_emoji = BotEmoji.cross
 
@@ -569,14 +573,12 @@ class Character:
         raise NotImplementedError
 
     async def register_gossip(self, player, statement):
-        """Gossip command.
-        Returns True if the statement is true, False otherwise.
-        Raises an exception if the statement could not be parsed.
-        """
-
-        import BOTCUtils
+        """Gossip command. Override by child classes."""
         
-        return BOTCUtils.validate_statement(player, statement)
+        # Validate the statement to still get the error messages
+        validate_statement(player, statement)
+
+        await botutils.send_lobby(gossip_feedback.format(statement))
 
     async def exec_gossip(self, player, statement_truth):
         """Gossip command. Override by child classes"""

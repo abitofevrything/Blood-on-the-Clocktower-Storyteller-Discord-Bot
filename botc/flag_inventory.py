@@ -13,6 +13,7 @@ class Flags(enum.Enum):
     professor_unique_resurrect = "professor_unique_resurrect"
     fool_death_evasion = "fool_death_evasion"
     goon_alignement_take = "goon_alignement_take"
+    zombuul_unique_death_escape = "zombuul_unique_death_escape"
 
 
 class Inventory:

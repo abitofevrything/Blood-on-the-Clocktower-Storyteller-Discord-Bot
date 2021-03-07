@@ -7,7 +7,7 @@ import json
 from discord.ext import commands
 from botc import check_if_is_player, check_if_is_day, check_if_lobby, RoleCannotUseCommand, \
     check_if_player_really_alive, check_if_can_gossip, PlayerParser, AbilityForbidden, \
-    NotAPlayer, BOTCUtils, AliveOnlyCommand, NotNight, NotDMChannel
+    NotAPlayer, BOTCUtils, AliveOnlyCommand, NotDay, NotDMChannel
 
 with open('botutils/bot_text.json') as json_file: 
     language = json.load(json_file)
@@ -49,8 +49,9 @@ class Gossip(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         usage: gossip <statement>
         characters: gossip
         """
+        
         player = BOTCUtils.get_player_from_id(ctx.author.id)
-        await player.role.ego_self.register_gossip(player, statement)
+        await player.role.ego_self.register_gossip(player, ctx.message.content[len(ctx.prefix) + len(ctx.command.name) + 1:])
 
     @gossip.error
     async def gossip_error(self, ctx, error):
@@ -73,10 +74,10 @@ class Gossip(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         # Incorrect argument -> commands.BadArgument
         elif isinstance(error, commands.BadArgument):
             return
-        # Incorrect phase -> NotNight
-        elif isinstance(error, NotNight):
+        # Incorrect phase -> NotDay
+        elif isinstance(error, NotDay):
             try:
-                await ctx.author.send(documentation["cmd_warnings"]["night_only"].format(ctx.author.mention, emoji))
+                await ctx.author.send(documentation["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
             except discord.Forbidden:
                 pass
         # Player not alive -> AliveOnlyCommand
