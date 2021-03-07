@@ -327,7 +327,7 @@
         "bmr_roles_only" : "{} {} You cannot choose roles from other editions.",
         "no_same_following_targets" : "{} {} You cannot choose the same target two times in a row.",
         "guess_invalid_syntax" : "{} {} Invalid syntax. Correct syntax is `guess <player> is <character>`",
-        "statement_unrecognized" : "{} {} Statement not recognized. Run `gossip statements` for a list of availible templates."
+        "statement_unrecognized" : "{} {} Statement not recognized. Run `gossip statements` for a list of example statements."
     },
 
     "doc" : {
