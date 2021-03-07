@@ -445,6 +445,12 @@
             "description" : "[EXECUTE] command - BOTC"
         },
 
+        "gossip" : {
+            "brief" : "state a gossip statement",
+            "help" : "",
+            "description" : "[GOSSIP] command - BOTC"
+        },
+
         "nominate" : {
             "brief" : "nominate a player for execution",
             "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in the public game text channel.",
