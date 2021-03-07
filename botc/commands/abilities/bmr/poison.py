@@ -7,8 +7,7 @@ import json
 from discord.ext import commands
 from botc import check_if_is_player, check_if_is_night, check_if_dm, RoleCannotUseCommand, \
     check_if_player_really_alive, check_if_can_poison, RoleConverter, AbilityForbidden, \
-    RoleNotFound, BOTCUtils, AliveOnlyCommand, NotNight, NotDMChannel
-from BOTCUtils import Targets
+    RoleNotFound, BOTCUtils, AliveOnlyCommand, NotNight, NotDMChannel, Targets
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
