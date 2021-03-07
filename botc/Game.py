@@ -29,6 +29,7 @@ from .gamemodes.sectsandviolets._utils import SectsAndViolets
 from .gamemodes.Gamemode import Gamemode
 from .RoleGuide import RoleGuide
 from .gameloops import master_game_loop, nomination_loop, base_day_loop, debate_timer
+from .abilities import _GrowingList
 from models import GameMeta
 from botc import StatusList, Team
 
@@ -219,6 +220,7 @@ class Game(GameMeta):
         self.gameloop = master_game_loop
         self.winners = None  # botc.Team object
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
+        self._whispers = _GrowingList()
 
         if DISABLE_DMS:
             # Also don't count game in win rates if dms are disabled.
@@ -271,6 +273,10 @@ class Game(GameMeta):
     @property
     def setup(self):
         return self._setup
+
+    @property
+    def whispers(self):
+        return self._whispers
 
     def is_idle(self):
         return self.current_phase == Phase.idle
@@ -1327,3 +1333,6 @@ class Game(GameMeta):
 
                         break
         await self.check_winning_conditions()
+
+    def register_whisper(whisper):
+        self._whispers.append(whisper)

@@ -6,9 +6,11 @@ import discord
 import json
 import asyncio
 import configparser
+import globvars
 from discord.ext import commands
 from botc import check_if_is_player, check_if_dm, check_if_is_day, PlayerConverter, \
-    NotDMChannel, NotAPlayer, NotDay, WhisperConverter, WhisperTooLong, BOTCUtils
+    NotDMChannel, NotAPlayer, NotDay, WhisperConverter, WhisperTooLong, BOTCUtils, \
+    PlayerWhisper
 from library import display_time
 
 Config = configparser.ConfigParser()
@@ -86,6 +88,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             msg = recipient_blocked.format(botutils.BotEmoji.warning_sign)
             await ctx.send(msg)
         else:
+            globvars.master_state.game.register_whisper(PlayerWhisper(player, recipient, content, globvars.master_state.game._chrono.phase_id))
             msg = to_str.format(
                 botutils.BotEmoji.whisper,
                 recipient.game_nametag,

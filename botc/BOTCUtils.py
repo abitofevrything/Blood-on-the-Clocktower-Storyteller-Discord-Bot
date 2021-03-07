@@ -50,6 +50,16 @@ class Targets(list):
     def __getitem__(self, index):
         return list.__getitem__(self.target_list, index)
 
+class PlayerWhisper():
+    """Class to represent a player whisper"""
+
+    def __init__(self, source_player, target_player, message, phase_id):
+        self.source_player = source_player
+        self.target_player = target_player
+        self.message = message
+        self.phase_id = phase_id
+
+
 
 def get_number_image(nb):
     """Get a random bloodied number image corresponding to the input integer"""

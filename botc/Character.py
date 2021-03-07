@@ -593,7 +593,7 @@ class Character:
             if role is None:
                 raise RoleNotFound(f"Role {args[1]} not found.")
 
-            return player.role.true_self.name == role.name
+            return player.role.social_self.name == role.name
 
         def player_was_role(args):
             role_matches = player_is_role(args)
@@ -609,7 +609,7 @@ class Character:
             if player is None:
                 raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-            return guess_good == player.role.true_self.is_good()
+            return guess_good == player.role.social_self.is_good()
 
         def player_is_category(args):
             player = BOTCUtils.get_player_from_string(args[0])
@@ -626,7 +626,7 @@ class Character:
             if player is None:
                 raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-            return player.role.true_self.category == guess_category
+            return player.role.social_self.category == guess_category
         
         def role_is_ingame(args):
             role = botutils.find_role_in_all(args[0])
@@ -636,91 +636,91 @@ class Character:
             elif role is None:
                 raise RoleNotFound(f"Role {args[0]} not found.")
 
-            roles = [player.role.true_self.name for player in globvars.master_state.game.sitting_order]
+            roles = [player.role.social_self.name for player in globvars.master_state.game.sitting_order]
 
             return role.name in roles
 
         def n_outsiders_in_game(args):
             num_outsiders = int(args[0])
 
-            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.outsider])
+            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.outsider])
 
             return num_outsiders == actual_num_outsiders
 
         def n_townsfolk_in_game(args):
             num_townsfolk = int(args[0])
 
-            actual_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.townsfolk])
+            actual_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.social.category == Category.townsfolk])
 
             return num_townsfolk == actual_num_townsfolk
 
         def n_minions_in_game(args):
             num_minions = int(args[0])
 
-            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.minion])
+            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.minion])
 
             return num_minions == actual_num_minions
 
         def n_demons_in_game(args):
             num_demons = int(args[0])
 
-            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.demon])
+            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.demon])
 
             return num_demons == actual_num_demons
         
         def less_than_n_outsiders(args):
             num_outsiders = int(args[0])
 
-            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.outsider])
+            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.outsider])
 
             return actual_num_outsiders < num_outsiders
 
         def less_than_n_townsfolk(args):
             num_townsfolk = int(args[0])
 
-            acutal_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.townsfolk])
+            acutal_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.townsfolk])
 
             return acutal_num_townsfolk < num_townsfolk
 
         def less_than_n_minions(args):
             num_minions = int(args[0])
 
-            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.minion])
+            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.minion])
 
             return actual_num_minions < num_minions
 
         def less_than_n_demons(args):
             num_demons = int(args[0])
 
-            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.demon])
+            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.demon])
 
             return actual_num_demons < num_demons
         
         def more_than_n_outsiders(args):
             num_outsiders = int(args[0])
 
-            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.outsider])
+            actual_num_outsiders = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.outsider])
 
             return actual_num_outsiders > num_outsiders
 
         def more_than_n_townsfolk(args):
             num_townsfolk = int(args[0])
 
-            acutal_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.townsfolk])
+            acutal_num_townsfolk = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.townsfolk])
 
             return acutal_num_townsfolk > num_townsfolk
 
         def more_than_n_minions(args):
             num_minions = int(args[0])
 
-            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.minion])
+            actual_num_minions = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.minion])
 
             return actual_num_minions > num_minions
 
         def more_than_n_demons(args):
             num_demons = int(args[0])
 
-            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.true_self.category == Category.demon])
+            actual_num_demons = len([p for p in globvars.master_state.game.sitting_order is p.role.social_self.category == Category.demon])
 
             return actual_num_demons > num_demons
 
@@ -761,6 +761,99 @@ class Character:
                         return True
                 return False
 
+        def today_whispered(args):
+            game = globvars.master_state.game
+            day_phase_id = game._chrono.phase_id % 3
+            today_whispers = [whisper for whisper in game.whispers if whisper.phase_id == day_phase_id]
+
+            arg = botutils.find_role_in_all(args[0])
+            if arg is not None:
+                if not isinstance(arg, BadMoonRising):
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            else:
+                arg = BOTCUtils.get_player_from_string(args[0])
+                if arg is None:
+                    raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+            
+            if isinstance(arg, Character):
+                for whisper in today_whispers:
+                    if whisper.source_player.role.social_self.name == arg.name:
+                        return True
+                return False
+            else:
+                for whisper in today_whispers:
+                    if whisper.source_player.user.id == arg.user.id:
+                        return True
+                return False
+
+        def whispered(args):
+            game = globvars.master_state.game
+
+            arg = botutils.find_role_in_all(args[0])
+            if arg is not None:
+                if not isinstance(arg, BadMoonRising):
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            else:
+                arg = BOTCUtils.get_player_from_string(args[0])
+                if arg is None:
+                    raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+            
+            if isinstance(arg, Character):
+                for whisper in game.whisperes:
+                    if whisper.source_player.role.social_self.name == arg.name:
+                        return True
+                return False
+            else:
+                for whisper in game.whispers:
+                    if whisper.source_player.user.id == arg.user.id:
+                        return True
+                return False
+
+        def whispered_to_today(args):
+            game = globvars.master_state.game
+            day_phase_id = game._chrono.phase_id % 3
+            today_whispers = [whisper for whisper in game.whispers if whisper.phase_id == day_phase_id]
+
+            arg1 = botutils.find_role_in_all(args[0])
+            if arg1 is not None:
+                if not isinstance(arg1, BadMoonRising):
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            else:
+                arg1 = BOTCUtils.get_player_from_string(args[0])
+                if arg1 is None:
+                    raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+
+            arg2 = botutils.find_role_in_all(args[1])
+            if arg2 is not None:
+                if not isinstance(arg1, BadMoonRising):
+                    raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+            else:
+                arg2 = BOTCUtils.get_player_from_string(args[1])
+                if arg2 is None:
+                    raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+            
+            if isinstance(arg1, Character) and isinstance(arg2, Character):
+                for whisper in today_whispers:
+                    if whisper.source_player.role.social_self.name == arg1.name and whisper.target_player.role.social_self.name == arg2.name:
+                        return True
+                    return False
+            elif isinstance(arg1, Player) and isinstance(arg2, Character):
+                for whisper in today_whispers:
+                    if whisper.source_player.user.id == arg1.user.id and whisper.target_player.role.social_self.name == arg2.name:
+                        return True
+                return False
+            elif isinstance(arg1, Character) and isinstance(arg2, Player):
+                for whisper in today_whispers:
+                    if whisper.target_player.user.id == arg2.user.id and whisper.source_player.role.social_self.name == arg1.name:
+                        return True
+                return False
+            else:
+                for whisper in today_whispers:
+                    if whisper.source_player.user.id == arg1.user.id and whisper.target_player.user.id == arg2.user.id:
+                        return True
+                return False
+            
+        
         statement_checks = [
             # (match_checker, splitter, validator)
 
@@ -835,32 +928,21 @@ class Character:
                 # Very long regex, but it handles all possible neighbour configs mentioned above
                 r"^(?!the).+(?= (is neighbouring |is |has ))|(?<=the ).+(?= (is neighbouring |is |has ))|(?<=is neighbouring )(?!the).+|(?<=is neighbouring the ).+|(?<=is )(?!the ).+(?='s neighbour)|(?<=is the ).+(?='s neighbour)|(?<=has )(?!the).+(?= as a neighbour)|(?<=has the ).+(?= as a neighbour)",
                 neighbour_check
-            )
+            ),
 
-            # (the) <role> whispered today
-            # (the) <role> has whispered today
+            # (the) <role/player> whispered today
+            # (the) <role/player> has whispered today
+            (r"(the |).+ (has |)whispered today", r"^(?!the ).+(?<! has)(?= whispered today)|(?<=the ).+(?<! has)(?= whispered today)|^(?!the ).+(?= has whispered today)|(?<=the ).+(?= has whispered today)", today_whispered),
 
-            # (the) <role> has whispered
+            # (the) <role/player> has whispered
+            (r"(the |).+ has whispered( this game|(?!.+))", r"^(?!the ).+(?= has whispered)|(?<=the ).+(?= has whispered)", whispered),
 
-            # (the) <role> has whispered to <player> today
-            # (the) <role> whispered to <player> today
+            # (the) <role/player> has whispered to (the) <role/player> today
+            # (the) <role/player> whispered to (the) <role/player> today
+            (r"(the |).+ (has whispered|whispered) to (the |).+ today", r"^(?!the ).+(?=( whispered to| has whispered to))|(?<=the ).+(?=( whispered to| has whispered to))|(?<=to the ).+(?= today)|(?<=to )(?!the ).+(?= today)", whispered_to_today)
 
-            # (the) <role> has whispered to <player>
-
-            # (the) <role> has whispered to (the) <role> today
-            # (the) <role> whispered to (the) <role> today
-
-            # (the) <role> has whispered to (the) <role>
-
-            # <player> has whispered to (the) <role> today
-            # <player> whispered to (the) <role> today
-
-            # <player> has whispered to (the) <role>
-
-            # <player> has whispered to <player> today
-            # <player> whispered to <player> today
-
-            # <player> has whispered to <player>
+            # (the) <role/player> has whispered to (the) <role/player>
+            # (the) <role/player> whispered to (the) <role/player>
 
             # (the) <role> has used their ability tonight
             # (the) <role> has used their ability
