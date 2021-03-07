@@ -74,42 +74,43 @@ def validate_statement(player, statement):
     statement = statement.lower()
 
     import botutils
-    from botc.gamemodes.badmoonrising._utils import BadMoonRising
-    from BOTCUtils import BOTCUtils, BMRRolesOnly, bmr_roles_only_str, x_emoji, \
-        PlayerNotFound, player_not_found, RoleNotFound # Being lazy and importing these from BOTCUtils
+    from botc.gamemodes.badmoonrising._utils import BadMoonRising, BMRRole
     from botc import Player, Character
 
     def player_is_role(args):
-        player = BOTCUtils.get_player_from_string(args[0])
+        target_player = BOTCUtils.get_player_from_string(args[0])
         role = botutils.find_role_in_all(args[1])
 
-        if not isinstance(role, BadMoonRising):
-            raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
-        if player is None:
-            raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
         if role is None:
             raise RoleNotFound(f"Role {args[1]} not found.")
+        if not isinstance(role, BadMoonRising):
+            raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
+        if target_player is None:
+            raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-        return player.role.social_self.name == role.name
+        return target_player.role.social_self.name == role.name
 
     def player_was_role(args):
         role_matches = player_is_role(args)
         
-        player = BOTCUtils.get_player_from_string(args[0])
-
-        return player.is_apparently_dead() and role_matches
-
-    def player_is_alignement(args):
-        player = BOTCUtils.get_player_from_string(args[0])
-        guess_good = args[0] == "true"
-
-        if player is None:
+        target_player = BOTCUtils.get_player_from_string(args[0])
+        
+        if target_player is None:
             raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-        return guess_good == player.role.social_self.is_good()
+        return target_player.is_apparently_dead() and role_matches
+
+    def player_is_alignement(args):
+        target_player = BOTCUtils.get_player_from_string(args[0])
+        guess_good = args[1] == "good"
+
+        if target_player is None:
+            raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
+
+        return guess_good == target_player.role.social_self.is_good()
 
     def player_is_category(args):
-        player = BOTCUtils.get_player_from_string(args[0])
+        target_player = BOTCUtils.get_player_from_string(args[0])
 
         if args[1] == "town" or args[1] == "townsfolk":
             guess_category = Category.townsfolk
@@ -120,10 +121,10 @@ def validate_statement(player, statement):
         else:
             guess_category = Category.demon
 
-        if player is None:
+        if target_player is None:
             raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-        return player.role.social_self.category == guess_category
+        return target_player.role.social_self.category == guess_category
     
     def role_is_ingame(args):
         role = botutils.find_role_in_all(args[0])
@@ -133,7 +134,7 @@ def validate_statement(player, statement):
         elif role is None:
             raise RoleNotFound(f"Role {args[0]} not found.")
 
-        roles = [player.role.social_self.name for player in globvars.master_state.game.sitting_order]
+        roles = [target_player.role.social_self.name for target_player in globvars.master_state.game.sitting_order]
 
         return role.name in roles
 
@@ -145,8 +146,8 @@ def validate_statement(player, statement):
         actual_num_town = 0
         actual_num_outsider = 0
 
-        for player in globvars.master_state.game.sitting_order:
-            pcategory = player.role.social_self.category
+        for target_player in globvars.master_state.game.sitting_order:
+            pcategory = target_player.role.social_self.category
             if pcategory == Category.townsfolk:
                 actual_num_town = actual_num_town + 1
             elif pcategory == Category.outsider:
@@ -156,11 +157,11 @@ def validate_statement(player, statement):
             else:
                 actual_num_demons = actual_num_demons + 1
 
-        if args[0] == "town" or args[0] == "townsfolk":
+        if args[1] == "town" or args[1] == "townsfolk":
             return num == actual_num_town
-        elif args[0] == "outsider":
+        elif args[1] == "outsider":
             return num == actual_num_outsider
-        elif args[0] == "minion":
+        elif args[1] == "minion":
             return num == actual_num_minions
         else:
             return num == actual_num_demons
@@ -173,8 +174,8 @@ def validate_statement(player, statement):
         actual_num_town = 0
         actual_num_outsider = 0
 
-        for player in globvars.master_state.game.sitting_order:
-            pcategory = player.role.social_self.category
+        for target_player in globvars.master_state.game.sitting_order:
+            pcategory = target_player.role.social_self.category
             if pcategory == Category.townsfolk:
                 actual_num_town = actual_num_town + 1
             elif pcategory == Category.outsider:
@@ -184,14 +185,14 @@ def validate_statement(player, statement):
             else:
                 actual_num_demons = actual_num_demons + 1
 
-        if args[0] == "town" or args[0] == "townsfolk":
-            return num < actual_num_town
-        elif args[0] == "outsider":
-            return num < actual_num_outsider
-        elif args[0] == "minion":
-            return num < actual_num_minions
+        if args[1] == "town" or args[1] == "townsfolk":
+            return num > actual_num_town
+        elif args[1] == "outsider":
+            return num > actual_num_outsider
+        elif args[1] == "minion":
+            return num > actual_num_minions
         else:
-            return num < actual_num_demons
+            return num > actual_num_demons
 
     def more_than_n_category(args):
         num = int(args[0])
@@ -201,8 +202,8 @@ def validate_statement(player, statement):
         actual_num_town = 0
         actual_num_outsider = 0
 
-        for player in globvars.master_state.game.sitting_order:
-            pcategory = player.role.social_self.category
+        for target_player in globvars.master_state.game.sitting_order:
+            pcategory = target_player.role.social_self.category
             if pcategory == Category.townsfolk:
                 actual_num_town = actual_num_town + 1
             elif pcategory == Category.outsider:
@@ -212,14 +213,14 @@ def validate_statement(player, statement):
             else:
                 actual_num_demons = actual_num_demons + 1
 
-        if args[0] == "town" or args[0] == "townsfolk":
-            return num > actual_num_town
-        elif args[0] == "outsider":
-            return num > actual_num_outsider
-        elif args[0] == "minion":
-            return num > actual_num_minions
+        if args[1] == "town" or args[1] == "townsfolk":
+            return num < actual_num_town
+        elif args[1] == "outsider":
+            return num < actual_num_outsider
+        elif args[1] == "minion":
+            return num < actual_num_minions
         else:
-            return num > actual_num_demons
+            return num < actual_num_demons
 
     def neighbour_check(args):
         arg1 = botutils.find_role_in_all(args[0])
@@ -260,7 +261,7 @@ def validate_statement(player, statement):
 
     def today_whispered(args):
         game = globvars.master_state.game
-        day_phase_id = game._chrono.phase_id % 3
+        day_phase_id = game._chrono.phase_id - (game._chrono.phase_id % 3)
         today_whispers = [whisper for whisper in game.whispers if whisper.phase_id == day_phase_id]
 
         arg = botutils.find_role_in_all(args[0])
@@ -308,7 +309,7 @@ def validate_statement(player, statement):
 
     def whispered_to_today(args):
         game = globvars.master_state.game
-        day_phase_id = game._chrono.phase_id % 3
+        day_phase_id = game._chrono.phase_id - (game._chrono.phase_id % 3)
         today_whispers = [whisper for whisper in game.whispers if whisper.phase_id == day_phase_id]
 
         arg1 = botutils.find_role_in_all(args[0])
@@ -322,7 +323,7 @@ def validate_statement(player, statement):
 
         arg2 = botutils.find_role_in_all(args[1])
         if arg2 is not None:
-            if not isinstance(arg1, BadMoonRising):
+            if not isinstance(arg2, BadMoonRising):
                 raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
         else:
             arg2 = BOTCUtils.get_player_from_string(args[1])
@@ -333,7 +334,7 @@ def validate_statement(player, statement):
             for whisper in today_whispers:
                 if whisper.source_player.role.social_self.name == arg1.name and whisper.target_player.role.social_self.name == arg2.name:
                     return True
-                return False
+            return False
         elif isinstance(arg1, Player) and isinstance(arg2, Character):
             for whisper in today_whispers:
                 if whisper.source_player.user.id == arg1.user.id and whisper.target_player.role.social_self.name == arg2.name:
@@ -365,7 +366,7 @@ def validate_statement(player, statement):
 
         arg2 = botutils.find_role_in_all(args[1])
         if arg2 is not None:
-            if not isinstance(arg1, BadMoonRising):
+            if not isinstance(arg2, BadMoonRising):
                 raise BMRRolesOnly(bmr_roles_only_str.format(player.user.mention, x_emoji))
         else:
             arg2 = BOTCUtils.get_player_from_string(args[1])
@@ -376,7 +377,7 @@ def validate_statement(player, statement):
             for whisper in whispers:
                 if whisper.source_player.role.social_self.name == arg1.name and whisper.target_player.role.social_self.name == arg2.name:
                     return True
-                return False
+            return False
         elif isinstance(arg1, Player) and isinstance(arg2, Character):
             for whisper in whispers:
                 if whisper.source_player.user.id == arg1.user.id and whisper.target_player.role.social_self.name == arg2.name:
@@ -403,7 +404,8 @@ def validate_statement(player, statement):
             if arg is None:
                 raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-        last_night_phase = globvars.master_state.game._chrono.phase_id % 3 - 2
+        game = globvars.master_state.game
+        last_night_phase = game._chrono.phase_id - (game._chrono.phase_id % 3) - 2
 
         if isinstance(arg, Player):
             action = arg.action_grid.retrieve_an_action(last_night_phase)
@@ -426,20 +428,20 @@ def validate_statement(player, statement):
             if arg is None:
                 raise PlayerNotFound(player_not_found.format(player.user.mention, x_emoji))
 
-        night_phase = globvars.master_state.game._chrono.phase_id % 3 - 2
-        while night_phase >= 0:
+        phase = 0
+        while phase <= globvars.master_state.game._chrono.phase_id:
             if isinstance(arg, Player):
-                action = arg.action_grid.retrieve_an_action(night_phase)
+                action = arg.action_grid.retrieve_an_action(phase)
                 if action is not None:
                     return True
             else:
                 for player in globvars.master_state.game.sitting_order:
                     if player.role.social_self.name == arg.name:
-                        action = player.action_grid.retrieve_an_action(night_phase)
+                        action = player.action_grid.retrieve_an_action(phase)
                         if action is not None:
                             return True
         
-            night_phase = night_phase - 3
+            phase = phase + 1
 
         return False
 
@@ -454,8 +456,11 @@ def validate_statement(player, statement):
         players = BOTCUtils.get_players_from_role_name(role._role_enum)
 
         for player in players:
-            if args[1] in player.user.name or args[1] in player.user.nick:
+            if args[1] in player.user.name.lower():
                 return True
+            if player.user.nick is not None:
+                if args[1] in player.user.nick.lower():
+                    return True
         return False
 
     def role_status(args):
@@ -470,25 +475,25 @@ def validate_statement(player, statement):
 
         if args[1] == "alive":
             for player in players:
-                if player.is_apparenty_alive():
+                if player.is_apparently_alive():
                     return True
             return False
         else:
             for player in players:
-                if player.is_apparenty_dead():
+                if player.is_apparently_dead():
                     return True
             return False
 
     def n_alive_players(args):
         num = int(args[0])
-        return num == len([p for p in globvars.master_state.game.sitting_order is p.is_apparently_alive()])
+        return num == len([p for p in globvars.master_state.game.sitting_order if p.is_apparently_alive()])
 
     statement_checks = [
         # (match_checker, splitter, validator)
 
         # <player> is (the) <role>
         # <player> is <role>
-        (r".+ is (the |).+", r".+(?= is)|(?<= is )(?!the ).+(?=$)|()(?<= is the).+(?=$)", player_is_role),
+        (r".+ is (the |)(" + "|".join(role.value.lower() for role in BMRRole) + r")", r".+(?= is)|(?<= is )(?!the ).+(?=$)|()(?<= is the).+(?=$)", player_is_role),
 
         # <player> was (the) <role>
         (r".+ was .+", r".+(?= was)|(?<=was ).+", player_was_role),
@@ -546,17 +551,17 @@ def validate_statement(player, statement):
 
         # (the) <role/player> has whispered to (the) <role/player> today
         # (the) <role/player> whispered to (the) <role/player> today
-        (r"(the |).+ (has whispered|whispered) to (the |).+ today", r"^(?!the ).+(?=( whispered to| has whispered to))|(?<=the ).+(?=( whispered to| has whispered to))|(?<=to the ).+(?= today)|(?<=to )(?!the ).+(?= today)", whispered_to_today),
+        (r"(the |).+(has whispered to|whispered to) (the |).+ today", r"^(?!the ).+(?=( whispered to| has whispered to))|(?<=the ).+(?=( whispered to| has whispered to))|(?<=to the ).+(?= today)|(?<=to )(?!the ).+(?= today)", whispered_to_today),
 
         # (the) <role/player> has whispered to (the) <role/player>
         # (the) <role/player> whispered to (the) <role/player>
-        (r"(the |).+(has whispered to|whispered to) (the |).+", r"^(?!the ).+(?= has whispered to| whispered to)|(?<=the ).+(?= has whispered to| whispered to)|(?<= whispered to )(?!the ).+|(?<= whispered to the ).+", whispered_to),
+        (r"(the |).+(has whispered to|whispered to) (the |).+", r"^(?!the ).+(?<! has)(?= whispered to)|(?<=the ).+(?<! has)(?= whispered to)|^(?!the ).+(?= has whispered to)|(?<=the ).+(?= has whispered to)|(?<= whispered to )(?!the ).+|(?<= whispered to the ).+", whispered_to),
 
         # (the) <role> has used their ability tonight
         # (the) <role> used their ability tonight
         # <player> used their ability tonight
         # <player> has used their ability tonight
-        (r"(the |).+ (has |)used (their|his|her) ability tonight", r"^(?!the ).+(?<! has)(?= (has |)used (their|his|her) ability tonight)|(?<=the ).+(?<! has)(?= (has |)used (their|his|her) ability tonight)", ability_used_tonight),
+        (r"(the |).+ (has |)used (their|his|her) ability (tonight|last night)", r"^(?!the ).+(?<! has)(?= (has |)used (their|his|her) ability (tonight|last night))|(?<=the ).+(?<! has)(?= (has |)used (their|his|her) ability (tonight|last night))", ability_used_tonight),
 
         # (the) <role> has used their ability
         # (the) <role> used their ability
@@ -569,7 +574,7 @@ def validate_statement(player, statement):
         (r"(the |).+'s (name|nickname) contains (the character |the char |).", r"^(?!the ).+(?='s (name|nickname) contains)|(?<=the).+(?='s (name|nickname) contains)|.(?=$)", name_contains),
 
         # (the) <role> is (dead|alive)
-        (r"(the |).+ is (alive|dead)", r"^(?!the ).+(?= is (alive|dead))|(?<=the ).+(?= is (alive|dead))", role_status),
+        (r"(the |).+ is (alive|dead)", r"^(?!the ).+(?= is (alive|dead))|(?<=the ).+(?= is (alive|dead))|(?<= is )(alive|dead)", role_status),
 
         # there are <n> players alive
         (r"there (are|is) [0-9]+ player(s|) alive", r"[0-9]+(?= player(s|) alive)", n_alive_players),
@@ -581,10 +586,11 @@ def validate_statement(player, statement):
     import re
 
     for check in statement_checks:
-        match_checker = re.compile(check[0], re.IGNORECASE)
+        match_checker = re.compile(check[0], re.IGNORECASE | re.MULTILINE)
         if bool(match_checker.fullmatch(statement)):
-            splitter = re.compile(check[1], re.IGNORECASE)
-            return check[2](splitter.findall(statement))
+            splitter = re.finditer(check[1], statement, re.IGNORECASE | re.MULTILINE)
+            groups = [match.group() for match in splitter]
+            return check[2](groups)
 
     raise InvalidGossipStatement(statement_unrecognized.format(player.user.mention, x_emoji))
 

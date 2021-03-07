@@ -1334,5 +1334,5 @@ class Game(GameMeta):
                         break
         await self.check_winning_conditions()
 
-    def register_whisper(whisper):
+    def register_whisper(self, whisper):
         self._whispers.append(whisper)
