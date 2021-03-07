@@ -16,6 +16,17 @@ error_str = language["system"]["error"]
 
 with open('botc/game_text.json') as json_file: 
     documentation = json.load(json_file)
+    statements = documentation["doc"]["gossip"]["statements"]
+
+def create_statements_embed():
+    embed = discord.Embed(title = "Gossip statements")
+    msg = "```"
+    for statement in statements:
+        msg += statement + "\n"
+    msg = msg + "```"
+    embed.add_field(name = "**Example statements**", value = msg)
+    embed.set_thumbnail(url = "https://imgur.com/uhcVkwz.png")
+    return embed
 
 class Gossip(commands.Cog, name = documentation["misc"]["abilities_cog"]):
     """BoTC in-game commands cog
@@ -40,15 +51,20 @@ class Gossip(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         help = documentation["doc"]["gossip"]["brief"],
         description = documentation["doc"]["gossip"]["description"]
     )
-    @commands.check(check_if_is_day)  # Correct phase -> NotNight
-    @commands.check(check_if_lobby)  # Correct channel -> NotDMChannel
-    @commands.check(check_if_player_really_alive)  # Player alive -> AliveOnlyCommand
-    @commands.check(check_if_can_gossip)  # Correct character -> RoleCannotUseCommand
     async def gossip(self, ctx, statement: str):
         """Gossip command
         usage: gossip <statement>
         characters: gossip
         """
+
+        if statement == "statements":
+            await ctx.send(embed=create_statements_embed())
+            return
+
+        check_if_is_day(ctx)
+        check_if_lobby(ctx)
+        check_if_player_really_alive(ctx)
+        check_if_can_gossip(ctx)
         
         player = BOTCUtils.get_player_from_id(ctx.author.id)
         await player.role.ego_self.register_gossip(player, ctx.message.content[len(ctx.prefix) + len(ctx.command.name) + 1:])

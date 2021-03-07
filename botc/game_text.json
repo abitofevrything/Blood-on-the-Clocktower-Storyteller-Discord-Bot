@@ -448,7 +448,18 @@
         "gossip" : {
             "brief" : "state a gossip statement",
             "help" : "",
-            "description" : "[GOSSIP] command - BOTC"
+            "description" : "[GOSSIP] command - BOTC",
+            "statements" : [
+                "<player> is (the) <role>",
+                "<player> is <category>",
+                "(the) <role> is in game",
+                "(the) <role> is not in game",
+                "there (are|is) <n> outsider(s) in play",
+                "(the) <player/role> is neighbouring (the) <player/role>",
+                "(the) <role/player> has whispered to (the) <role/player> today",
+                "(the) <role> used their ability tonight",
+                "(the) <role>'s name contains <c>"
+            ]
         },
 
         "nominate" : {
