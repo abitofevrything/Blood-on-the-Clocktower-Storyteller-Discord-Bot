@@ -122,7 +122,7 @@ class Godfather(Minion, BadMoonRising, Character, RecurringAction):
     def exec_init_setup(self, townsfolk_obj_list, outsider_obj_list, minion_obj_list, demon_obj_list):
         """Add or remove one outsider from the setup"""
         
-        if random.choice([True, False]):
+        if random.choice([True, False]) or len(outsider_obj_list) is 0:
             # +1 Outsider
 
             townsfolk_obj_list.pop()
