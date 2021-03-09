@@ -61,7 +61,7 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         Default is to check whether the player has the safety_from_execution status.
         To be overriden in child classes.
         """
-        if player.has_status_effect(StatusList.safety_from_execution):
+        if not super(Fool, self).can_be_executed(player):
             return False
 
         if player.is_droisoned():
@@ -78,7 +78,7 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         Default is to check if the player has the safety_from_demon status.
         To  be overriden in child classes.
         """
-        if player.has_status_effect(StatusList.safety_from_demon):
+        if not super(Fool, self).can_be_demon_killed(player):
             return False
 
         if player.is_droisoned():
@@ -94,6 +94,9 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         """Can the player be killed in any way other than execution or demon kill?
         To be overriden by child classes.
         """
+        if not super(Fool, self).can_be_killed(player):
+            return False
+
         if player.is_droisoned():
             return True
 
