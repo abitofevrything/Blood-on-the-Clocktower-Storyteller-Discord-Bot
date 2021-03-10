@@ -15,6 +15,7 @@ class StatusList(enum.Enum):
     safety_from_execution = "safety_from_execution"
     butler_service = "butler_service"  # butler serving a master
     ravenkeeper_activated = "ravenkeeper_activated"  # activated ravenkeeper ability
+    grandmother_activated = "grandmother_activated" # activated grandmother ability
 
 
 class Storyteller:
@@ -92,6 +93,25 @@ class RavenkeeperActivated(StatusEffect):
         """
         super().__init__(source_player, affected_player, pointer_player, duration)
         self._effect = StatusList.ravenkeeper_activated
+
+class GrandmotherActivated(StatusEffect):
+    """Grandmother ability is active."""
+
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = 2
+        ):
+        """
+        @source_player : the grandmother
+        @affected_player : the grandmother
+        @pointer_player : None
+        @duration : 2 phases (the same night, next dawn)
+        """
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.grandmother_activated
 
 
 class SafetyFromDemon(StatusEffect):

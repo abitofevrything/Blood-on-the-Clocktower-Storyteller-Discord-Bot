@@ -9,6 +9,7 @@ from .Category import Category
 from .Team import Team
 from .errors import AlreadyDead
 from .BOTCUtils import LorePicker, InvalidGossipStatement, GameLogic, validate_statement
+from.status import GrandmotherActivated
 from .flag_inventory import Inventory, Flags
 from .abilities import ActionTypes, Action
 from .status import StatusList
@@ -432,8 +433,15 @@ class Character:
         Default behaviour is to make the player die (real death state)
         Override by child classes and / or other classes inherited by child classes.
         """
+        from botc.gamemodes.badmoonrising._utils import BMRRole
         try:
             await killed_player.exec_real_death()
+            # check if the player has a grandmother
+            # if so, activate the grandmother
+            for player in globvars.master_state.game.sitting_order:
+                if player.role.true_self.name == BMRRole.grandmother.value:
+                    if player.role.true_self._grandchild == killed_player:
+                        player.add_status_effect(GrandmotherActivated(player, player))
         except AlreadyDead:
             pass
         else:

@@ -6,7 +6,7 @@
         "instruction" : "You start knowing a good player & character. If the Demon kills them, you die too.",
         "n1_addendum" : "",
         "action" : "",
-        "feedback" : "",
+        "feedback" : "You learn that {}, the **{}** is your grandchild.",
         "brief" : "The Grandmother knows exactly who their grandchild is, but if they are killed by the Demon, dies as well."
 
     },
