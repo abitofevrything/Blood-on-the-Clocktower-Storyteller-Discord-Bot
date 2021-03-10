@@ -62,6 +62,7 @@ class Goon(Outsider, BadMoonRising, Character, RecurringAction):
         return not self.registered_as_good
 
     async def process_dawn_ability(self, player):
+        # Restore the flag back to the goon
         self.inventory.add_item_to_inventory(Flags.goon_alignement_take)
 
     async def on_being_targeted(self, target_player, action):
