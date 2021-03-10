@@ -3,7 +3,7 @@
 import json
 import globvars
 import configparser
-from botc import Character, Townsfolk, ActionTypes, RecurringAction, GameLogic, BMRRolesOnly, ActionTypes, Action
+from botc import Character, Townsfolk, ActionTypes, RecurringAction, GameLogic, BMRRolesOnly, ActionTypes, Action, AlreadyDead
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -110,7 +110,12 @@ class Gambler(Townsfolk, BadMoonRising, Character, RecurringAction):
 
             if not guess_target.role.true_self.name == guess_role.name:
                 if gambler_player.role.true_self.can_be_killed(gambler_player):
-                    await gambler_player.exec_real_death()
+                    try:
+                        await gambler_player.exec_real_death()
+                    except AlreadyDead:
+                        pass
+                    else:
+                        globvars.master_state.game.night_deaths.append(gambler_player)
 
 
     async def process_night_ability(self, player):

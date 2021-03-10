@@ -5,7 +5,7 @@ import botutils
 import globvars
 import random
 from botutils import BotEmoji
-from botc import Character, Townsfolk, RecurringAction, validate_statement, Action, ActionTypes, Flags, Category
+from botc import Character, Townsfolk, RecurringAction, validate_statement, Action, ActionTypes, Flags, Category, AlreadyDead
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -84,7 +84,12 @@ class Gossip(Townsfolk, BadMoonRising, Character, RecurringAction):
 
         if gossip_player.is_alive() and not gossip_player.is_droisoned():
             if target.role.true_self.can_be_killed():
-                await target.exec_real_death(target)
+                try:
+                    await target.exec_real_death()
+                except AlreadyDead:
+                    pass
+                else:
+                    globvars.master_state.game.night_deaths.append(target)
 
     async def process_night_ability(self, player):
         phase = globvars.master_state.game._chrono.phase_id

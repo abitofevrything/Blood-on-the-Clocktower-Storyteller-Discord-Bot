@@ -7,7 +7,7 @@ import discord
 import datetime
 import botutils
 import configparser
-from botc import Character, Minion, RecurringAction, BOTCUtils, Outsider, Townsfolk, ActionTypes, GameLogic, Action
+from botc import Character, Minion, RecurringAction, BOTCUtils, Outsider, Townsfolk, ActionTypes, GameLogic, Action, AlreadyDead
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -176,9 +176,13 @@ class Godfather(Minion, BadMoonRising, Character, RecurringAction):
 
     async def exec_execute(self, player, killed_player):
         if player.is_alive() and not player.is_droisoned():
-            if not killed_player.role.true_self.can_be_killed(killed_player):
-                return
-            await killed_player.exec_real_death()
+            if  killed_player.role.true_self.can_be_killed(killed_player):
+                try:
+                    await killed_player.exec_real_death()
+                except AlreadyDead:
+                    pass
+                else:
+                    globvars.master_state.game.night_deaths.append(killed_player)
 
     async def process_night_ability(self, player):
         """Process night actions for the exorcist character.
