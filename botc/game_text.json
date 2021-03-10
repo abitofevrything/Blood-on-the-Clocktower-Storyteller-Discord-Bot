@@ -175,7 +175,7 @@
             "plural" : {
 
                 "outputs" : [
-                    "*As the sun rises and the bell rings the end of the night, it seems that after the daily count, multiple player are missing.* \n\n {} {} * have died during the night*."
+                    "*As the sun rises and the bell rings the end of the night, it seems that after the daily count, multiple players are missing.* \n\n{} {} *have died during the night*."
                 ],
     
                 "weights" : [
