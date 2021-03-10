@@ -121,6 +121,18 @@ class Drunkenness(StatusEffect):
         super().__init__(source_player, affected_player, pointer_player, duration)
         self._effect = StatusList.drunkenness
 
+class SailorDrunkenness(StatusEffect):
+    """Sailor Drunkenness effect"""
+
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = 3
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.drunkenness
 
 class PoisonerPoison(StatusEffect):
     """Poisoner Poison effect"""

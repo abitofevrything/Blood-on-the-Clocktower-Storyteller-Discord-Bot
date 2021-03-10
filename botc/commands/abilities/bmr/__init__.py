@@ -6,6 +6,7 @@ from .exorcise import Exorcise
 from .guess import Guess
 from .execute import Execute
 from .gossip import Gossip
+from .visit import Visit
 
 def setup(client):
 	client.add_cog(Assassinate(client))
@@ -16,3 +17,4 @@ def setup(client):
 	client.add_cog(Guess(client))
 	client.add_cog(Execute(client))
 	client.add_cog(Gossip(client))
+	client.add_cog(Visit(client))

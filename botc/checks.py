@@ -296,6 +296,27 @@ def check_if_can_gossip(ctx):
     else:
         raise RoleCannotUseCommand("Cannot use gossip command (BoTC)")
 
+def can_use_visit(user_id):
+    """Return true if the user can use the command "visit"
+    Characters that can visit:
+    - Sailor
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.sailor.value]:
+        return True
+    return False
+
+def check_if_can_visit(ctx):
+    """Return true if the user can use the command "visit"
+    Characters that can visit:
+    - Sailor
+    """
+    if can_use_visit(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use visit command (BoTC)")
+
 def check_if_is_night(ctx):
     """Check if the game is in night phase"""
     import globvars

@@ -15,7 +15,7 @@ from .checks import check_if_is_player, can_use_serve, check_if_can_serve, can_u
     check_if_dm, check_if_lobby, check_if_player_apparently_alive, \
     check_if_player_apparently_dead, check_if_player_really_alive, check_if_player_really_dead, \
     check_if_can_assassinate, check_if_can_see, check_if_can_exorcise, check_if_can_guess, check_if_can_execute, \
-    check_if_can_gossip
+    check_if_can_gossip, check_if_can_visit
 from .ChoppingBlock import ChoppingBlock
 from .chrono import GameChrono
 from .Demon import Demon
@@ -31,7 +31,7 @@ from .RecurringAction import RecurringAction, NonRecurringAction
 from .RoleGuide import RoleGuide
 from .Phase import Phase
 from .status import StatusList, Storyteller, SafetyFromDemon, Drunkenness, PoisonerPoison, RedHerring, \
-    ButlerService, RavenkeeperActivated, CourtierPoison, SafetyFromExecution
+    ButlerService, RavenkeeperActivated, CourtierPoison, SafetyFromExecution, SailorDrunkenness
 from .Team import Team
 from .Townsfolk import Townsfolk
 from .Townsquare import Townsquare

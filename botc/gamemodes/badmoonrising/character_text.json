@@ -17,8 +17,8 @@
         "examples" : "- The Sailor chooses the Exorcist, and the Storyteller decides that the Exorcist is drunk. That night, the Sailor is attacked by the Shabaloth. The Sailor remains alive. The next day, the Sailor is executed but remains alive.\n- During the day, the Gossip made a public statement they thought was false, but was actually true. That night, the Gossip ability kills a player. The Sailor has made themselves drunk, and the Storyteller decides that the Sailor dies.\n- The Sailor chooses the Mastermind, but the Storyteller decides that the Sailor is drunk. The next day, the Sailor asks to be executed to “prove they are the Sailor,” but dies because they’re drunk.",
         "instruction" : "Each night, choose a player: either you or they are drunk until dusk. You can not die.",
         "n1_addendum" : "",
-        "action" : "",
-        "feedback" : "",
+        "action" : "Use `visit <player>` in DM.",
+        "feedback" : "You have chose to visit {} tonight.",
         "brief" : "The Sailor is either drunk, or getting somebody else drunk. If the Sailor is sober, they can not die."
     },
 

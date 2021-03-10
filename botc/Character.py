@@ -583,3 +583,11 @@ class Character:
     async def exec_gossip(self, player, statement_truth):
         """Gossip command. Override by child classes"""
         raise NotImplementedError
+
+    async def register_visit(self, player, targets):
+        """Visit command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_visit(self, player, target):
+        """Visit command. Override by child classes"""
+        raise NotImplementedError
