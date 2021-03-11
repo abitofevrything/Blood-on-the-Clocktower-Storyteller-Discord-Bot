@@ -41,7 +41,7 @@ Rename `notify.csv.example` to `notify.csv`, `ignore.csv.example` to `ignore.csv
 
 Run `pip install -r requirements.txt` to install the required dependencies.
 
-Set the environement variable `PYTHONUTF8` to `1`.
+Set the environment variable `PYTHONUTF8` to `1`.
 
 Finally, run the `main.py` file to start the bot.
 
