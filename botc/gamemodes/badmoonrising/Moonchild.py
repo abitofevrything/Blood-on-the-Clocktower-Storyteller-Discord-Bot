@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.moonchild.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Moonchild(Outsider, BadMoonRising, Character, NonRecurringAction):
     """Moonchild: When you learn you are dead, choose 1 alive player: if good, they die tonight.
@@ -30,7 +33,7 @@ class Moonchild(Outsider, BadMoonRising, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Moonchild"
 
         self._role_enum = BMRRole.moonchild
-        self._emoji = "<:bmrmoonchild:781152055011049552>"
+        self._emoji = emojis["badmoonrising"]["moonchild"]
   
     def create_n1_instr_str(self):
         return "not_implemented"      

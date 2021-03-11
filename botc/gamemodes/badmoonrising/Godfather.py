@@ -8,6 +8,7 @@ import datetime
 import botutils
 import configparser
 from botc import Character, Minion, RecurringAction, BOTCUtils, Outsider, Townsfolk, ActionTypes, GameLogic, Action, AlreadyDead
+from botutils import BotEmoji
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -16,6 +17,10 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
 with open('botc/game_text.json') as json_file: 
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 butterfly = botutils.BotEmoji.butterfly
 
@@ -47,7 +52,7 @@ class Godfather(Minion, BadMoonRising, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Godfather"
 
         self._role_enum = BMRRole.godfather
-        self._emoji = "<:bmrgodfather:781151556204625930>"
+        self._emoji = emojis["badmoonrising"]["godfather"]
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -58,9 +63,7 @@ class Godfather(Minion, BadMoonRising, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

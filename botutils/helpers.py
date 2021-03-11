@@ -2,6 +2,10 @@
 
 import configparser
 import datetime
+import re
+
+import emoji
+
 import globvars
 
 
@@ -133,3 +137,10 @@ def get_gamemode_from_str(string):
             return gm
 
     return None
+
+def get_emoji(s):
+    """Get the emoji from a string"""
+    if s in emoji.UNICODE_EMOJI['en']:
+        return s
+    else:
+        return globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))

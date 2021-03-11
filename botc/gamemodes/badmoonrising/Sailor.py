@@ -13,6 +13,10 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
 
 butterfly = BotEmoji.butterfly
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
+
 Config = configparser.ConfigParser()
 Config.read('config.INI')
 
@@ -41,7 +45,7 @@ class Sailor(Townsfolk, BadMoonRising, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Sailor"
 
         self._role_enum = BMRRole.sailor
-        self._emoji = "<:bmrsailor:781152054906716161>"
+        self._emoji = emojis["badmoonrising"]["sailor"]
         
     def has_finished_night_action(self, player):
         """Return True if sailor has submitted the visit action"""
@@ -61,9 +65,7 @@ class Sailor(Townsfolk, BadMoonRising, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

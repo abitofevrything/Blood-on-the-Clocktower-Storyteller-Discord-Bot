@@ -4,6 +4,7 @@ import json
 import globvars
 import configparser
 from botc import Character, Townsfolk, ActionTypes, RecurringAction, GameLogic, BMRRolesOnly, ActionTypes, Action, AlreadyDead
+from botutils import BotEmoji
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -11,12 +12,16 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
 
 with open('botutils/bot_text.json') as json_file:
     bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     x_emoji = documentation["cmd_warnings"]["x_emoji"]
     bmr_roles_only_str = documentation["cmd_warnings"]["bmr_roles_only"]
+
+butterfly = BotEmoji.butterfly
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -45,7 +50,7 @@ class Gambler(Townsfolk, BadMoonRising, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Gambler"
 
         self._role_enum = BMRRole.gambler
-        self._emoji = "<:bmrgambler:781151556426792960>"
+        self._emoji = emojis["badmoonrising"]["gambler"]
 
     def has_finished_night_action(self, player):
         """Return True if gambler has submitted the guess action"""
@@ -68,9 +73,7 @@ class Gambler(Townsfolk, BadMoonRising, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

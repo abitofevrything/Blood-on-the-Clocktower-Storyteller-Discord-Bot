@@ -13,6 +13,10 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
 
 butterfly = BotEmoji.butterfly
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
+
 class Gossip(Townsfolk, BadMoonRising, Character, RecurringAction):
     """Gossip: Each day, you may make a public statement. Tonight, if it was true, a player dies.
     """
@@ -35,7 +39,7 @@ class Gossip(Townsfolk, BadMoonRising, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Gossip"
 
         self._role_enum = BMRRole.gossip
-        self._emoji = "<:bmrgossip:781151556409098240>"
+        self._emoji = emojis["badmoonrising"]["gossip"]
         
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
@@ -46,9 +50,7 @@ class Gossip(Townsfolk, BadMoonRising, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

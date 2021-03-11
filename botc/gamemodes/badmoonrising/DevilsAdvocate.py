@@ -4,6 +4,7 @@ import json
 import globvars
 import configparser
 from botc import Character, Minion, ActionTypes, RecurringAction, GameLogic, Action, ActionTypes, SafetyFromExecution
+from botutils import BotEmoji
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -11,7 +12,11 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
 
 with open('botutils/bot_text.json') as json_file:
     bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
+    
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
+butterfly = BotEmoji.butterfly
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
@@ -41,7 +46,7 @@ class DevilsAdvocate(Minion, BadMoonRising, Character, RecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Devil%27s_Advocate"
 
         self._role_enum = BMRRole.devilsadvocate
-        self._emoji = "<:bmrdevilsadvocate:781151556493639680>"
+        self._emoji = emojis["badmoonrising"]["devilsadvocate"]
 
     def has_finished_night_action(self, player):
         """Return True if the devil's advocate has submitted the protect action"""
@@ -69,9 +74,7 @@ class DevilsAdvocate(Minion, BadMoonRising, Character, RecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

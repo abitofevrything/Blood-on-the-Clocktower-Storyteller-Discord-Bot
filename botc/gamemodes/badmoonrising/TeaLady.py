@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.tealady.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class TeaLady(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     """Tea Lady: If both your alive neighbors are good, they can not die.
@@ -30,7 +33,7 @@ class TeaLady(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Tea_Lady"
 
         self._role_enum = BMRRole.tealady
-        self._emoji = "<:bmrtealady:781152054986539040>"
+        self._emoji = emojis["badmoonrising"]["tealady"]
     
     def create_n1_instr_str(self):
         return "not_implemented"    

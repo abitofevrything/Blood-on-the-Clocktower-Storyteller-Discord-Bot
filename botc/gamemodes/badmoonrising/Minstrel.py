@@ -7,6 +7,9 @@ from ._utils import BadMoonRising, BMRRole
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.minstrel.value.lower()]
 
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Minstrel(Townsfolk, BadMoonRising, Character, NonRecurringAction): # Not sure what to put here, should it be RecurringAction? Probably depends on implementation.
     """Minstrel: If a Minion died today, all other players (except Travelers) are drunk that 
@@ -31,7 +34,7 @@ class Minstrel(Townsfolk, BadMoonRising, Character, NonRecurringAction): # Not s
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Minstrel"
 
         self._role_enum = BMRRole.minstrel
-        self._emoji = "<:bmrminstrel:781152054944596029>"
+        self._emoji = emojis["badmoonrising"]["minstrel"]
         
     def create_n1_instr_str(self):
         return "not_implemented"       

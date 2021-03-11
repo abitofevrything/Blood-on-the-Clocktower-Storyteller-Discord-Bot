@@ -2,10 +2,14 @@
 
 import json
 from botc import Character, Townsfolk, NonRecurringAction, StatusList, Flags, Inventory
+from botutils import BotEmoji
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
     character_text = json.load(json_file)[BMRRole.fool.value.lower()]
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
 
 
 class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
@@ -30,7 +34,7 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Fool"
 
         self._role_enum = BMRRole.fool
-        self._emoji = "<:bmrfool:781151556254564353>"
+        self._emoji = emojis["badmoonrising"]["fool"]
 
         self.inventory = Inventory(
             Flags.fool_death_evasion
@@ -45,9 +49,7 @@ class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

@@ -5,6 +5,7 @@ import configparser
 from botc import Character, Minion, ActionTypes, NonRecurringAction, Flags, Inventory, Action
 from botc.errors import AlreadyDead
 from botc.BOTCUtils import GameLogic
+from botutils import BotEmoji
 from ._utils import BadMoonRising, BMRRole
 import globvars
 
@@ -13,12 +14,17 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     
 with open('botutils/bot_text.json') as json_file:
     bot_text = json.load(json_file)
-    butterfly = bot_text["esthetics"]["butterfly"]
+
+butterfly = BotEmoji.butterfly
 
 Config = configparser.ConfigParser()
 Config.read('config.INI')
 
 DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Assassin(Minion, BadMoonRising, Character, NonRecurringAction):
     """Assassin: Once per game, at night*, choose a player: they die, even if for some reason they could not.
@@ -42,7 +48,7 @@ class Assassin(Minion, BadMoonRising, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Assassin"
 
         self._role_enum = BMRRole.assassin
-        self._emoji = "<:bmrassassin:781151556665344010>"
+        self._emoji = emojis["badmoonrising"]["assassin"]
 
         self.inventory = Inventory(
             Flags.assassin_unique_kill
@@ -57,9 +63,7 @@ class Assassin(Minion, BadMoonRising, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg

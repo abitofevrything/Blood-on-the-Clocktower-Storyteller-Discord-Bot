@@ -6,6 +6,7 @@ import globvars
 import discord
 import datetime
 from botc import Character, Townsfolk, NonRecurringAction, StatusList, AlreadyDead
+from botutils import BotEmoji
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
@@ -14,6 +15,10 @@ with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
 with open('botc/game_text.json') as json_file: 
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
+    
+with open('botc/emojis.json') as json_file:
+    emojis = json.load(json_file)
+
 
 class Grandmother(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     """Grandmother: You start knowing a good player & character. If the Demon kills them, you die too.
@@ -37,7 +42,7 @@ class Grandmother(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Grandmother"
 
         self._role_enum = BMRRole.grandmother
-        self._emoji = "<:bmrgrandmother:781019504427008010>"
+        self._emoji = emojis["badmoonrising"]["grandmother"]
 
         self._grandchild = None # Player object representing the grandmother's grandchild
         
@@ -59,9 +64,7 @@ class Grandmother(Townsfolk, BadMoonRising, Character, NonRecurringAction):
         
         # Some characters have a line of addendum
         if addendum:
-            with open("botutils/bot_text.json") as json_file:
-                bot_text = json.load(json_file)
-                scroll_emoji = bot_text["esthetics"]["scroll"]
+            scroll_emoji = BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
             
         return msg
