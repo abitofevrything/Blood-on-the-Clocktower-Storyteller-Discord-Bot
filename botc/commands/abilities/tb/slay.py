@@ -8,6 +8,7 @@ from discord.ext import commands
 from botc import check_if_is_player, check_if_is_day, check_if_lobby, RoleCannotUseCommand, \
     check_if_player_really_alive, check_if_can_slay, PlayerParser, AbilityForbidden, \
     NotAPlayer, BOTCUtils, AliveOnlyCommand, NotDay, NotLobbyChannel
+from botutils import BotEmoji
 
 with open('botutils/bot_text.json') as json_file: 
     language = json.load(json_file)
@@ -55,7 +56,7 @@ class Slay(commands.Cog, name = documentation["misc"]["abilities_cog"]):
 
     @slay.error
     async def slay_error(self, ctx, error):
-        emoji = documentation["cmd_warnings"]["x_emoji"]
+        emoji = BotEmoji.x_emoji
         # Incorrect character -> RoleCannotUseCommand
         if isinstance(error, RoleCannotUseCommand):
             return

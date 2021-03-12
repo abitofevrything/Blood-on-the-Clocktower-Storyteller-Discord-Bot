@@ -8,6 +8,7 @@ from discord.ext import commands
 from botc import check_if_is_player, check_if_is_night, check_if_dm, RoleCannotUseCommand, \
     check_if_player_really_dead, check_if_can_learn, PlayerParser, AbilityForbidden, \
     NotAPlayer, BOTCUtils, DeadOnlyCommand, NotDawn, NotDMChannel, check_if_is_dawn
+from botutils import BotEmoji
 
 with open('botutils/bot_text.json') as json_file: 
     language = json.load(json_file)
@@ -55,7 +56,7 @@ class Learn(commands.Cog, name = documentation["misc"]["abilities_cog"]):
 
     @learn.error
     async def learn_error(self, ctx, error):
-        emoji = documentation["cmd_warnings"]["x_emoji"]
+        emoji = BotEmoji.x_emoji
         # Incorrect character -> RoleCannotUseCommand
         if isinstance(error, RoleCannotUseCommand):
             return

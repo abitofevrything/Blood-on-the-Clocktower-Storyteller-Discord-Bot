@@ -5,6 +5,7 @@ import json
 import configparser
 import random
 from .Category import Category
+from botutils import BotEmoji
 from discord.ext import commands, tasks
 
 Config = configparser.ConfigParser()
@@ -15,7 +16,6 @@ MAX_MESSAGE_LEN = int(MAX_MESSAGE_LEN)
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
-    x_emoji = documentation["cmd_warnings"]["x_emoji"]
     player_not_found = documentation["cmd_warnings"]["player_not_found"]
     no_self_targetting_str = documentation["cmd_warnings"]["no_self_targetting_str"]
     except_first_night_str = documentation["cmd_warnings"]["except_first_night_str"]
@@ -26,6 +26,8 @@ with open('botc/game_text.json') as json_file:
     unique_ability_used = documentation["cmd_warnings"]["unique_ability_used"]
     not_under_status = documentation["cmd_warnings"]["not_under_status"]
     lore = documentation["lore"]
+
+x_emoji = BotEmoji.x_emoji
 
 
 # ========== TARGETS ===============================================================

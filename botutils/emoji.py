@@ -19,6 +19,7 @@ class BotEmoji:
     beating_heart = emojis["beating_heart"]
     trophy_animated = emojis["trophy_animated"]
     char1 = emojis["char1"]
+    x_emoji = emojis["x_emoji"]
     char2 = emojis["char2"]
     char3 = emojis["char3"]
     char4 = emojis["char4"]
