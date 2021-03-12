@@ -25,7 +25,7 @@ Install Python 3.6+.
 
 Clone this repository. Rename `config.INI.example` to `config.INI` and `preferences.INI.example` to `preferences.INI`, and fill in the fields inside `config.INI`. To change gameplay-related settings, edit `preferences.INI`.
 
-Rename `notify.csv.example` to `notify.csv`, `ignore.csv.example` to `ignore.csv`, `emojis.json.example` to `emojis.json` and `botc/emojis.json` to `botc/emojis.json`.
+Rename `notify.csv.example` to `notify.csv`, `ignore.csv.example` to `ignore.csv`, `emojis.json.example` to `emojis.json` and `botc/emojis.json.example` to `botc/emojis.json`.
 
 Run `pip install -r requirements.txt` to install the required dependencies.
 
@@ -37,11 +37,11 @@ Install Python 3.9+
 
 Clone this repository. Rename `config.INI.example` to `config.INI` and `preferences.INI.example` to `preferences.INI`, and fill in the fields inside `config.INI`. To change gameplay-related settings, edit `preferences.INI`.
 
-Rename `notify.csv.example` to `notify.csv`, `ignore.csv.example` to `ignore.csv`, `emojis.json.example` to `emojis.json` and `botc/emojis.json` to `botc/emojis.json`.
+Rename `notify.csv.example` to `notify.csv`, `ignore.csv.example` to `ignore.csv`, `emojis.json.example` to `emojis.json` and `botc/emojis.json.example` to `botc/emojis.json`.
 
 Run `pip install -r requirements.txt` to install the required dependencies.
 
-Set the environement variable `PYTHONUTF8` to `1`.
+Set the environment variable `PYTHONUTF8` to `1`.
 
 Finally, run the `main.py` file to start the bot.
 
