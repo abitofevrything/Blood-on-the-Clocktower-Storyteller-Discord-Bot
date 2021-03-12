@@ -67,7 +67,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         # You may not whisper to yourself
         if player.user.id == recipient.user.id:
             msg = whisper_self.format(
-                botutils.BotEmoji.cross,
+                botutils.BotEmoji.x_emoji,
                 ctx.author.mention
             )
             try:
@@ -101,7 +101,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             
     @whisper.error
     async def whisper_error(self, ctx, error):
-        emoji = botutils.BotEmoji.cross
+        emoji = botutils.BotEmoji.x_emoji
         # Non-registered or quit player -> NotAPlayer
         if isinstance(error, NotAPlayer):
             return

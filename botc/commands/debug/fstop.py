@@ -56,7 +56,7 @@ class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
             await ctx.send(feedback.format(botutils.BotEmoji.check))
         else:
             feedback = documentation["cmd_warnings"]["no_game_running"]
-            await ctx.send(feedback.format(ctx.author.mention, botutils.BotEmoji.cross))
+            await ctx.send(feedback.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
     @fstop.error
     async def fstop_error(self, ctx, error):

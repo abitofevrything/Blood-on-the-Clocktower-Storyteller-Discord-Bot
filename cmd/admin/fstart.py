@@ -36,7 +36,7 @@ class Fstart(Admin, name = language["system"]["admin_cog"]):
         if len(globvars.master_state.pregame) < game.MIN_PLAYERS:
             msg = fstart_min.format(
                 ctx.author.mention,
-                botutils.BotEmoji.cross,
+                botutils.BotEmoji.x_emoji,
                 str(game),
                 game.MIN_PLAYERS
             )
@@ -46,7 +46,7 @@ class Fstart(Admin, name = language["system"]["admin_cog"]):
         if len(globvars.master_state.pregame) > game.MAX_PLAYERS:
             msg = fstart_max.format(
                 ctx.author.mention,
-                botutils.BotEmoji.cross,
+                botutils.BotEmoji.x_emoji,
                 str(game),
                 game.MAX_PLAYERS
             )

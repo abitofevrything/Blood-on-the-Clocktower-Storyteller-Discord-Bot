@@ -13,7 +13,6 @@ class BotEmoji:
     loading = emojis["loading"]
     butterfly = emojis["butterfly"]
     check = emojis["check"]
-    cross = emojis["cross"]
     gears = emojis["gears"]
     success = emojis["success"]
     beating_heart = emojis["beating_heart"]

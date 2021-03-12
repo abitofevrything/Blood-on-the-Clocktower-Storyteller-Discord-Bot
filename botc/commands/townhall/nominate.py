@@ -61,7 +61,7 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         if nomination_loop.is_running():
             msg = nomination_ongoing.format(
                 ctx.author.mention, 
-                botutils.BotEmoji.cross
+                botutils.BotEmoji.x_emoji
             )
             await ctx.send(msg)
             return
@@ -70,7 +70,7 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         elif base_day_loop.is_running():
             msg = nominations_not_open.format(
                 ctx.author.mention, 
-                botutils.BotEmoji.cross
+                botutils.BotEmoji.x_emoji
             )
             await ctx.send(msg)
             return
@@ -85,21 +85,21 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             else:
                 msg = cannot_be_nominated_again.format(
                     ctx.author.mention, 
-                    botutils.BotEmoji.cross, 
+                    botutils.BotEmoji.x_emoji, 
                     nominated.game_nametag
                 )
                 await ctx.send(msg)
         else:
             msg = cannot_nominate_again.format(
                 ctx.author.mention, 
-                botutils.BotEmoji.cross
+                botutils.BotEmoji.x_emoji
             )
             await ctx.send(msg)
 
         
     @nominate.error
     async def nominate_error(self, ctx, error):
-        emoji = botutils.BotEmoji.cross
+        emoji = botutils.BotEmoji.x_emoji
         # Non-registered or quit player -> NotAPlayer
         if isinstance(error, NotAPlayer):
             return

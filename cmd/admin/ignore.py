@@ -77,7 +77,7 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
         else:
             msg = already_ignored.format(
                 ctx.author.mention,
-                botutils.BotEmoji.cross,
+                botutils.BotEmoji.x_emoji,
                 member.display_name,
                 member.id
             )
@@ -97,7 +97,7 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
         if member.id not in globvars.ignore_list:
             msg = not_ignored.format(
                 ctx.author.mention,
-                botutils.BotEmoji.cross,
+                botutils.BotEmoji.x_emoji,
                 member.display_name,
                 member.id
             )
