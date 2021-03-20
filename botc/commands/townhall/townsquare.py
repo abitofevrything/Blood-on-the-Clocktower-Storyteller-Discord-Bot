@@ -70,7 +70,7 @@ class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):
 
     @townsquare.error
     async def townsquare_error(self, ctx, error):
-        emoji = botutils.BotEmoji.cross
+        emoji = botutils.BotEmoji.x_emoji
         # Check failed -> commands.CheckFailure
         if isinstance(error, commands.CheckFailure):
             return

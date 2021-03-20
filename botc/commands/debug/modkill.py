@@ -14,7 +14,7 @@ with open('botutils/bot_text.json') as json_file:
     bot_text = json.load(json_file)
     error_str = bot_text["system"]["error"]
 
-x_emoji = botutils.BotEmoji.cross
+x_emoji = botutils.BotEmoji.x_emoji
 check_emoji = botutils.BotEmoji.check
 
 

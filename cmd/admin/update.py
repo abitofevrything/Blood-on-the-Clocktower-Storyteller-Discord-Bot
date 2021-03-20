@@ -50,7 +50,7 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
             return
 
         if globvars.master_state.game:
-            await ctx.send(language["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.cross))
+            await ctx.send(language["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.x_emoji))
             return
 
         await ctx.send(language["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))

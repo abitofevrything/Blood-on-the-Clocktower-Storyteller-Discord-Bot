@@ -49,7 +49,7 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
 
             delta = time.time() - globvars.last_notify
             if delta < NOTIFY_COOLDOWN:
-                await ctx.send(cooldown_str.format(ctx.author.mention, botutils.BotEmoji.cross, display_time(int(NOTIFY_COOLDOWN - delta))))
+                await ctx.send(cooldown_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji, display_time(int(NOTIFY_COOLDOWN - delta))))
                 return
 
             if botutils.check_if_lobby(ctx):
@@ -89,7 +89,7 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
 
         import globvars
         if ctx.author.id in globvars.notify_list:
-            msg = already_in_notify.format(ctx.author.mention, botutils.BotEmoji.cross)
+            msg = already_in_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
             await ctx.send(msg)
         else:
             globvars.notify_list.append(ctx.author.id)
@@ -113,7 +113,7 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
             msg = remove_notify.format(botutils.BotEmoji.check)
             await ctx.send(msg)
         else:
-            msg = already_not_notify.format(ctx.author.mention, botutils.BotEmoji.cross)
+            msg = already_not_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
             await ctx.send(msg)
 
     @notify.error

@@ -43,7 +43,7 @@ class Fjoin(Admin, name = language["system"]["admin_cog"]):
             if len(globvars.master_state.pregame) >= game.MAX_PLAYERS:
                 msg = fjoin_max.format(
                     ctx.author.mention,
-                    botutils.BotEmoji.cross,
+                    botutils.BotEmoji.x_emoji,
                     str(game),
                     game.MAX_PLAYERS
                 )
