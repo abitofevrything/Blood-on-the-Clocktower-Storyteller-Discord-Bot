@@ -80,13 +80,13 @@ class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         msg += setup_info.format(
             nb_total_players,
             nb_townsfolks,
-            "s" if nb_townsfolks > 1 else "",
+            "s" if nb_townsfolks != 1 else "",
             nb_outsiders,
-            "s" if nb_outsiders > 1 else "",
+            "s" if nb_outsiders != 1 else "",
             nb_minions,
-            "s" if nb_minions > 1 else "",
+            "s" if nb_minions != 1 else "",
             nb_demons,
-            "s" if nb_demons > 1 else ""
+            "s" if nb_demons != 1 else ""
         )
 
         msg += "\n"
