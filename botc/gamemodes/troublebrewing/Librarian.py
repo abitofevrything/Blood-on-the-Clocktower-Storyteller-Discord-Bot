@@ -156,6 +156,10 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     
     def __create_droisoned_info(self, librarian_player):
         """Create the droisoned info for librarian"""
+        
+        # 1/5 chance of no outsider (1/5 chance for each outsider type + this)
+        if random.random() < 0.2:
+            return None
 
         # Choosing outsider type
         tb_outsider_all = BOTCUtils.get_role_list(TroubleBrewing, Outsider)
