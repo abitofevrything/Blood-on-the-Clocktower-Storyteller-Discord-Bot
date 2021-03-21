@@ -79,7 +79,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             msg = from_str.format(
                 botutils.BotEmoji.unread_message,
                 player.game_nametag,
-                content
+                discord.utils.escape_markdown(content)
             )
             await recipient.user.send(msg)
         except discord.Forbidden:
@@ -89,7 +89,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             msg = to_str.format(
                 botutils.BotEmoji.whisper,
                 recipient.game_nametag,
-                content
+                discord.utils.escape_markdown(content)
             )
             await ctx.send(msg)
             announcement_msg = whisper_announcement.format(
