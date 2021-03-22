@@ -40,7 +40,15 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
 
         p = subprocess.run(["git", "-C", os.path.dirname(sys.argv[0]), "pull", "--stat", "--ff-only"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
-        await ctx.send(botutils.create_code_block(p.stdout.decode("utf-8")))
+        output = ""
+        for line in p.stdout.decode("utf-8"):
+            if len(output + line + "\n") <= 2000:
+                output += f"{line}\n"
+            else:
+                await ctx.send(output)
+                output = ""
+        if output:
+            await ctx.send(output)
 
         if p.returncode != 0:
             await ctx.send(language["cmd"]["update_exitcode"].format(p.returncode))
