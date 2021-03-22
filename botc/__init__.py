@@ -38,5 +38,7 @@ from .status import (ButlerService, Drunkenness, Poison, RavenkeeperActivated,
                      RedHerring, SafetyFromDemon, StatusList, Storyteller)
 from .Team import Team
 from .Townsfolk import Townsfolk
+
 from .setups import load_pack  # isort: split
+
 from .Townsquare import Townsquare
