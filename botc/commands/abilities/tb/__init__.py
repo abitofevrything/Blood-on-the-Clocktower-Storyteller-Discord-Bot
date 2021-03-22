@@ -6,6 +6,7 @@ from .read import Read
 from .serve import Serve
 from .slay import Slay
 
+
 def setup(client):
     client.add_cog(Kill(client))
     client.add_cog(Learn(client))

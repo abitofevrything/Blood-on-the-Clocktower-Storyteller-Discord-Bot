@@ -1,12 +1,15 @@
 """Nominate command"""
 
-import traceback
 import json
-import botutils
+import traceback
+
 from discord.ext import commands
-from botc import check_if_is_player, check_if_lobby, check_if_player_apparently_alive, \
-    check_if_is_day, PlayerConverter, BOTCUtils, NotAPlayer, NotDay, NotLobbyChannel, \
-    AliveOnlyCommand
+
+import botutils
+from botc import (AliveOnlyCommand, BOTCUtils, NotAPlayer, NotDay,
+                  NotLobbyChannel, PlayerConverter, check_if_is_day,
+                  check_if_is_player, check_if_lobby,
+                  check_if_player_apparently_alive)
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
@@ -54,7 +57,7 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         characters: living players
         """
         import globvars
-        from botc.gameloops import nomination_loop, base_day_loop
+        from botc.gameloops import base_day_loop, nomination_loop
         player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         # A nomination is currently going on. The player cannot nominate.

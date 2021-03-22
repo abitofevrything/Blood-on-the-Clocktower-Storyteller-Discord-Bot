@@ -1,8 +1,11 @@
 """Contains the github command cog"""
 
 import json
-import botutils
+
 from discord.ext import commands
+
+import botutils
+
 from ._miscellaneous import Miscellaneous
 
 with open('botutils/bot_text.json') as json_file:

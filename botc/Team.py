@@ -2,6 +2,7 @@
 
 import enum
 
+
 class Team(enum.Enum):
     """BoTC alliance/team enum class: Good, Evil"""
 

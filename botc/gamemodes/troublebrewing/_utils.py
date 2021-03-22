@@ -1,6 +1,7 @@
 """Contains TBRole enum class and TroubleBrewing class"""
 
 import enum
+
 from botc.gamemodes import Gamemode
 
 

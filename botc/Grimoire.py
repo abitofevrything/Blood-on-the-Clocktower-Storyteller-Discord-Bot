@@ -1,8 +1,10 @@
 """Contains the Grimoire class"""
 
-import random
 import math
-from PIL import Image, ImageFont, ImageDraw
+import random
+
+from PIL import Image, ImageDraw, ImageFont
+
 from botc.gamemodes import Gamemode
 
 

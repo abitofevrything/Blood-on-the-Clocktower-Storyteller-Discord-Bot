@@ -1,13 +1,15 @@
 """Townsquare command"""
 
-import traceback
-import json
-import discord
 import configparser
+import json
+import traceback
+
+import discord
+from discord.ext import commands
+
 import botutils
 from botc import Townsquare as TownsquareImage
 from library import display_time
-from discord.ext import commands
 
 Config = configparser.ConfigParser()
 Config.read("preferences.INI")

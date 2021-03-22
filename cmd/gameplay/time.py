@@ -2,12 +2,15 @@
 
 import configparser
 import json
-import botutils
 import traceback
 from datetime import datetime, timezone
+
 from discord.ext import commands
-from ._gameplay import Gameplay
+
+import botutils
 from botutils import lobby_timeout
+
+from ._gameplay import Gameplay
 
 Config = configparser.ConfigParser()
 

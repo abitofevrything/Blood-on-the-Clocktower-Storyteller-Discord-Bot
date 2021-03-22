@@ -1,11 +1,14 @@
 """Contains the fjoin command cog"""
 
-import discord
-import botutils
 import json
+
+import discord
 from discord.ext import commands
-from ._admin import Admin
+
+import botutils
 from botutils import lobby_timeout
+
+from ._admin import Admin
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

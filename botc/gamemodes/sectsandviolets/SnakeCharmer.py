@@ -1,7 +1,9 @@
 """Contains the Snake Charmer Character class"""
 
 import json
+
 from botc import Character, Townsfolk
+
 from ._utils import SectsAndViolets, SnVRole
 
 with open('botc/gamemodes/sectsandviolets/character_text.json') as json_file:

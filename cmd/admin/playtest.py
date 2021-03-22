@@ -1,10 +1,13 @@
 """Playtest command cog"""
 
-import botutils
-import json
 import configparser
-from ._admin import Admin
+import json
+
 from discord.ext import commands
+
+import botutils
+
+from ._admin import Admin
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")

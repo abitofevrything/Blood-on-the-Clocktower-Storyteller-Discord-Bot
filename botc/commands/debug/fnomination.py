@@ -2,9 +2,11 @@
 
 import json
 import traceback
+
+from discord.ext import commands
+
 import botutils
 from botc import Phase
-from discord.ext import commands
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)

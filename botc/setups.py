@@ -1,18 +1,28 @@
 """Contains functions to help load the game pack into the main bot"""
 
 from models import FormatterMeta
+
 from .Game import Game
-from .gamemodes.troublebrewing import Baron, Butler, Chef, Drunk, Empath, FortuneTeller, \
-        Imp, Investigator, Librarian, Mayor, Monk, Poisoner, Ravenkeeper, Recluse, Saint, \
-        ScarletWoman, Slayer, Soldier, Spy, Undertaker, Virgin, Washerwoman
-from .gamemodes.badmoonrising import Assassin, Chambermaid, Courtier, DevilsAdvocate, \
-        Exorcist, Fool, Gambler, Godfather, Goon, Gossip, Grandmother, Innkeeper, Lunatic, \
-        Mastermind, Minstrel, Moonchild, Pacifist, Po, Professor, Pukka, Sailor, Shabaloth, \
-        TeaLady, Tinker, Zombuul
-from .gamemodes.sectsandviolets import Artist, Barber, Cerenovus, Clockmaker, Dreamer, \
-    EvilTwin, FangGu, Flowergirl, Juggler, Klutz, Mathematician, Mutant, NoDashii, Oracle, \
-    Philosopher, PitHag, Sage, Savant, Seamstress, SnakeCharmer, Sweetheart, TownCrier, \
-    Vigormortis, Vortox, Witch
+from .gamemodes.badmoonrising import (Assassin, Chambermaid, Courtier,
+                                      DevilsAdvocate, Exorcist, Fool, Gambler,
+                                      Godfather, Goon, Gossip, Grandmother,
+                                      Innkeeper, Lunatic, Mastermind, Minstrel,
+                                      Moonchild, Pacifist, Po, Professor,
+                                      Pukka, Sailor, Shabaloth, TeaLady,
+                                      Tinker, Zombuul)
+from .gamemodes.sectsandviolets import (Artist, Barber, Cerenovus, Clockmaker,
+                                        Dreamer, EvilTwin, FangGu, Flowergirl,
+                                        Juggler, Klutz, Mathematician, Mutant,
+                                        NoDashii, Oracle, Philosopher, PitHag,
+                                        Sage, Savant, Seamstress, SnakeCharmer,
+                                        Sweetheart, TownCrier, Vigormortis,
+                                        Vortox, Witch)
+from .gamemodes.troublebrewing import (Baron, Butler, Chef, Drunk, Empath,
+                                       FortuneTeller, Imp, Investigator,
+                                       Librarian, Mayor, Monk, Poisoner,
+                                       Ravenkeeper, Recluse, Saint,
+                                       ScarletWoman, Slayer, Soldier, Spy,
+                                       Undertaker, Virgin, Washerwoman)
 
 
 class BOTCFormatter(FormatterMeta):

@@ -1,13 +1,16 @@
 """Contains the Empath Character class"""
 
-import json
-import discord
-import datetime
-import random
 import configparser
-from botc import Townsfolk, Character, BOTCUtils, NonRecurringAction
-from ._utils import TroubleBrewing, TBRole
+import datetime
+import json
+import random
+
+import discord
+
 import botutils
+from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.empath.value.lower()]

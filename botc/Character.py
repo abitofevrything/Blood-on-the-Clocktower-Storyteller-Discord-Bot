@@ -1,18 +1,20 @@
 """Contains the Character class"""
 
-import json
-import discord
-import botutils
-import datetime
 import configparser
-from .Category import Category
-from .Team import Team
-from .errors import AlreadyDead
-from .BOTCUtils import LorePicker
-from .flag_inventory import Inventory, Flags
-from .abilities import ActionTypes, Action
-from .BOTCUtils import GameLogic
+import datetime
+import json
+
+import discord
+
+import botutils
 import globvars
+
+from .abilities import Action, ActionTypes
+from .BOTCUtils import GameLogic, LorePicker
+from .Category import Category
+from .errors import AlreadyDead
+from .flag_inventory import Flags, Inventory
+from .Team import Team
 
 Preferences = configparser.ConfigParser()
 

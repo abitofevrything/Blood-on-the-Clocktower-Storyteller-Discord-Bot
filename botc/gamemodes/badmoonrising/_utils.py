@@ -1,6 +1,7 @@
 """Contains BMRRole enum class and Bad Moon Rising class"""
 
 import enum
+
 from botc.gamemodes import Gamemode
 
 

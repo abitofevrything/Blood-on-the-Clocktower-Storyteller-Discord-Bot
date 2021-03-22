@@ -1,10 +1,12 @@
 """Contains the on_command_error event listener"""
 
 #import sys
-import botutils
 import json
 import traceback
+
 from discord.ext import commands
+
+import botutils
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

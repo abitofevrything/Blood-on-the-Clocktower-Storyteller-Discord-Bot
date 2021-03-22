@@ -1,10 +1,13 @@
 """Contains the stats command cog"""
 
-import botutils
-import json
 import configparser
+import json
 import traceback
+
 from discord.ext import commands
+
+import botutils
+
 from ._gameplay import Gameplay
 
 Config = configparser.ConfigParser()

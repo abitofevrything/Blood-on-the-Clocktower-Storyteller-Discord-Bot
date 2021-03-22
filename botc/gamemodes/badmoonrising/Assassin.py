@@ -1,9 +1,11 @@
 """Contains the Assassin Character class"""
 
 import json
-from botc import Character, Minion, ActionTypes
-from ._utils import BadMoonRising, BMRRole
+
 import globvars
+from botc import ActionTypes, Character, Minion
+
+from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.assassin.value.lower()]

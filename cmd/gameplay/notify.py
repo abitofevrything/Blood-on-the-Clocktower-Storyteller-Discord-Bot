@@ -1,14 +1,17 @@
 """Contains the notify command cog"""
 
-import botutils
+import configparser
 import json
 import time
 import traceback
-import configparser
-from ._gameplay import Gameplay
-from discord.ext import commands
+
 from discord import Status
+from discord.ext import commands
+
+import botutils
 from library import display_time
+
+from ._gameplay import Gameplay
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")

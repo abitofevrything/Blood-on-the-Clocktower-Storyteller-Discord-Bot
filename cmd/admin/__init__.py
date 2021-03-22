@@ -1,12 +1,13 @@
-from .ignore import Ignore
-from .op import Op
 from .deop import Deop
-from .fstart import Fstart
 from .fjoin import Fjoin
 from .fleave import Fleave
-from .playtest import Playtest
 from .frestart import Frestart
+from .fstart import Fstart
+from .ignore import Ignore
+from .op import Op
+from .playtest import Playtest
 from .update import Update
+
 
 def setup(client):
     client.add_cog(Ignore(client))

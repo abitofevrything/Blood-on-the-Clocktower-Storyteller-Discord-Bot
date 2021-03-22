@@ -1,15 +1,18 @@
 """Contains the Librarian Character class"""
 
-import json
-import discord
-import random
-import datetime
 import configparser
-from botc import Townsfolk, Character, Category, NonRecurringAction, BOTCUtils, \
-    Outsider
-from ._utils import TroubleBrewing, TBRole
+import datetime
+import json
+import random
+
+import discord
+
 import botutils
 import globvars
+from botc import (BOTCUtils, Category, Character, NonRecurringAction, Outsider,
+                  Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.librarian.value.lower()]

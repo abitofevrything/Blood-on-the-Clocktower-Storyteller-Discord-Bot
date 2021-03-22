@@ -1,7 +1,8 @@
 """Contains the Pregame class"""
 
-import globvars
 import configparser
+
+import globvars
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")

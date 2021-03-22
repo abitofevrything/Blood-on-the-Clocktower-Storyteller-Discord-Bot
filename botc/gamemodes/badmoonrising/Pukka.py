@@ -1,11 +1,13 @@
 """Contains the Pukka Character class"""
 
-import random
 import json
-from botc import Character, Demon, BOTCUtils, Townsfolk, Outsider
-from ._utils import BadMoonRising, BMRRole
+import random
+
 import botutils
 import globvars
+from botc import BOTCUtils, Character, Demon, Outsider, Townsfolk
+
+from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.pukka.value.lower()]

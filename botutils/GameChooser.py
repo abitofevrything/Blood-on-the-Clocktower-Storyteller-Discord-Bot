@@ -2,6 +2,7 @@
 
 from botc.gamemodes.Gamemode import Gamemode
 
+
 class GameChooser:
     """A class to faciliate gamemode choosing and voting"""
 

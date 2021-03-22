@@ -1,7 +1,9 @@
 """Contains the Goon Character class"""
 
 import json
+
 from botc import Character, Outsider
+
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:

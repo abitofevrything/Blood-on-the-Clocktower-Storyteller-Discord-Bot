@@ -1,8 +1,9 @@
 from .nominate import Nominate
 from .stats import Stats
+from .time import Time
 from .townsquare import Townsquare
 from .whisper import Whisper
-from .time import Time
+
 
 def setup(client):
     client.add_cog(Nominate(client))

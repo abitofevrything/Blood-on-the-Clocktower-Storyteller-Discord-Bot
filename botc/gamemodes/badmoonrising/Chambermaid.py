@@ -1,7 +1,9 @@
 """Contains the Chambermaid Character class"""
 
 import json
+
 from botc import Character, Townsfolk
+
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:

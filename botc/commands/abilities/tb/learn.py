@@ -1,13 +1,17 @@
 """Learn command"""
 
-import botutils
-import discord
-import traceback
 import json
+import traceback
+
+import discord
 from discord.ext import commands
-from botc import check_if_is_player, check_if_is_night, check_if_dm, RoleCannotUseCommand, \
-    check_if_player_really_dead, check_if_can_learn, PlayerParser, AbilityForbidden, \
-    NotAPlayer, BOTCUtils, DeadOnlyCommand, NotDawn, NotDMChannel, check_if_is_dawn
+
+import botutils
+from botc import (AbilityForbidden, BOTCUtils, DeadOnlyCommand, NotAPlayer,
+                  NotDawn, NotDMChannel, PlayerParser, RoleCannotUseCommand,
+                  check_if_can_learn, check_if_dm, check_if_is_dawn,
+                  check_if_is_night, check_if_is_player,
+                  check_if_player_really_dead)
 from botutils import BotEmoji
 
 with open('botutils/bot_text.json') as json_file:

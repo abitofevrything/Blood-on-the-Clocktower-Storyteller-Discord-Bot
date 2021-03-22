@@ -1,9 +1,12 @@
 """Contains the role command cog"""
 
-import botutils
 import json
 import traceback
+
 from discord.ext import commands
+
+import botutils
+
 from ._miscellaneous import Miscellaneous
 
 with open('botutils/bot_text.json') as json_file:

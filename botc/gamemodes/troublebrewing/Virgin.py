@@ -1,9 +1,12 @@
 """Contains the Virgin Character class"""
 
 import json
+
 import botutils
-from botc import Townsfolk, Character, NonRecurringAction, Inventory, Flags, Category
-from ._utils import TroubleBrewing, TBRole
+from botc import (Category, Character, Flags, Inventory, NonRecurringAction,
+                  Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.virgin.value.lower()]

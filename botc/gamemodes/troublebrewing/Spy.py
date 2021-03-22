@@ -1,17 +1,20 @@
 """Contains the Spy Character class"""
 
-import json
-import random
-import discord
 import asyncio
 import configparser
 import datetime
-from botc import Minion, Character, Townsfolk, Outsider, NonRecurringAction, \
-    BOTCUtils
-from ._utils import TroubleBrewing, TBRole
+import json
+import random
+
+import discord
 from discord.ext import tasks
+
 import botutils
 import globvars
+from botc import (BOTCUtils, Character, Minion, NonRecurringAction, Outsider,
+                  Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 Preferences = configparser.ConfigParser()
 Preferences.read("preferences.INI")

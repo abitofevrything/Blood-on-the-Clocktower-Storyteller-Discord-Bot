@@ -1,9 +1,10 @@
 from .join import Join
-from .quit import Quit
-from .time import Time
-from .stats import Stats
-from .start import Start
 from .notify import Notify
+from .quit import Quit
+from .start import Start
+from .stats import Stats
+from .time import Time
+
 
 def setup(client):
     client.add_cog(Join(client))

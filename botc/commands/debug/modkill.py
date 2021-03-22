@@ -2,10 +2,12 @@
 
 import json
 import traceback
+
+from discord.ext import commands
+
 import botutils
 import globvars
-from botc import PlayerConverter, PlayerNotFound, AlreadyDead
-from discord.ext import commands
+from botc import AlreadyDead, PlayerConverter, PlayerNotFound
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)

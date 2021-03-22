@@ -1,11 +1,13 @@
 """Contains the on_ready event listener"""
 
 import configparser
-import json
 import csv
+import json
 import sqlite3
-import botutils
+
 from discord.ext import commands
+
+import botutils
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")

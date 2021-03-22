@@ -1,12 +1,15 @@
 """Contains the join command cog"""
 
-import botutils
 import json
 import random
 import traceback
+
 from discord.ext import commands
-from ._gameplay import Gameplay
+
+import botutils
 from botutils import lobby_timeout
+
+from ._gameplay import Gameplay
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

@@ -2,12 +2,15 @@
 
 import json
 import random
+
 import discord
-from botc import BOTCUtils, Minion, Character, NonRecurringAction, Townsfolk
-from botc.Outsider import Outsider
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
 import globvars
+from botc import BOTCUtils, Character, Minion, NonRecurringAction, Townsfolk
+from botc.Outsider import Outsider
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.baron.value.lower()]

@@ -1,10 +1,12 @@
 """Contains the on_command event listener"""
 
-import discord
-import json
 import configparser
-import botutils
+import json
+
+import discord
 from discord.ext import commands
+
+import botutils
 
 Config = configparser.ConfigParser()
 Config.read("preferences.INI")

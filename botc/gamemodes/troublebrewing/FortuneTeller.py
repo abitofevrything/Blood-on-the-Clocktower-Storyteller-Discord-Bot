@@ -1,16 +1,19 @@
 """Contains the Fortune Teller Character class"""
 
+import configparser
+import datetime
 import json
 import random
+
 import discord
-import datetime
-import configparser
-from botc import Action, ActionTypes, Townsfolk, Character, Storyteller, RedHerring, \
-    RecurringAction, Category, StatusList
-from botc.BOTCUtils import GameLogic
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
 import globvars
+from botc import (Action, ActionTypes, Category, Character, RecurringAction,
+                  RedHerring, StatusList, Storyteller, Townsfolk)
+from botc.BOTCUtils import GameLogic
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.fortuneteller.value.lower()]

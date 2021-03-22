@@ -2,6 +2,7 @@
 
 import enum
 
+
 class Gamemode(enum.Enum):
     """BoTC gamemode enum class: TB, BMR, S&V"""
 

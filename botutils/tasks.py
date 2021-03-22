@@ -1,12 +1,14 @@
 """Contains some tasks/async loops"""
 
-import botutils
-import json
 import asyncio
-import csv
-import discord
 import configparser
+import csv
+import json
+
+import discord
 from discord.ext import tasks
+
+import botutils
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")
@@ -50,6 +52,7 @@ async def lobby_timeout():
 async def after_lobby_timeout():
     """After lobby timeout"""
     import globvars
+
     # Don't cancel the game if it just started
     if globvars.master_state.game:
         return

@@ -2,8 +2,10 @@
 
 import json
 import traceback
-import botutils
+
 from discord.ext import commands
+
+import botutils
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
@@ -34,7 +36,7 @@ class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
     async def fstop(self, ctx):
         """Fstop command"""
 
-        from botc.gameloops import nomination_loop, base_day_loop, debate_timer
+        from botc.gameloops import base_day_loop, debate_timer, nomination_loop
 
         # Stop the nomination loop if it is running
         if nomination_loop.is_running():

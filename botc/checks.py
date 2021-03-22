@@ -1,8 +1,10 @@
 """Contains some checking functions for botc commands"""
 
 import configparser
-from botc import BOTCUtils, NotAPlayer, RoleCannotUseCommand, AliveOnlyCommand, \
-    DeadOnlyCommand, NotDay, NotDawn, NotNight, NotDMChannel, NotLobbyChannel
+
+from botc import (AliveOnlyCommand, BOTCUtils, DeadOnlyCommand, NotAPlayer,
+                  NotDawn, NotDay, NotDMChannel, NotLobbyChannel, NotNight,
+                  RoleCannotUseCommand)
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")

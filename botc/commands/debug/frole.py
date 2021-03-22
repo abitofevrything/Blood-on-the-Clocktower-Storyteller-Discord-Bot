@@ -2,10 +2,12 @@
 
 import json
 import traceback
-import botutils
+
 import discord
 from discord.ext import commands
-from botc import PlayerConverter, RoleConverter, PlayerNotFound, RoleNotFound
+
+import botutils
+from botc import PlayerConverter, PlayerNotFound, RoleConverter, RoleNotFound
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)

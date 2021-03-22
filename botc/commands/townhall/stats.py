@@ -1,12 +1,14 @@
 """Stats command"""
 
-import traceback
 import json
 import math
-import botutils
-from library import fancy
-from botc import Phase, RoleGuide
+import traceback
+
 from discord.ext import commands
+
+import botutils
+from botc import Phase, RoleGuide
+from library import fancy
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

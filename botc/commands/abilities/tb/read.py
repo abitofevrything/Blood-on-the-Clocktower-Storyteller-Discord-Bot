@@ -1,13 +1,16 @@
 """Read command"""
 
-import botutils
-import discord
-import traceback
 import json
+import traceback
+
+import discord
 from discord.ext import commands
-from botc import check_if_is_player, check_if_is_night, check_if_dm, RoleCannotUseCommand, \
-    check_if_player_really_alive, check_if_can_read, PlayerParser, AbilityForbidden, \
-    NotAPlayer, BOTCUtils, AliveOnlyCommand, NotNight, NotDMChannel
+
+import botutils
+from botc import (AbilityForbidden, AliveOnlyCommand, BOTCUtils, NotAPlayer,
+                  NotDMChannel, NotNight, PlayerParser, RoleCannotUseCommand,
+                  check_if_can_read, check_if_dm, check_if_is_night,
+                  check_if_is_player, check_if_player_really_alive)
 from botutils import BotEmoji
 
 with open('botutils/bot_text.json') as json_file:

@@ -1,13 +1,16 @@
 """Slay command"""
 
-import botutils
-import discord
-import traceback
 import json
+import traceback
+
+import discord
 from discord.ext import commands
-from botc import check_if_is_player, check_if_is_day, check_if_lobby, RoleCannotUseCommand, \
-    check_if_player_really_alive, check_if_can_slay, PlayerParser, AbilityForbidden, \
-    NotAPlayer, BOTCUtils, AliveOnlyCommand, NotDay, NotLobbyChannel
+
+import botutils
+from botc import (AbilityForbidden, AliveOnlyCommand, BOTCUtils, NotAPlayer,
+                  NotDay, NotLobbyChannel, PlayerParser, RoleCannotUseCommand,
+                  check_if_can_slay, check_if_is_day, check_if_is_player,
+                  check_if_lobby, check_if_player_really_alive)
 from botutils import BotEmoji
 
 with open('botutils/bot_text.json') as json_file:

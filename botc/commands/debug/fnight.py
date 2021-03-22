@@ -2,9 +2,11 @@
 
 import json
 import traceback
+
+from discord.ext import commands
+
 import botutils
 from botc import Phase
-from discord.ext import commands
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
@@ -38,7 +40,8 @@ class Fnight(commands.Cog, name = documentation["misc"]["debug_cog"]):
         import globvars
         if globvars.master_state.game.current_phase == Phase.day:
 
-            from botc.gameloops import nomination_loop, base_day_loop, debate_timer
+            from botc.gameloops import (base_day_loop, debate_timer,
+                                        nomination_loop)
 
             # Stop the nomination loop if it is running
             if nomination_loop.is_running():

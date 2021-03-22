@@ -1,15 +1,18 @@
 """Contains the Investigator Character class"""
 
+import configparser
+import datetime
 import json
 import random
-import datetime
+
 import discord
-import configparser
-from botc import Townsfolk, Character, Category, NonRecurringAction, BOTCUtils, \
-    Minion
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
 import globvars
+from botc import (BOTCUtils, Category, Character, Minion, NonRecurringAction,
+                  Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.investigator.value.lower()]

@@ -3,6 +3,7 @@
 from .Category import Category
 from .Team import Team
 
+
 class Demon:
     """Demon class"""
 

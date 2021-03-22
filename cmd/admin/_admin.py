@@ -1,9 +1,11 @@
 """Contains admins only commands"""
 
-import traceback
 import json
-import botutils
+import traceback
+
 from discord.ext import commands
+
+import botutils
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

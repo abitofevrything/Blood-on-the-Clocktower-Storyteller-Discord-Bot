@@ -1,11 +1,14 @@
 """Contains the start command cog"""
 
-import traceback
 import json
-import botutils
+import traceback
+
 from discord.ext import commands
-from ._gameplay import Gameplay
+
+import botutils
 from botutils import start_votes_timer
+
+from ._gameplay import Gameplay
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

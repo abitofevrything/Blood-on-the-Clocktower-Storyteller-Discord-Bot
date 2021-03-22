@@ -1,16 +1,20 @@
 """Contains the Ravenkeeper Character class"""
 
-import json
-import discord
-import random
-import datetime
 import configparser
-from botc import Action, ActionTypes, Townsfolk, Character, NonRecurringAction, \
-    RavenkeeperActivated, StatusList, BOTCUtils, Minion, Demon, Outsider
-from botc.BOTCUtils import GameLogic
-from ._utils import TroubleBrewing, TBRole
+import datetime
+import json
+import random
+
+import discord
+
 import botutils
 import globvars
+from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, Minion,
+                  NonRecurringAction, Outsider, RavenkeeperActivated,
+                  StatusList, Townsfolk)
+from botc.BOTCUtils import GameLogic
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.ravenkeeper.value.lower()]

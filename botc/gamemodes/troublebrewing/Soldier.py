@@ -1,10 +1,12 @@
 """Contains the Soldier Character class"""
 
 import json
-from botc import Townsfolk, Character, NonRecurringAction, SafetyFromDemon, \
-    Storyteller
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
+from botc import (Character, NonRecurringAction, SafetyFromDemon, Storyteller,
+                  Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.soldier.value.lower()]

@@ -13,14 +13,15 @@ affiliated with them in any way.
 
 """
 
-import globvars
 import configparser
-import botc
 import json
-import botutils
+
 import discord
 from discord.ext import commands
 
+import botc
+import botutils
+import globvars
 
 if __name__ == "__main__":
 

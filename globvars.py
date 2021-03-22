@@ -1,6 +1,7 @@
 """Global variables, for access by all modules"""
 
 import logging
+
 from botutils import MasterState
 
 logging.basicConfig(

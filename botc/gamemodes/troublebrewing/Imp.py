@@ -1,17 +1,20 @@
 """Contains the Imp Character class"""
 
-import json
-import discord
-import random
-import datetime
 import configparser
+import datetime
+import json
+import random
+
+import discord
+
 import botutils
-from botc import Action, ActionTypes, Demon, Townsfolk, Outsider, Character, \
-    RecurringAction, StatusList, AlreadyDead
-from botc.gamemodes.troublebrewing.Soldier import Soldier
-from botc.BOTCUtils import GameLogic, BOTCUtils
-from ._utils import TroubleBrewing, TBRole
 import globvars
+from botc import (Action, ActionTypes, AlreadyDead, Character, Demon, Outsider,
+                  RecurringAction, StatusList, Townsfolk)
+from botc.BOTCUtils import BOTCUtils, GameLogic
+from botc.gamemodes.troublebrewing.Soldier import Soldier
+
+from ._utils import TBRole, TroubleBrewing
 
 Preferences = configparser.ConfigParser()
 
@@ -202,6 +205,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         if globvars.master_state.game.nb_alive_players >= 5:
 
             from botc.gamemodes.troublebrewing import ScarletWoman
+
             # This list of scarletwomen could contain dead players
             scarletwomen = BOTCUtils.get_players_from_role_name(ScarletWoman()._role_enum)
 
@@ -265,6 +269,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             if globvars.master_state.game.nb_alive_players >= 5:
 
                 from botc.gamemodes.troublebrewing import ScarletWoman
+
                 # This list of scarletwomen could contain dead players
                 scarletwomen = BOTCUtils.get_players_from_role_name(ScarletWoman()._role_enum)
 

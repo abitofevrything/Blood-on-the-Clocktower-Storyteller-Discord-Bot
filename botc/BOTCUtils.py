@@ -1,12 +1,15 @@
 """Contains some BoTC game related utility functions"""
 
 import asyncio
-import json
 import configparser
+import json
 import random
-from .Category import Category
-from botutils import BotEmoji
+
 from discord.ext import commands, tasks
+
+from botutils import BotEmoji
+
+from .Category import Category
 
 Config = configparser.ConfigParser()
 Config.read("config.INI")
@@ -312,7 +315,8 @@ class GameLogic:
         """
         def decorator(func):
             def inner(self, player, targets):
-                from botc import Flags, ActionTypes
+                from botc import ActionTypes, Flags
+
                 # Slayer's unique "slay" ability. Everyone may use it publicy once.
                 if ability_type == ActionTypes.slay:
                     if not player.role.ego_self.inventory.has_item_in_inventory(Flags.slayer_unique_attempt):

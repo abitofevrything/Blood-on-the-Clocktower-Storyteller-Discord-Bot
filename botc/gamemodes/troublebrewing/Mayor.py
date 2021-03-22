@@ -2,9 +2,12 @@
 
 import json
 import random
-from botc import BOTCUtils, Townsfolk, Character, NonRecurringAction, Category, Team, StatusList
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
+from botc import (BOTCUtils, Category, Character, NonRecurringAction,
+                  StatusList, Team, Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.mayor.value.lower()]

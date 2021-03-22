@@ -1,14 +1,17 @@
 """Contains the Undertaker Character class"""
 
-import discord
+import configparser
 import datetime
 import json
 import random
-import configparser
-from botc import Townsfolk, Character, NonRecurringAction, BOTCUtils, Townsfolk, \
-    Outsider, Minion, Demon
-from ._utils import TroubleBrewing, TBRole
+
+import discord
+
 import botutils
+from botc import (BOTCUtils, Character, Demon, Minion, NonRecurringAction,
+                  Outsider, Townsfolk)
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.undertaker.value.lower()]

@@ -1,8 +1,11 @@
 """Contains the fstart command cog"""
 
-import botutils
 import json
+
 from discord.ext import commands
+
+import botutils
+
 from ._admin import Admin
 
 with open('botutils/bot_text.json') as json_file:

@@ -19,8 +19,8 @@ from .PitHag import PitHag
 from .Sage import Sage
 from .Savant import Savant
 from .Seamstress import Seamstress
-from .Sweetheart import Sweetheart
 from .SnakeCharmer import SnakeCharmer
+from .Sweetheart import Sweetheart
 from .TownCrier import TownCrier
 from .Vigormortis import Vigormortis
 from .Vortox import Vortox

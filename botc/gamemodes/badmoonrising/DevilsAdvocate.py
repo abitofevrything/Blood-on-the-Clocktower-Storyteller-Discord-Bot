@@ -1,7 +1,9 @@
 """Contains the Devil's Advocate Character class"""
 
 import json
+
 from botc import Character, Minion
+
 from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:

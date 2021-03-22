@@ -2,6 +2,7 @@
 
 import enum
 
+
 class BotState(enum.Enum):
     """Bot global state class:
     empty: The lobby is completely empty

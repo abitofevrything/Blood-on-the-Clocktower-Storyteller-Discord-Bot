@@ -2,9 +2,10 @@
 
 import botutils
 from botc.status import StatusList
-from .PlayerState import PlayerState
+
 from .abilities import ActionGrid
 from .errors import AlreadyDead
+from .PlayerState import PlayerState
 
 
 class Player:
@@ -91,8 +92,9 @@ class Player:
         """Return true if the player is currently drunk or poisoned (droison) when the
         check is performed, false otherwise.
         """
-        from botc.gamemodes.troublebrewing import Drunk
         from botc import StatusList
+        from botc.gamemodes.troublebrewing import Drunk
+
         # The player's true role is Drunk
         if self.role.true_self.name == Drunk().name:
             return True

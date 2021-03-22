@@ -3,7 +3,9 @@
 import configparser
 import enum
 import json
+
 import globvars
+
 from .helpers import make_ping
 
 Config = configparser.ConfigParser()

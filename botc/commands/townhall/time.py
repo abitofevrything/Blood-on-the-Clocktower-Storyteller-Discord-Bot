@@ -1,15 +1,17 @@
 """Contains the time command"""
 
-import traceback
-import json
-import datetime
 import configparser
-import botutils
-from library import display_time
+import datetime
+import json
+import traceback
+
 from discord.ext import commands
-from botc import check_if_is_player, Phase
-from botc.gameloops import base_day_loop, calculate_base_day_duration, debate_timer, \
-    nomination_loop
+
+import botutils
+from botc import Phase, check_if_is_player
+from botc.gameloops import (base_day_loop, calculate_base_day_duration,
+                            debate_timer, nomination_loop)
+from library import display_time
 
 Config = configparser.ConfigParser()
 Config.read("preferences.INI")

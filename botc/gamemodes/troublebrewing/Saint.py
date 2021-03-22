@@ -1,9 +1,11 @@
 """Contains the Saint Character class"""
 
 import json
-from botc import Outsider, Character, NonRecurringAction, AlreadyDead, Team
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
+from botc import AlreadyDead, Character, NonRecurringAction, Outsider, Team
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.saint.value.lower()]

@@ -2,6 +2,7 @@
 
 import enum
 
+
 class PlayerState(enum.Enum):
     """Player State class"""
 

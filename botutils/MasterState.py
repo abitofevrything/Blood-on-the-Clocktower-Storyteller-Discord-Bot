@@ -1,8 +1,9 @@
 """Contains the Master State Machine"""
 
 import time
-from .Pregame import Pregame
+
 from .BotState import BotState
+from .Pregame import Pregame
 
 
 class State:

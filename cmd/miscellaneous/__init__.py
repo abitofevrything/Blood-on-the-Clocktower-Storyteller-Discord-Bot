@@ -1,12 +1,13 @@
+from .coin import Coin
+from .dog import Dog
+from .gamestats import Gamestats
 from .github import Github
 from .ping import Ping
-from .uptime import Uptime
-from .dog import Dog
-from .coin import Coin
-from .role import Role
-from .gamestats import Gamestats
 from .playerstats import Playerstats
+from .role import Role
 from .top import Top
+from .uptime import Uptime
+
 
 def setup(client):
     client.add_cog(Github(client))

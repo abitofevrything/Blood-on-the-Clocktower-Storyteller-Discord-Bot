@@ -8,7 +8,6 @@ import emoji
 
 import globvars
 
-
 Config = configparser.ConfigParser()
 Config.read("config.INI")
 

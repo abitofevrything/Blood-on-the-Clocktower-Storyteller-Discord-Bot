@@ -2,6 +2,7 @@
 
 import enum
 
+
 class Phase(enum.Enum):
     """Phase class:
     day -> daytime

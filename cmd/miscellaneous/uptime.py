@@ -1,10 +1,13 @@
 """Contains the uptime command cog"""
 
-import botutils
 import json
-from time import time
-from discord.ext import commands
 from datetime import timedelta
+from time import time
+
+from discord.ext import commands
+
+import botutils
+
 from ._miscellaneous import Miscellaneous
 
 with open('botutils/bot_text.json') as json_file:

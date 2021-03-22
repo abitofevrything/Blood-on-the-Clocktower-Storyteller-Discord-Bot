@@ -1,9 +1,11 @@
 """Contains cog for general out of game / info related botc commands"""
 
-import discord
-import json
 import configparser
+import json
+
+import discord
 from discord.ext import commands
+
 import botutils
 
 Config = configparser.ConfigParser()

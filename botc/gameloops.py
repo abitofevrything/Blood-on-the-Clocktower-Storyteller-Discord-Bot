@@ -1,15 +1,17 @@
 """Contains game loop functions"""
 
-import botutils
 import asyncio
+import configparser
+import datetime
+import json
 import math
 import traceback
-import json
+
 import discord
-import datetime
-import configparser
-from botc import ChoppingBlock
 from discord.ext import tasks
+
+import botutils
+from botc import ChoppingBlock
 
 Config = configparser.ConfigParser()
 Config.read("preferences.INI")

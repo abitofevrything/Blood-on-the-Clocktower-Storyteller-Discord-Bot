@@ -1,12 +1,14 @@
 """Contains the Slayer Character class"""
 
 import json
-from botc import Action, ActionTypes, Inventory, Flags, Townsfolk, Character, \
-    NonRecurringAction, Category, LorePicker, AlreadyDead
-from botc.BOTCUtils import GameLogic
-from ._utils import TroubleBrewing, TBRole
+
 import botutils
 import globvars
+from botc import (Action, ActionTypes, AlreadyDead, Category, Character, Flags,
+                  Inventory, LorePicker, NonRecurringAction, Townsfolk)
+from botc.BOTCUtils import GameLogic
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.slayer.value.lower()]

@@ -2,6 +2,7 @@
 
 import enum
 
+
 class Category(enum.Enum):
     """BoTC role category enum class: Townsfolk, Outsider, Minion, Demon"""
 

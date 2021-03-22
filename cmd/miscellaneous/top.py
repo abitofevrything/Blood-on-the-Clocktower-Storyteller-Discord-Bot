@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 import globvars
+
 from ._miscellaneous import Miscellaneous
 
 Config = configparser.ConfigParser()

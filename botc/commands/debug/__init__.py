@@ -1,8 +1,9 @@
-from .fstop import Fstop
-from .modkill import Modkill
-from .frole import Frole
 from .fnight import Fnight
 from .fnomination import Fnomination
+from .frole import Frole
+from .fstop import Fstop
+from .modkill import Modkill
+
 
 def setup(client):
     client.add_cog(Fstop(client))

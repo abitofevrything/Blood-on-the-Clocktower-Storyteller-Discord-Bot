@@ -1,14 +1,17 @@
 """Contains the Butler Character class"""
 
-import json
-import botutils
-import discord
 import configparser
-from botc.BOTCUtils import GameLogic
-from botc import Outsider, Character, Action, ActionTypes, BOTCUtils, RecurringAction, \
-    ButlerService
-from ._utils import TroubleBrewing, TBRole
+import json
+
+import discord
+
+import botutils
 import globvars
+from botc import (Action, ActionTypes, BOTCUtils, ButlerService, Character,
+                  Outsider, RecurringAction)
+from botc.BOTCUtils import GameLogic
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.butler.value.lower()]

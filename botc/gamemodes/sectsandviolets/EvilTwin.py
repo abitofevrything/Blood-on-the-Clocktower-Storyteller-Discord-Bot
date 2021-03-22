@@ -1,7 +1,9 @@
 """Contains the Evil Twin Character class"""
 
 import json
+
 from botc import Character, Minion
+
 from ._utils import SectsAndViolets, SnVRole
 
 with open('botc/gamemodes/sectsandviolets/character_text.json') as json_file:

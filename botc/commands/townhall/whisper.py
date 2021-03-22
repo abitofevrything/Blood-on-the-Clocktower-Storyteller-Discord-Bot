@@ -1,15 +1,18 @@
 """Whisper command cog"""
 
-import botutils
-import globvars
-import traceback
-import discord
-import json
 import asyncio
 import configparser
+import json
+import traceback
+
+import discord
 from discord.ext import commands
-from botc import check_if_is_player, check_if_dm, check_if_is_day, PlayerConverter, \
-    NotDMChannel, NotAPlayer, NotDay, WhisperConverter, WhisperTooLong, BOTCUtils
+
+import botutils
+import globvars
+from botc import (BOTCUtils, NotAPlayer, NotDay, NotDMChannel, PlayerConverter,
+                  WhisperConverter, WhisperTooLong, check_if_dm,
+                  check_if_is_day, check_if_is_player)
 from library import display_time
 
 Config = configparser.ConfigParser()

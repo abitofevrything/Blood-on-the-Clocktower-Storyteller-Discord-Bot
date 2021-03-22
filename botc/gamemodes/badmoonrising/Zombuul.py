@@ -1,14 +1,16 @@
 """Contains the Zombuul Character class"""
 
-import discord
 import json
 import random
-import botutils
-from botc import Character, Demon, Townsfolk, Outsider, BOTCUtils, ActionTypes, \
-    GameLogic, Action, StatusList, RecurringAction
-from ._utils import BadMoonRising, BMRRole
+
+import discord
+
 import botutils
 import globvars
+from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, GameLogic,
+                  Outsider, RecurringAction, StatusList, Townsfolk)
+
+from ._utils import BadMoonRising, BMRRole
 
 with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.zombuul.value.lower()]

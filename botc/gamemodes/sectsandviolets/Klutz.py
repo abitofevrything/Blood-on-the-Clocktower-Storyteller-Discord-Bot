@@ -1,7 +1,9 @@
 """Contains the Klutz Character class"""
 
 import json
+
 from botc import Character, Outsider
+
 from ._utils import SectsAndViolets, SnVRole
 
 with open('botc/gamemodes/sectsandviolets/character_text.json') as json_file:

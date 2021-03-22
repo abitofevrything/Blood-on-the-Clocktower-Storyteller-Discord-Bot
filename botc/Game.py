@@ -1,36 +1,40 @@
 """Contains the BOTC Game class"""
 
-import random
+import configparser
 import datetime
+import json
+import random
+import sqlite3
+
+import discord
+import pytz
+
 import botutils
 import globvars
-import json
-import pytz
-import configparser
-import discord
-import sqlite3
+from botc import StatusList, Team
 from library import fancy
-from .chrono import GameChrono
+from models import GameMeta
+
 from .BOTCUtils import BOTCUtils
 from .Category import Category
+from .chrono import GameChrono
+from .Demon import Demon
+from .errors import GameError, TooFewPlayers, TooManyPlayers
+from .gameloops import (base_day_loop, debate_timer, master_game_loop,
+                        nomination_loop)
+from .gamemodes.badmoonrising._utils import BadMoonRising
+from .gamemodes.Gamemode import Gamemode
+from .gamemodes.sectsandviolets._utils import SectsAndViolets
+from .gamemodes.troublebrewing._utils import TroubleBrewing
+from .gamemodes.troublebrewing.Drunk import Drunk
+from .gamemodes.troublebrewing.Saint import Saint
+from .Minion import Minion
+from .Outsider import Outsider
 from .Phase import Phase
 from .Player import Player
 from .PlayerState import PlayerState
-from .errors import GameError, TooFewPlayers, TooManyPlayers
-from .Townsfolk import Townsfolk
-from .Outsider import Outsider
-from .Minion import Minion
-from .Demon import Demon
-from .gamemodes.troublebrewing.Saint import Saint
-from .gamemodes.troublebrewing.Drunk import Drunk
-from .gamemodes.troublebrewing._utils import TroubleBrewing
-from .gamemodes.badmoonrising._utils import BadMoonRising
-from .gamemodes.sectsandviolets._utils import SectsAndViolets
-from .gamemodes.Gamemode import Gamemode
 from .RoleGuide import RoleGuide
-from .gameloops import master_game_loop, nomination_loop, base_day_loop, debate_timer
-from models import GameMeta
-from botc import StatusList, Team
+from .Townsfolk import Townsfolk
 
 Preferences = configparser.ConfigParser()
 Preferences.read("preferences.INI")
@@ -1002,7 +1006,8 @@ class Game(GameMeta):
         # Log the game
         await botutils.log(botutils.Level.info, "Game finished")
         # Stop various loops from running
-        from botc.gameloops import nomination_loop, base_day_loop
+        from botc.gameloops import base_day_loop, nomination_loop
+
         # Stop the nomination loop if it is running
         if nomination_loop.is_running():
             nomination_loop.cancel()

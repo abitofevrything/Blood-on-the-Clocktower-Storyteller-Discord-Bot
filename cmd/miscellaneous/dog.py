@@ -1,10 +1,13 @@
 """Contains the dog command cog"""
 
-import botutils
-import random
 import json
-from ._miscellaneous import Miscellaneous
+import random
+
 from discord.ext import commands
+
+import botutils
+
+from ._miscellaneous import Miscellaneous
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

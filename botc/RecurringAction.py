@@ -1,10 +1,12 @@
 """Contains the Recurring Action class"""
 
-import discord
-import datetime
-import botutils
-import json
 import configparser
+import datetime
+import json
+
+import discord
+
+import botutils
 from botc import BOTCUtils
 
 butterfly = botutils.BotEmoji.butterfly

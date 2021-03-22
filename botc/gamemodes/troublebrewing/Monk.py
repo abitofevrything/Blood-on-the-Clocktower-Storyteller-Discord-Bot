@@ -1,13 +1,17 @@
 """Contains the Monk Character class"""
 
-import json
-import discord
 import configparser
-from botc import Action, ActionTypes, Townsfolk, Character, SafetyFromDemon, RecurringAction
-from botc.BOTCUtils import GameLogic
-from ._utils import TroubleBrewing, TBRole
+import json
+
+import discord
+
 import botutils
 import globvars
+from botc import (Action, ActionTypes, Character, RecurringAction,
+                  SafetyFromDemon, Townsfolk)
+from botc.BOTCUtils import GameLogic
+
+from ._utils import TBRole, TroubleBrewing
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.monk.value.lower()]

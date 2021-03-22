@@ -1,8 +1,10 @@
 """Contains gameplay commands"""
 
-import botutils
 import json
+
 from discord.ext import commands
+
+import botutils
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)

@@ -1,10 +1,13 @@
 """Contains the coin command cog"""
 
-import botutils
 import json
 import random
-from ._miscellaneous import Miscellaneous
+
 from discord.ext import commands
+
+import botutils
+
+from ._miscellaneous import Miscellaneous
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
