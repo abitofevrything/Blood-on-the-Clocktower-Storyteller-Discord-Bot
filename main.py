@@ -19,9 +19,9 @@ import json
 import discord
 from discord.ext import commands
 
+import globvars  # isort: split
 import botc
 import botutils
-import globvars
 
 if __name__ == "__main__":
 
