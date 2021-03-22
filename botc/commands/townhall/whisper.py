@@ -1,6 +1,7 @@
 """Whisper command cog"""
 
 import botutils
+import globvars
 import traceback
 import discord
 import json
@@ -63,6 +64,10 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     @commands.check(check_if_dm)  # Correct channel -> NotDMChannel
     async def whisper(self, ctx, recipient: PlayerConverter(), *, content: WhisperConverter()):
         """Whisper command"""
+        if globvars.master_state.game.nomination_iteration_date:
+            await ctx.author.send(documentation["cmd_warnings"]["whisper_not_allowed_during_noms"].format(botutils.BotEmoji.x_emoji, ctx.author.mention))
+            return
+
         player = BOTCUtils.get_player_from_id(ctx.author.id)
         # You may not whisper to yourself
         if player.user.id == recipient.user.id:

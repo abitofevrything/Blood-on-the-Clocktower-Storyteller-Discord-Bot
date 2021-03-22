@@ -291,6 +291,7 @@
     "cmd_warnings" : {
 
         "whisper_self" : "{} {} You may not whisper to yourself.",
+        "whisper_not_allowed_during_noms": "{} {} You may not whisper after nominations have started.",
         "nominations_not_open" : "{} {} Nominations are not open yet.",
         "nomination_ongoing" : "{} {} You may not nominate when a nomination is already ongoing. Please wait until the current trial is over.",
         "dm_only" : "{} {} You may not use this command outside of a private DM channel.",
