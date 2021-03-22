@@ -5,7 +5,7 @@ import traceback
 import botutils
 from discord.ext import commands
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 with open('botutils/bot_text.json') as json_file:
@@ -18,13 +18,13 @@ class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         return botutils.check_if_admin(ctx)
 
     # ---------- FSTOP command ----------------------------------------
     @commands.command(
-        pass_context = True, 
+        pass_context = True,
         name = "fstop",
         hidden = False,
         brief = documentation["doc"]["fstop"]["brief"],
@@ -39,15 +39,15 @@ class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
         # Stop the nomination loop if it is running
         if nomination_loop.is_running():
             nomination_loop.cancel()
-        
+
         # Stop the base day loop if it is running
         if base_day_loop.is_running():
             base_day_loop.cancel()
-        
+
         # Stop the debate timer loop if it is running
         if debate_timer.is_running():
             debate_timer.cancel()
-        
+
         # Stop the gameplay loop if it is running
         import globvars
         if globvars.master_state.game.gameloop.is_running():

@@ -20,7 +20,7 @@ class Playtest(Admin):
     @commands.is_owner()
     async def playtest(self, ctx):
         """Playtest command"""
-        
+
         import globvars
         playtesters = PLAYTESTERS
         for userid in playtesters:

@@ -9,7 +9,7 @@ from .errors import AlreadyDead
 
 class Player:
     """Player class
-    
+
     State: the real life/death state of the player
     Apparent state: the apparent life/death state of the player (ex. Zombuul)
 
@@ -27,34 +27,34 @@ class Player:
         self.ghost_vote = 1
         self.has_nominated = False
         self.was_nominated = False
-    
+
     def toggle_has_nominated(self):
         """The player has nominated a person."""
         self.has_nominated = True
-    
+
     def can_nominate(self):
         """Can this player nominate?"""
         return not self.has_nominated
-    
+
     def toggle_was_nominated(self):
         """The player has been nominated"""
         self.was_nominated = True
-    
+
     def can_be_nominated(self):
         """Can this player be nominated?"""
         return not self.was_nominated
-    
+
     def reset_nomination(self):
         """Call this function at the end of each day to reset nomination data"""
         self.has_nominated = False
         self.was_nominated = False
-    
+
     async def exec_change_role(self, new_role):
         """Change the player's old role to a new role"""
         import globvars
         self._role_obj = new_role
         await globvars.master_state.game.check_winning_conditions()
-    
+
     async def exec_real_death(self):
         """Turn the player's real state into the death state"""
         import globvars
@@ -70,9 +70,9 @@ class Player:
                     if status.effect == StatusList.poison:
                         status.manually_disable()
         await globvars.master_state.game.check_winning_conditions()
-    
+
     async def exec_apparent_death(self):
-        """Turn the player's apparent state into the death state, but the real state 
+        """Turn the player's apparent state into the death state, but the real state
         remains alive
         """
         if self.is_apparently_dead():
@@ -81,14 +81,14 @@ class Player:
         self._apparent_state_obj = PlayerState.dead
         await botutils.add_dead_role(self.user)
         await botutils.remove_alive_role(self.user)
-    
+
     def has_status_effect(self, status_effect):
         """Check if a player has a status effect"""
         return status_effect in \
             [status.effect for status in self.status_effects if status.is_active()]
-    
+
     def is_droisoned(self):
-        """Return true if the player is currently drunk or poisoned (droison) when the 
+        """Return true if the player is currently drunk or poisoned (droison) when the
         check is performed, false otherwise.
         """
         from botc.gamemodes.troublebrewing import Drunk
@@ -105,26 +105,26 @@ class Player:
             [status.effect for status in self.status_effects if status.is_active()]:
             return True
         return False
-    
+
     def add_status_effect(self, new_status_effect):
         """Add a status effect"""
         self._status_effects.append(new_status_effect)
-    
+
     def is_apparently_alive(self):
         return self.apparent_state == PlayerState.alive
-    
+
     def is_apparently_dead(self):
         return self.apparent_state == PlayerState.dead
-    
+
     def is_alive(self):
         return self.state == PlayerState.alive
-    
+
     def is_dead(self):
         return self.state == PlayerState.dead
 
     def is_fleaved(self):
         return self.state == PlayerState.fleaved
-    
+
     def spend_vote(self):
         """Spend a vote after a vote has been cast by the player"""
         # An alive player has infinite votes
@@ -134,7 +134,7 @@ class Player:
         else:
             assert self.ghost_vote, f"{self.game_nametag} ghost vote has been spent."
             self.ghost_vote -= 1
-    
+
     def has_vote(self):
         """Retrun True if the player is able to vote. False otherwise."""
         # An alive player has infinite votes
@@ -152,11 +152,11 @@ class Player:
     @property
     def user(self):
         return self._user_obj
-    
+
     @property
     def userid(self):
         return self._user_obj.id
-    
+
     @property
     def role(self):
         return self._role_obj
@@ -164,7 +164,7 @@ class Player:
     @property
     def old_role(self):
         return self._old_role_obj
-    
+
     @property
     def state(self):
         return self._state_obj
@@ -172,13 +172,13 @@ class Player:
     @property
     def apparent_state(self):
         return self._apparent_state_obj
-    
+
     @property
     def status_effects(self):
         return self._status_effects
 
     def __repr__(self):
         return f"{str(self.user.display_name)} ({self.user.id}) is {str(self.role)}"
-    
+
     def __str__(self):
         return self.__repr__()

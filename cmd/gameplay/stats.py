@@ -43,11 +43,11 @@ class Stats(Gameplay, name = language["system"]["gameplay_cog"]):
         # If we are in game:
         elif globvars.master_state.session == botutils.BotState.game:
             return
-        
+
         # If we are in empty:
         elif globvars.master_state.session == botutils.BotState.empty:
             await ctx.send(no_game.format(PREFIX))
-    
+
     @stats.error
     async def stats_error(self, ctx, error):
         """Error handling of the stats command"""
@@ -55,7 +55,7 @@ class Stats(Gameplay, name = language["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

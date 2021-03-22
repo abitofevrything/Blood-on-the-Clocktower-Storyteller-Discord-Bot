@@ -1,6 +1,6 @@
 """Contains the Washerwoman Character class"""
 
-import json 
+import json
 import discord
 import random
 import datetime
@@ -10,10 +10,10 @@ from ._utils import TroubleBrewing, TBRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.washerwoman.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     washerwoman_init = strings["gameplay"]["washerwoman_init"]
     copyrights_str = strings["misc"]["copyrights"]
@@ -29,7 +29,7 @@ DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Washerwoman: You start knowing 1 of 2 players is a particular Townsfolk.
 
-    ===== WASHERWOMAN ===== 
+    ===== WASHERWOMAN =====
 
     true_self = washerwoman
     ego_self = washerwoman
@@ -52,7 +52,7 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Townsfolk.__init__(self)
@@ -63,7 +63,7 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-        
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/4/4d/Washerwoman_Token.png"
         self._art_link_cropped = "https://imgur.com/nxfAxGm.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Washerwoman"
@@ -77,14 +77,14 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     async def send_n1_end_message(self, recipient):
         """Send two possible players for a particular townsfolk character."""
 
@@ -95,7 +95,7 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Dead players do not receive anything
         if not player.is_alive():
-            return 
+            return
 
         # Poisoned info
         if player.is_droisoned():
@@ -131,7 +131,7 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             await recipient.send(embed = embed)
         except discord.Forbidden:
             pass
-    
+
     def __create_droisoned_info(self, washerwoman_player):
         """Create the droisoned info for washerwoman"""
 
@@ -140,14 +140,14 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         registered_townsfolk_type = random.choice(tb_townsfolk_all)
 
         # Choosing candidates
-        candidates = [player for player in globvars.master_state.game.sitting_order 
+        candidates = [player for player in globvars.master_state.game.sitting_order
                       if player.user.id != washerwoman_player.user.id]
         random.shuffle(candidates)
         candidate_1 = candidates.pop()
         candidate_2 = candidates.pop()
 
         return [candidate_1, candidate_2, registered_townsfolk_type]
-    
+
     def get_two_possible_townsfolks(self, recipient):
         """Send two possible townsfolks"""
 
@@ -165,10 +165,10 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         registered_townsfolk_type = townsfolk.role.social_self
 
         # Choose the other player
-        other_possibilities = [player for player in globvars.master_state.game.sitting_order 
+        other_possibilities = [player for player in globvars.master_state.game.sitting_order
                                if player.user.id != townsfolk.user.id and player.user.id != recipient.id]
         other = random.choice(other_possibilities)
-        
+
         two_player_list = [townsfolk, other]
         random.shuffle(two_player_list)
         two_player_list.append(registered_townsfolk_type)

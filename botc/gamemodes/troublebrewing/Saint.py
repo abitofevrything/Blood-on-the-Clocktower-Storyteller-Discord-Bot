@@ -1,11 +1,11 @@
 """Contains the Saint Character class"""
 
-import json 
+import json
 from botc import Outsider, Character, NonRecurringAction, AlreadyDead, Team
 from ._utils import TroubleBrewing, TBRole
 import botutils
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.saint.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -15,7 +15,7 @@ with open('botc/emojis.json') as json_file:
 class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):
     """Saint: If you die by execution, your team loses.
 
-    ===== SAINT ===== 
+    ===== SAINT =====
 
     true_self = saint
     ego_self = saint
@@ -37,7 +37,7 @@ class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Outsider.__init__(self)
@@ -48,7 +48,7 @@ class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-        
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/7/77/Saint_Token.png"
         self._art_link_cropped = "https://imgur.com/CKuDBku.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Saint"
@@ -62,14 +62,14 @@ class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     async def on_being_executed(self, executed_player):
         """Funtion that runs after the player has been nominated.
         If a healthy and sober saint is executed, then the game ends with evil win.

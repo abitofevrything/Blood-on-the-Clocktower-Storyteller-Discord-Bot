@@ -7,10 +7,10 @@ from ._utils import BadMoonRising, BMRRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.pukka.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     demon_bluff_str = strings["gameplay"]["demonbluffs"]
 
@@ -19,7 +19,7 @@ with open('botc/emojis.json') as json_file:
 
 
 class Pukka(Demon, BadMoonRising, Character):
-    """Pukka: Each night, choose a player: they are poisoned until tomorrow night, then die. 
+    """Pukka: Each night, choose a player: they are poisoned until tomorrow night, then die.
     You act on the first night.
     """
 
@@ -42,12 +42,12 @@ class Pukka(Demon, BadMoonRising, Character):
 
         self._role_enum = BMRRole.pukka
         self._emoji = emojis["badmoonrising"]["pukka"]
-    
+
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
-        
+
         # First line is the character instruction string
-        msg = f"{self.emoji} {self.instruction}" 
+        msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
 
         # Some characters have a line of addendum
@@ -61,7 +61,7 @@ class Pukka(Demon, BadMoonRising, Character):
             msg += f"\n{self.demon_head_emoji} {demon_bluff_str.format(bluffs[0], bluffs[1], bluffs[2])}"
 
         return msg
-    
+
     def get_demon_bluffs(self):
         """Get the list of 3 demon bluffs"""
 
@@ -72,9 +72,9 @@ class Pukka(Demon, BadMoonRising, Character):
         taken_townsfolks = [player.role.name for player in globvars.master_state.game.setup.townsfolks]
         taken_outsiders = [player.role.name for player in globvars.master_state.game.setup.outsiders]
 
-        possible_townsfolk_bluffs = [character for character in all_townsfolks 
+        possible_townsfolk_bluffs = [character for character in all_townsfolks
                                         if character.name not in taken_townsfolks]
-        possible_outsider_bluffs = [character for character in all_outsiders 
+        possible_outsider_bluffs = [character for character in all_outsiders
                                     if character.name not in taken_outsiders]
         random.shuffle(possible_townsfolk_bluffs)
         random.shuffle(possible_outsider_bluffs)

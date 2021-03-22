@@ -23,7 +23,7 @@ class BOTCFormatter(FormatterMeta):
         final_text = self.make_header("Blood on the Clocktower (BoTC)")
         final_text += "\n\n"
         global setup
-        for mode_title in setup["botc"]["gamemodes"]: 
+        for mode_title in setup["botc"]["gamemodes"]:
             final_text += self.make_section_header(mode_title)
             final_text += "\n"
             role_obj_list = setup["botc"]["gamemodes"][mode_title]
@@ -69,7 +69,7 @@ setup = {
                             Washerwoman()
 
                         ],
-            
+
             "bad-moon-rising" : [
 
                             Assassin(),
@@ -99,7 +99,7 @@ setup = {
                             Zombuul()
 
                         ],
-            
+
             "sects-&-violets" : [
 
                             Artist(),
@@ -134,7 +134,7 @@ setup = {
 
     }
 
-}   
+}
 
 
 def load_pack(master_state):

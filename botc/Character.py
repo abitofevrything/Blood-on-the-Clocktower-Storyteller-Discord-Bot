@@ -34,7 +34,7 @@ Config.read('config.INI')
 DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 PREFIX = Config["settings"]["PREFIX"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
     role_dm = strings["gameplay"]["role_dm"]
@@ -46,7 +46,7 @@ class Character:
     """Character class
     Methods starting with "playtest" are used for console game creation for playtesting purposes.
     """
-    
+
     def __init__(self):
 
         # Parent attributes
@@ -84,17 +84,17 @@ class Character:
         # Other
         self._emoji = None
         self._demon_head_emoji = botutils.BotEmoji.demonhead
-    
+
     # -------------------- Character Properties --------------------
-    
+
     def is_good(self):
         """Return True if the character is on the good team, False otherwise"""
         return self.team == Team.good
-    
+
     def is_evil(self):
         """Return True if the character is on the evil team, False otherwise"""
         return self.team == Team.evil
-    
+
     @property
     def true_self(self):
         """Layers of Role Identity:
@@ -115,64 +115,64 @@ class Character:
         3. social_self = what the other players think the player is
         """
         return self._social_role
-    
+
     def set_new_true_self(self):
         return
-    
+
     def set_new_ego_self(self):
         return
-    
+
     def set_new_social_self(self, player):
         return
-    
+
     @property
     def emoji(self):
         return self._emoji
-    
+
     @property
     def demon_head_emoji(self):
         return self._demon_head_emoji
-    
+
     @property
     def main_wiki_link(self):
         return self._main_wiki_link
-    
+
     @property
     def botc_demon_link(self):
         return self._botc_demon_link
-    
+
     @property
     def botc_logo_link(self):
         return self._botc_logo_link
-    
+
     @property
     def description(self):
         return self._desc_string
-    
+
     @property
     def examples(self):
         return self._examp_string
-    
+
     @property
     def instruction(self):
         return self._instr_string
-    
+
     @property
     def lore(self):
         return self._lore_string
-    
+
     @property
     def brief(self):
         return self._brief_string
-    
+
     @property
     def action(self):
         return self._action
-    
+
     @property
     def art_link(self):
         return self._art_link
-    
+
     @property
     def wiki_link(self):
         return self._wiki_link
@@ -180,29 +180,29 @@ class Character:
     @property
     def name(self):
         return self._role_enum.value
-    
+
     @property
     def gm_of_appearance(self):
         return self._gm_of_appearance
-    
+
     @property
     def gm_art_link(self):
         return self._gm_art_link
-    
+
     @property
     def category(self):
         return self._category
-    
+
     @property
     def team(self):
         return self._team
-    
+
     def __str__(self):
         return self.name
-    
+
     def __repr__(self):
         return self.name + " Obj"
-    
+
     # -------------------- Character Mechanics --------------------
 
     async def send_role_card_embed(self, ctx):
@@ -212,18 +212,18 @@ class Character:
             return
 
         def make_embed(emote,
-                       role_name, 
-                       role_category, 
-                       card_color, 
-                       gm, 
-                       gm_art_link, 
-                       desc_str, 
-                       ex_str, 
-                       pic_link, 
+                       role_name,
+                       role_category,
+                       card_color,
+                       gm,
+                       gm_art_link,
+                       desc_str,
+                       ex_str,
+                       pic_link,
                        wiki_link):
 
-            embed = discord.Embed(title = "{} [{}] {}".format(role_name, role_category, emote), 
-                                  description = "*{}*".format(self.lore), 
+            embed = discord.Embed(title = "{} [{}] {}".format(role_name, role_category, emote),
+                                  description = "*{}*".format(self.lore),
                                   color = card_color)
             embed.set_author(name = "Blood on the Clocktower - {}".format(gm), icon_url = gm_art_link)
             embed.set_thumbnail(url = pic_link)
@@ -247,14 +247,14 @@ class Character:
         wiki_link = ":paperclip: " + self.wiki_link if self.wiki_link else ":paperclip: " + self.main_wiki_link
 
         embed = make_embed(self.emoji,
-                           self.__str__(), 
-                           self.category.value, 
-                           color, 
-                           self.gm_of_appearance.value, 
-                           gm_art_link, 
-                           self.description, 
-                           self.examples, 
-                           pic_link, 
+                           self.__str__(),
+                           self.category.value,
+                           color,
+                           self.gm_of_appearance.value,
+                           gm_art_link,
+                           self.description,
+                           self.examples,
+                           pic_link,
                            wiki_link)
         await ctx.send(embed=embed)
 
@@ -262,10 +262,10 @@ class Character:
         """Allow for roles that change the setup to modify the role list
         Overridden by child classes that do need to modify the setup.
         """
-        return [townsfolk_obj_list, outsider_obj_list, minion_obj_list, demon_obj_list] 
-    
+        return [townsfolk_obj_list, outsider_obj_list, minion_obj_list, demon_obj_list]
+
     def exec_init_role(self, setup):
-        """Allow for roles that need to initialize certain status or flags to do so after the setup 
+        """Allow for roles that need to initialize certain status or flags to do so after the setup
         is generated.
         Overridden by child classes that do need to set flags and initializations.
         """
@@ -276,7 +276,7 @@ class Character:
         To be overriden in child classes
         """
         return True
-    
+
     def has_finished_dawn_action(self, player):
         """Has the player finished their dawn action? (For phase fastforwarding)
         To be overriden in child classes
@@ -284,7 +284,7 @@ class Character:
         return True
 
     # -------------------- Character DM's --------------------
-    
+
     async def send_opening_dm_embed(self, recipient):
         """Create the opening DM (on game start) embed object and return it"""
 
@@ -292,7 +292,7 @@ class Character:
             return
 
         if self.ego_self.category == Category.townsfolk:
-            color = TOWNSFOLK_COLOR  
+            color = TOWNSFOLK_COLOR
         elif self.ego_self.category == Category.outsider:
             color = OUTSIDER_COLOR
         elif self.ego_self.category == Category.minion:
@@ -322,7 +322,7 @@ class Character:
             if self.is_evil():
                 msg = globvars.master_state.game.setup.create_evil_team_string()
                 embed.add_field(name = "**「 Evil Team 」**", value = msg, inline = True)
-        
+
         # Send the stats list if necessary
         embed = self.add_action_field_n1(embed)
 
@@ -339,29 +339,29 @@ class Character:
         To be overriden by child classes. The default is to add nothing.
         """
         return embed_obj
-    
+
     def create_n1_instr_str(self):
-        """Create the instruction field on the n1 D. 
+        """Create the instruction field on the n1 D.
         Must be implemented by all child classes.
         """
         raise NotImplementedError
-    
+
     async def send_n1_end_message(self, recipient):
         """Send n1 end message to a player.
         Override by child classes. The default is to send nothing.
         """
         pass
-    
+
     ## Commented out for inheritence resolution order (RecurringAction class)
     # async def send_regular_night_start_dm(self, recipient):
-    #     """Send regular night start DM message to a player, for all nights except for the 
+    #     """Send regular night start DM message to a player, for all nights except for the
     #     first.
     #     Override by child classes. The default is to send nothing.
     #     """
     #     pass
 
     async def send_regular_night_end_dm(self, recipient):
-        """Send regular night end DM message to a player, for all nights except for the 
+        """Send regular night end DM message to a player, for all nights except for the
         first.
         Override by child classes. The default is to send nothing.
         """
@@ -378,7 +378,7 @@ class Character:
         Override by child classes.
         """
         return
-    
+
     # -------------------- Event "Listeners" --------------------
 
     async def on_being_nominated(self, nominator_player, nominated_player):
@@ -387,7 +387,7 @@ class Character:
         """
         from botc.gameloops import nomination_loop
         nomination_loop.start(globvars.master_state.game, nominator_player, nominated_player)
-    
+
     async def on_being_executed(self, executed_player):
         """Funtion that runs after the player has been executed.
         Default behaviour is to execute the player's real death (real state)
@@ -400,7 +400,7 @@ class Character:
         else:
             game = globvars.master_state.game
             game.today_executed_player = executed_player
-    
+
     async def on_being_demon_killed(self, killed_player):
         """Function that runs after the player has been killed by the demon at night.
         Default behaviour is to make the player die (real death state)
@@ -412,7 +412,7 @@ class Character:
             pass
         else:
             globvars.master_state.game.night_deaths.append(killed_player)
-    
+
     # -------------------- Character ABILITIES --------------------
 
     async def process_night_ability(self, player):
@@ -421,7 +421,7 @@ class Character:
         Default is to do nothing. Override by child classes
         """
         return
-    
+
     async def exec_serve(self, player, targets):
         """Serve command. Override by child classes."""
         raise NotImplementedError
@@ -466,7 +466,7 @@ class Character:
         """Execute the slay action (immediate effect)
 
         The Slayer character will override this to have actual effect.
-        All non-slayers characters will be able to use the slay command just like the slayer, 
+        All non-slayers characters will be able to use the slay command just like the slayer,
         but without any consequences for the game.
         """
 
@@ -475,7 +475,7 @@ class Character:
         # The ability fails no matter what, because the player is not a slayer
         string = LorePicker().pick(LorePicker().SLAY_FAIL)
         string = string.format(
-            slayer = slayer_player.game_nametag, 
+            slayer = slayer_player.game_nametag,
             slain = slain_player.game_nametag
         )
         await botutils.send_lobby(string)

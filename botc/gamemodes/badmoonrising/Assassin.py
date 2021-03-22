@@ -5,7 +5,7 @@ from botc import Character, Minion, ActionTypes
 from ._utils import BadMoonRising, BMRRole
 import globvars
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.assassin.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -35,10 +35,10 @@ class Assassin(Minion, BadMoonRising, Character):
 
         self._role_enum = BMRRole.assassin
         self._emoji = emojis["badmoonrising"]["assassin"]
-    
+
     def has_finished_night_action(self, player):
         """Return True if assassin has submitted the assassinate action"""
-        
+
         if player.is_alive():
             # First night, assassin does not act
             if globvars.master_state.game._chrono.is_night_1():

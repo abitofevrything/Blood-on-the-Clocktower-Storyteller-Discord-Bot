@@ -4,7 +4,7 @@ import json
 from botc import Character, Townsfolk
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.minstrel.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -12,12 +12,12 @@ with open('botc/emojis.json') as json_file:
 
 
 class Minstrel(Townsfolk, BadMoonRising, Character):
-    """Minstrel: If a Minion died today, all other players (except Travelers) are drunk that 
+    """Minstrel: If a Minion died today, all other players (except Travelers) are drunk that
     night until dusk.
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         BadMoonRising.__init__(self)
         Townsfolk.__init__(self)
@@ -35,4 +35,4 @@ class Minstrel(Townsfolk, BadMoonRising, Character):
 
         self._role_enum = BMRRole.minstrel
         self._emoji = emojis["badmoonrising"]["minstrel"]
-        
+

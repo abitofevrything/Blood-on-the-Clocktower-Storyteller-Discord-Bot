@@ -356,7 +356,7 @@ class Game(GameMeta):
             msg = lobby_game_start.format(pings, "𝕿𝖗𝖔𝖚𝖇𝖑𝖊 𝕭𝖗𝖊𝖜𝖎𝖓𝖌", self.nb_players)
 
             await botutils.send_lobby(msg, embed=embed)
-        
+
         # Bad Moon Rising edition
         elif self.gamemode == Gamemode.bad_moon_rising:
             embed = discord.Embed(
@@ -660,7 +660,7 @@ class Game(GameMeta):
             globvars.client.load_extension("botc.commands.abilities.bmr")
         elif self.gamemode == Gamemode.sects_and_violets:
             globvars.client.load_extension("botc.commands.abilities.snv")
-        
+
         globvars.client.load_extension("botc.commands.townhall")
         globvars.client.load_extension("botc.commands.debug")
         # Start the game loop
@@ -764,7 +764,7 @@ class Game(GameMeta):
             3. courtier
             4. godfather
             5. devil's advocate
-            6. pukka    
+            6. pukka
             7. grandmother
             8. chambermaid
 
@@ -993,7 +993,7 @@ class Game(GameMeta):
             globvars.client.unload_extension("botc.commands.abilities.bmr")
         elif self.gamemode == Gamemode.sects_and_violets:
             globvars.client.unload_extension("botc.commands.abilities.snv")
-        
+
         globvars.client.unload_extension("botc.commands.townhall")
         globvars.client.unload_extension("botc.commands.debug")
         # Load conflicting commands
@@ -1206,7 +1206,7 @@ class Game(GameMeta):
             final_minion = ret_minion.copy()
             final_demon = ret_demon.copy()
 
-            prelim = ret_townsfolk + ret_outsider + ret_minion + ret_demon          
+            prelim = ret_townsfolk + ret_outsider + ret_minion + ret_demon
             for role in prelim:
                 setup_next = role.exec_init_setup(final_townsfolk, final_outsider, final_minion, final_demon)
                 final_townsfolk = setup_next[0]

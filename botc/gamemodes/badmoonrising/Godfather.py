@@ -4,7 +4,7 @@ import json
 from botc import Character, Minion
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.godfather.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -12,7 +12,7 @@ with open('botc/emojis.json') as json_file:
 
 
 class Godfather(Minion, BadMoonRising, Character):
-    """Godfather: You start knowing which Outsiders are in-play. If 1 died today, 
+    """Godfather: You start knowing which Outsiders are in-play. If 1 died today,
     choose a player tonight: they die. [-1 or +1 Outsider]
     """
 

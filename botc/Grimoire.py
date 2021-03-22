@@ -25,7 +25,7 @@ class Grimoire:
         self.PIC_LENGTH = max(background.size)
 
         background.save(self.GRIMOIRE_PATH, format="PNG")
-    
+
     @property
     def BACKGROUND_PATH(self):
         """Select a random background"""
@@ -34,22 +34,22 @@ class Grimoire:
             "botc/assets/grimoire/grimoire_background2.png"
         ]
         return random.choice(backgrounds)
-    
+
     @property
     def token_width(self):
         "Find the width of each token based on the background size"
         return math.ceil(self.PIC_SQUARE_SIDE/5.5)
-    
+
     @property
     def sitting_circle_radius(self):
         """Find the radius of the big sitting circle based on the background size"""
         return math.ceil(self.PIC_SQUARE_SIDE * 0.75 * 0.5)
-    
+
     @property
     def font_size(self):
         """Find the font size appropriate for the size of the image"""
         return math.ceil(self.PIC_SQUARE_SIDE * 0.04)
-    
+
     def create(self, game_obj):
 
         nb_players = len(game_obj.sitting_order)
@@ -78,7 +78,7 @@ class Grimoire:
                 background.paste(token, (new_x, new_y), token.convert("RGBA"))
             except Exception:
                 pass
-            
+
             # Add the shroud reminder
             if player_obj.is_apparently_dead():
 
@@ -91,11 +91,11 @@ class Grimoire:
                 thumbnail_x = int(shroud_size_x * ratio)
                 thumbnail_y = int(shroud_size_y * ratio)
                 shroud.thumbnail((thumbnail_x, thumbnail_y), Image.ANTIALIAS)
-                
+
                 shroud_x = int(token_center_x - thumbnail_x / 2)
                 shroud_y = int(token_center_y - self.token_width / 2)
                 background.paste(shroud, (shroud_x, shroud_y), shroud.convert("RGBA"))
-            
+
             text = player_obj.user.display_name
             w, h = font.getsize(text)
             new_x, new_y = self.translate_text(x, y, w)
@@ -135,7 +135,7 @@ class Grimoire:
 
         elif game_obj.gamemode == Gamemode.sects_and_violets:
             pass
-    
+
     def translate(self, x, y):
         image_center_x = self.PIC_LENGTH / 2
         image_center_y = self.PIC_SQUARE_SIDE / 2
@@ -144,7 +144,7 @@ class Grimoire:
         image_center_y -= self.token_width / 2
 
         return(int(x + image_center_x), int(y + image_center_y))
-    
+
     def translate_text(self, x, y, text_width):
         image_center_x = self.PIC_LENGTH / 2
         image_center_y = self.PIC_SQUARE_SIDE / 2
@@ -155,17 +155,17 @@ class Grimoire:
         offset = (text_width - self.token_width) / 2
 
         return(int(x + image_center_x - offset), int(y + image_center_y))
-    
+
     def get_image(self):
         return self.GRIMOIRE_PATH
-    
+
     def get_rad_angle(self, nb_player):
         return 2 * math.pi / nb_player
-    
+
     def get_x_from_angle(self, rad_angle):
         """For the tokens only"""
         return self.sitting_circle_radius * math.sin(rad_angle)
-    
+
     def get_y_from_angle(self, rad_angle):
         """For the tokens only"""
         return self.sitting_circle_radius * math.cos(rad_angle)
@@ -173,7 +173,7 @@ class Grimoire:
 
 class TokenPathGrabber:
     """A utility object to grab the path of a token png file"""
-    
+
     def getpath(self, character_obj):
         # Trouble brewing gamemode
         if character_obj.gm_of_appearance == Gamemode.trouble_brewing:

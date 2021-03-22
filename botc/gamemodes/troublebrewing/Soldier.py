@@ -1,12 +1,12 @@
 """Contains the Soldier Character class"""
 
-import json 
+import json
 from botc import Townsfolk, Character, NonRecurringAction, SafetyFromDemon, \
     Storyteller
 from ._utils import TroubleBrewing, TBRole
 import botutils
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.soldier.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -16,7 +16,7 @@ with open('botc/emojis.json') as json_file:
 class Soldier(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Soldier: You are safe from the Demon.
 
-    ===== SOLDIER ===== 
+    ===== SOLDIER =====
 
     true_self = soldier
     ego_self = soldier
@@ -38,7 +38,7 @@ class Soldier(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Townsfolk.__init__(self)
@@ -49,7 +49,7 @@ class Soldier(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-                            
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/9/9e/Soldier_Token.png"
         self._art_link_cropped = "https://imgur.com/IkJqfHH.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Soldier"
@@ -63,14 +63,14 @@ class Soldier(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     async def process_night_ability(self, player):
         """Process night actions for the soldier character.
         @player : the Soldier player (Player object)

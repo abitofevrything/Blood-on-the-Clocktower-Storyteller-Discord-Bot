@@ -9,7 +9,7 @@ from ._utils import TroubleBrewing, TBRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.baron.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -19,7 +19,7 @@ with open('botc/emojis.json') as json_file:
 class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
     """Baron: There are extra Outsiders in play [+2 Outsiders]
 
-    ===== BARON ===== 
+    ===== BARON =====
 
     true_self = baron
     ego_self = baron
@@ -34,7 +34,7 @@ class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
     ----- First night
     START:
     override first night instruction? -> YES  # default is to send instruction string only
-                                      => Send demon and minion identities to this minion if 
+                                      => Send demon and minion identities to this minion if
                                          7 players or more
 
     ----- Regular night
@@ -43,10 +43,10 @@ class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
-        Minion.__init__(self)  
+        Minion.__init__(self)
 
         self._desc_string = character_text["description"]
         self._examp_string = character_text["examples"]
@@ -54,28 +54,28 @@ class Baron(Minion, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-        
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/b/ba/Baron_Token.png"
         self._art_link_cropped = "https://imgur.com/vtd72Og.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Baron"
 
         self._role_enum = TBRole.baron
         self._emoji = emojis["troublebrewing"]["baron"]
-    
+
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
 
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     def exec_init_setup(self, townsfolk_obj_list, outsider_obj_list, minion_obj_list, demon_obj_list):
         """Add two outsiders to the setup, remove two townsfolks from the setup"""
 

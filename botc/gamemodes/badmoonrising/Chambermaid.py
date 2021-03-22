@@ -4,7 +4,7 @@ import json
 from botc import Character, Townsfolk
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.chambermaid.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -12,7 +12,7 @@ with open('botc/emojis.json') as json_file:
 
 
 class Chambermaid(Townsfolk, BadMoonRising, Character):
-    """Chambermaid Each night, choose 2 alive players (not yourself): you learn how many woke 
+    """Chambermaid Each night, choose 2 alive players (not yourself): you learn how many woke
     tonight due to their ability.
     """
 

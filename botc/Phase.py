@@ -3,7 +3,7 @@
 import enum
 
 class Phase(enum.Enum):
-    """Phase class: 
+    """Phase class:
     day -> daytime
     night -> nighttime
     idle -> out of game
@@ -14,4 +14,3 @@ class Phase(enum.Enum):
     night = "night"
     day = "day"
     dawn = "dawn"
-    

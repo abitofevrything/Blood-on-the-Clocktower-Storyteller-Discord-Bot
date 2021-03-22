@@ -32,7 +32,7 @@
         "denied_seal" : "https://imgur.com/djYpGOY.png",
         "dove" : "https://imgur.com/SSyMLfJ.png",
         "demon" : "https://imgur.com/zrVfclB.png"
-        
+
     },
 
     "numbers" : {
@@ -107,7 +107,7 @@
             "https://imgur.com/SrKCjlb.png",
             "https://imgur.com/GF13uRn.png"
         ],
-        
+
         "9" : [
             "https://imgur.com/CXXrYHn.png",
             "https://imgur.com/llzF1vU.png",
@@ -164,7 +164,7 @@
                     "*As the knocker-up made their rounds in the morning, they discovered that one of the cottages was empty. Further inspection revealed a trail of blood and claw marks within the small house. A carcass, swarming with flies, was discovered a few hours later by the river.*\n\n {} {} *has died during the night.*",
                     "*As the town woke, people started noticing that one of their number had not awakened. Upon further investigation, the village found a dead body, covered in scratches and wounds.*\n\n{} {} *has died during the night.*"
                 ],
-    
+
                 "weights" : [
                     0.50,
                     0.50
@@ -177,7 +177,7 @@
                 "outputs" : [
                     "*As the sun rises and the bell rings the end of the night, it seems that after the daily count, multiple player are missing.* \n\n {} {} * have died during the night*."
                 ],
-    
+
                 "weights" : [
                     1.0
                 ]
@@ -190,7 +190,7 @@
                     "The sound of a lone wolf howl echoed through the valley, but no bodies were recovered nor were any people reported missing.",
                     "The sun rose. The ineluctable church bell rang and as the town awoke; a stray cat ran through the streets, seeking a place to settle for the day. The night had been quiet and peaceful, and thankfully, no dead body was found."
                 ],
-    
+
                 "weights" : [
                     0.5,
                     0.5
@@ -209,7 +209,7 @@
         },
 
         "storyteller_death" : "*During a hellish thunderstorm, on the stroke of midnight, there echoes a bone-chilling scream. The townsfolk found the town storyteller murdered, their body impaled on the hands of the clocktower. It is your duty to avenge the Storyteller's death by killing the Demon!*"
-        
+
     },
 
     "gameplay" : {
@@ -230,7 +230,7 @@
         "ravenkeeper_reply" : "You learn `{}`.",
         "fortune_teller_nightly" : "Tonight, you learn a `{}`.",
         "investigator_init" : "You learn that one of the following two players is the ``{}``: ",
-        "librarian_init" : "You learn that one of the following two players is the ``{}``: ", 
+        "librarian_init" : "You learn that one of the following two players is the ``{}``: ",
         "librarian_init_zero" : "You learn that there is no Outsider in play.",
         "washerwoman_init" : "You learn that one of the following two players is the ``{}``: ",
         "tb_lore" : "*Clouds roll in over Ravenswood Bluff, engulfing this sleepy town and its superstitious inhabitants in foreboding shadow. Anxious mothers call their children home from play, as thunder begins to clap on the horizon. Those who can read the signs know there is...* ***Trouble Brewing***.",

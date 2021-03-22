@@ -4,7 +4,7 @@ import json
 from botc import Character, Townsfolk
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.professor.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -12,7 +12,7 @@ with open('botc/emojis.json') as json_file:
 
 
 class Professor(Townsfolk, BadMoonRising, Character):
-    """Professor: Once per game, at night, choose a dead player: if they are a Townsfolk, 
+    """Professor: Once per game, at night, choose a dead player: if they are a Townsfolk,
     they are resurrected.
     """
 

@@ -20,7 +20,7 @@ class Pregame:
         """Access the list of user id"""
         self.remove_left_guild_players()
         return self._userid_list
-    
+
     def is_empty(self):
         """Is the pregame lobby empty? (meaning that there are 0 players who have joined)"""
         return len(self._userid_list) == 0
@@ -36,13 +36,13 @@ class Pregame:
         userid = int(userid)
         if userid in self._userid_list:
             self._userid_list.remove(userid)
-    
+
     def is_joined(self, userid):
         """Check if a userid is already in self._userid_list"""
         self.remove_left_guild_players()
         userid = int(userid)
         return userid in self._userid_list
-    
+
     def safe_add_player(self, userid):
         """Add a player based on its user ID only if the player has not joined"""
         userid = int(userid)
@@ -54,21 +54,21 @@ class Pregame:
         userid = int(userid)
         if self.is_joined(userid):
             self.remove_player(userid)
-    
+
     def clear(self):
         """Clear the user ID list"""
         self.__init__()
-    
+
     def __str__(self):
         return f"Pregame Object with {len(self)} users"
 
     def __repr__(self):
         return self.__str__()
-    
+
     def __len__(self):
         self.remove_left_guild_players()
         return len(self._userid_list)
-    
+
     def __iter__(self):
         self.remove_left_guild_players()
         return iter(self._userid_list)

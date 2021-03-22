@@ -20,13 +20,13 @@ WHISPER_COOLDOWN = int(WHISPER_COOLDOWN)
 WHISPER_SHOW_TIME = Config["botc"]["WHISPER_SHOW_TIME"]
 WHISPER_SHOW_TIME = int(WHISPER_SHOW_TIME)
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 error_str = language["system"]["error"]
 cooldown = language["errors"]["cmd_cooldown"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 recipient_blocked = documentation["cmd_warnings"]["recipient_blocked"]
@@ -38,23 +38,23 @@ whisper_self = documentation["cmd_warnings"]["whisper_self"]
 
 class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     """Whisper command"""
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         """Check performed on all commands of this cog.
         Must be a non-fleaved player to use these commands.
         """
         return check_if_is_player(ctx)  # Registered non-quit player -> NotAPlayer
-    
+
     # ---------- WHISPER COMMAND ----------------------------------------
     @commands.command(
-        pass_context = True, 
+        pass_context = True,
         name = "whisper",
         aliases = ["w"],
-        hidden = False, 
-        cooldown_after_parsing = True, 
+        hidden = False,
+        cooldown_after_parsing = True,
         brief = documentation["doc"]["whisper"]["brief"],
         help = documentation["doc"]["whisper"]["help"],
         description = documentation["doc"]["whisper"]["description"]
@@ -103,7 +103,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 recipient.game_nametag,
             )
             await botutils.send_lobby(announcement_msg, delete_after = WHISPER_SHOW_TIME)
-            
+
     @whisper.error
     async def whisper_error(self, ctx, error):
         emoji = botutils.BotEmoji.x_emoji
@@ -133,7 +133,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())
 
 
 def setup(client):

@@ -1,6 +1,6 @@
 """Contains the Empath Character class"""
 
-import json 
+import json
 import discord
 import datetime
 import random
@@ -9,10 +9,10 @@ from botc import Townsfolk, Character, BOTCUtils, NonRecurringAction
 from ._utils import TroubleBrewing, TBRole
 import botutils
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.empath.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     empath_nightly = strings["gameplay"]["empath_nightly"]
     copyrights_str = strings["misc"]["copyrights"]
@@ -27,8 +27,8 @@ DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Empath: Each night, you learn how many of your 2 alive neighbors are evil.
-    
-    ===== EMPATH ===== 
+
+    ===== EMPATH =====
 
     true_self = empath
     ego_self = empath
@@ -44,13 +44,13 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     START:
     override first night instruction? -> YES  # default is to send instruction string only
                                       => Send nightly passive information
-    
+
     ----- Regular night
     START:
     override regular night instruction? -> YES  # default is to send nothing
                                         => Send nightly passive information
     """
-    
+
     def __init__(self):
 
         Character.__init__(self)
@@ -78,14 +78,14 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     def __create_droisoned_info(self):
         """Create drunk/poisoned information for the empath info"""
 
@@ -94,7 +94,7 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         log_msg = f">>> Empath: [droisoned] {nb_evils} alive evil neighbours"
         globvars.logging.info(log_msg)
         return nb_evils
-    
+
     async def send_n1_end_message(self, recipient):
         """Send the number of pairs of evils sitting together."""
 
@@ -107,7 +107,7 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Dead players do not receive anything
         if not player.is_alive():
-            return 
+            return
 
         # Poisoned info
         if player.is_droisoned():
@@ -132,21 +132,21 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             await recipient.send(embed = embed)
         except discord.Forbidden:
             pass
-    
+
     async def send_regular_night_end_dm(self, recipient):
         """Send the number of pairs of evils sitting together."""
 
         await self.send_n1_end_message(recipient)
-    
+
     def get_nb_evil_neighbours(self, recipient):
         """Send the number of alive evil neighbours"""
 
         import globvars
 
         # Find all alive players
-        alive_players = [player for player in globvars.master_state.game.sitting_order 
+        alive_players = [player for player in globvars.master_state.game.sitting_order
                          if player.is_apparently_alive()]
-        
+
         # Find where the empath is seated
         seat_idx = -1
         for i, player in enumerate(alive_players):
@@ -168,8 +168,8 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             nb_evils += 1
         if next_neighbour.role.social_self.is_evil():
             nb_evils += 1
-        
+
         log_msg = f">>> Empath: {nb_evils} alive evil neighbours"
         globvars.logging.info(log_msg)
-        
+
         return nb_evils

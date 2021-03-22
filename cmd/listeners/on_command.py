@@ -21,22 +21,22 @@ ignore = language["system"]["ignore"]
 
 class on_command(commands.Cog):
     """Event listener on_command"""
-    
+
     def __init__(self, client):
         self.client = client
-      
+
     @commands.Cog.listener()
     async def on_command(self, ctx):
         """On_command event"""
 
         import globvars
-        
+
         # For each command used, we increase the count by one
         if str(ctx.author.id) not in globvars.ratelimit_dict:
             globvars.ratelimit_dict[str(ctx.author.id)] = 1
         else:
             globvars.ratelimit_dict[str(ctx.author.id)] += 1
-        
+
         # The user has surpassed the threshold, and will be ignored
         if globvars.ratelimit_dict[str(ctx.author.id)] > IGNORE_THRESHOLD:
             if not ctx.author.id in globvars.ignore_list:

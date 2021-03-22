@@ -54,7 +54,7 @@ class Time(Gameplay, name = language["system"]["gameplay_cog"]):
         # If we are in game:
         elif globvars.master_state.session == botutils.BotState.game:
             pass
-    
+
     @time.error
     async def time_error(self, ctx, error):
         """Error handling of the time command"""
@@ -62,7 +62,7 @@ class Time(Gameplay, name = language["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

@@ -33,7 +33,7 @@ class SnVRole(enum.Enum):
     vortox = "Vortox"
     witch = "Witch"
 
-    
+
 class SectsAndViolets:
     """Parent class for all Sects & Violets edition roles"""
 

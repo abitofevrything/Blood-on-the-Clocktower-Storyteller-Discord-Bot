@@ -5,7 +5,7 @@ import json
 from discord.ext import commands
 from ._admin import Admin
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 fstart_min = language["errors"]["fstart_min"]

@@ -7,7 +7,7 @@ import globvars
 from botc import PlayerConverter, PlayerNotFound, AlreadyDead
 from discord.ext import commands
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 with open('botutils/bot_text.json') as json_file:
@@ -23,13 +23,13 @@ class Modkill(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         return botutils.check_if_admin(ctx)
 
     # ---------- MODKILL command ----------------------------------------
     @commands.command(
-        pass_context = True, 
+        pass_context = True,
         name = "modkill",
         hidden = False,
         brief = documentation["doc"]["modkill"]["brief"],
@@ -64,4 +64,3 @@ class Modkill(commands.Cog, name = documentation["misc"]["debug_cog"]):
             except:
                 await ctx.send(error_str)
                 await botutils.log(botutils.Level.error, traceback.format_exc())
-                

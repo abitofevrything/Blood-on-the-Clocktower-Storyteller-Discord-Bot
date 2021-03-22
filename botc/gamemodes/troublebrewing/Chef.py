@@ -1,6 +1,6 @@
 """Contains the Chef Character class"""
 
-import json 
+import json
 import discord
 import datetime
 import random
@@ -10,10 +10,10 @@ from ._utils import TroubleBrewing, TBRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.chef.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     chef_init = strings["gameplay"]["chef_init"]
     copyrights_str = strings["misc"]["copyrights"]
@@ -29,7 +29,7 @@ DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Chef: You start knowing how many pairs of evil players there are.
 
-    ===== CHEF ===== 
+    ===== CHEF =====
 
     true_self = chef
     ego_self = chef
@@ -50,7 +50,7 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     START:
     override regular night instruction? -> NO  # default is to send nothing
     """
-    
+
     def __init__(self):
 
         Character.__init__(self)
@@ -63,7 +63,7 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-                            
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/4/4c/Chef_Token.png"
         self._art_link_cropped = "https://imgur.com/m2Wjejh.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Chef"
@@ -77,14 +77,14 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     def __create_droisoned_info(self):
         """Create drunk/poisoned information for the n1 chef info"""
 
@@ -96,7 +96,7 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         log_msg = f">>> Chef: [droisoned] {ret} pairs of evils"
         globvars.logging.info(log_msg)
         return ret
-    
+
     async def send_n1_end_message(self, recipient):
         """Send the number of pairs of evils sitting together."""
 
@@ -109,7 +109,7 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Dead players do not receive anything
         if not player.is_alive():
-            return 
+            return
 
         # Poisoned info
         if player.is_droisoned():
@@ -134,7 +134,7 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             await recipient.send(embed = embed)
         except discord.Forbidden:
             pass
-    
+
     def get_nb_pairs_of_evils(self):
         """Get the number of pairs of evils sitting together."""
 
@@ -148,9 +148,9 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         total = len(globvars.master_state.game.sitting_order)
         all_pairs = [
             (
-                globvars.master_state.game.sitting_order[i], 
+                globvars.master_state.game.sitting_order[i],
                 globvars.master_state.game.sitting_order[(i+1)%total]
-            ) 
+            )
             for i in range(total)
         ]
 
@@ -159,7 +159,7 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         for pair in all_pairs:
             if pair[0].role.social_self.is_evil() and pair[1].role.social_self.is_evil():
                 evil_pair_count += 1
-        
+
         log_msg = f">>> Chef: {evil_pair_count} pairs of evils"
         globvars.logging.info(log_msg)
 

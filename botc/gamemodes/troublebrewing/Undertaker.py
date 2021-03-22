@@ -2,7 +2,7 @@
 
 import discord
 import datetime
-import json 
+import json
 import random
 import configparser
 from botc import Townsfolk, Character, NonRecurringAction, BOTCUtils, Townsfolk, \
@@ -10,10 +10,10 @@ from botc import Townsfolk, Character, NonRecurringAction, BOTCUtils, Townsfolk,
 from ._utils import TroubleBrewing, TBRole
 import botutils
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.undertaker.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     undertaker_nightly = strings["gameplay"]["undertaker_nightly"]
     copyrights_str = strings["misc"]["copyrights"]
@@ -29,7 +29,7 @@ DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Undertaker: Each night, you learn which character died by execution today.
 
-    ===== UNDERTAKER ===== 
+    ===== UNDERTAKER =====
 
     true_self = undertaker
     ego_self = undertaker
@@ -52,7 +52,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Townsfolk.__init__(self)
@@ -63,7 +63,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-                            
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/f/fe/Undertaker_Token.png"
         self._art_link_cropped = "https://imgur.com/3CpqHsL.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Undertaker"
@@ -77,14 +77,14 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     def __create_droisoned_info(self):
         """Create drunk/poisoned information for the undertaker info"""
 
@@ -101,14 +101,14 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
             executed_player.role.set_new_social_self(executed_player)
 
-            # The executed player has a good role. The droisoned undertaker will see a 
+            # The executed player has a good role. The droisoned undertaker will see a
             # bad role.
             if executed_player.role.social_self.is_good():
                 pool = tb_minion_all + tb_demon_all
                 ret = random.choice(pool)
                 return ret
-                
-            # The executed player has a bad role. The droisoned undertaker will see 
+
+            # The executed player has a bad role. The droisoned undertaker will see
             # a good role.
             else:
                 pool = tb_townsfolk_all + tb_outsider_all
@@ -119,11 +119,11 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # If no one is executed, then send none
         else:
             return None
-    
+
     async def send_n1_end_message(self, recipient):
         """Send the character of the executed player today."""
         await self.send_regular_night_end_dm(recipient)
-    
+
     async def send_regular_night_end_dm(self, recipient):
         """Send the character of the executed player today."""
 
@@ -134,7 +134,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Dead players do not receive anything
         if not player.is_alive():
-            return 
+            return
 
         # Poisoned info
         if player.is_droisoned():
@@ -147,7 +147,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                 character_of_executed = executed_player.role.social_self
             else:
                 character_of_executed = None
-        
+
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
         msg += self.emoji + " " + self.instruction
@@ -161,8 +161,8 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         embed = discord.Embed(description = msg)
 
         if character_of_executed:
-            embed.set_thumbnail(url = character_of_executed._art_link_cropped)     
-            
+            embed.set_thumbnail(url = character_of_executed._art_link_cropped)
+
         embed.set_footer(text = copyrights_str)
         embed.timestamp = datetime.datetime.utcnow()
 

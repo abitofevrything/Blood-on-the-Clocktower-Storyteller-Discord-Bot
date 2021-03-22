@@ -300,7 +300,7 @@
                 "outputs" : [],
                 "weights" : []
             },
-    
+
             "add" : {
                 "brief" : "add a user to the ignore list",
                 "help" : "Add a user to the ignore list. An ignored user can no longer invoke commands. Use the ignore feature to prevent abusive behaviour.",
@@ -308,7 +308,7 @@
                 "outputs" : [],
                 "weights" : []
             },
-    
+
             "remove" : {
                 "brief" : "remove a user from the ignore list",
                 "help" : "Remove a user from the ignore list. An ignored user can no longer invoke commands. Use the ignore feature to prevent abusive behaviour.",
@@ -410,5 +410,5 @@
         "server_header": "Storyteller Bot by Xinverse"
 
     }
-    
+
 }

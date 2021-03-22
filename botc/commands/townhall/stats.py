@@ -8,12 +8,12 @@ from library import fancy
 from botc import Phase, RoleGuide
 from discord.ext import commands
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 error_str = language["system"]["error"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     current_phase = documentation["gameplay"]["current_phase"]
     stats_tied = documentation["gameplay"]["stats_tied"]
@@ -31,12 +31,12 @@ class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Stats command - used for viewing the game's player statistics
     """
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
-        """Check the channel of the context, return True if it is sent in either 
+        """Check the channel of the context, return True if it is sent in either
         lobby, or in spec chat.
         Admins can bypass.
         """
@@ -44,12 +44,12 @@ class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                botutils.check_if_lobby(ctx) or \
                botutils.check_if_dm(ctx) or \
                botutils.check_if_spec(ctx)
-    
+
     # ---------- STATS COMMAND (Stats) ----------------------------------------
     @commands.command(
-        pass_context = True, 
-        name = "stats", 
-        hidden = False, 
+        pass_context = True,
+        name = "stats",
+        hidden = False,
         brief = documentation["doc"]["stats"]["brief"],
         help = documentation["doc"]["stats"]["help"],
         description = documentation["doc"]["stats"]["description"]
@@ -103,12 +103,12 @@ class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             votes = nb_available_votes,
             emoji_votes = botutils.BotEmoji.votes
         )
-        
+
         # If the phase is daytime, then include voting information
         if game.current_phase == Phase.day:
 
             chopping_block = game.chopping_block
-            
+
             msg += "\n"
 
             if chopping_block:
@@ -140,8 +140,7 @@ class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())
 
 def setup(client):
     client.add_cog(Stats(client))
-    

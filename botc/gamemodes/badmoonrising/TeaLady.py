@@ -4,7 +4,7 @@ import json
 from botc import Character, Townsfolk
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.tealady.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -34,4 +34,4 @@ class TeaLady(Townsfolk, BadMoonRising, Character):
 
         self._role_enum = BMRRole.tealady
         self._emoji = emojis["badmoonrising"]["tealady"]
-        
+

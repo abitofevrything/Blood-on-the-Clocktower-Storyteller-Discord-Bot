@@ -4,7 +4,7 @@ import json
 from botc import Character, Outsider
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.tinker.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -34,4 +34,4 @@ class Tinker(Outsider, BadMoonRising, Character):
 
         self._role_enum = BMRRole.tinker
         self._emoji = emojis["badmoonrising"]["tinker"]
-        
+

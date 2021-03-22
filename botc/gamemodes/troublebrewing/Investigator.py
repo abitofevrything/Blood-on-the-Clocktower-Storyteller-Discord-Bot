@@ -1,6 +1,6 @@
 """Contains the Investigator Character class"""
 
-import json 
+import json
 import random
 import datetime
 import discord
@@ -11,10 +11,10 @@ from ._utils import TroubleBrewing, TBRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.investigator.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     investigator_init = strings["gameplay"]["investigator_init"]
     copyrights_str = strings["misc"]["copyrights"]
@@ -30,7 +30,7 @@ DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Investigator: You start knowing 1 of 2 players is a particular Minion.
 
-    ===== INVESTIGATOR ===== 
+    ===== INVESTIGATOR =====
 
     true_self = investigator
     ego_self = investigator
@@ -64,7 +64,7 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-                            
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/e/ec/Investigator_Token.png"
         self._art_link_cropped = "https://imgur.com/9B2WNCc.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Investigator"
@@ -78,14 +78,14 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     async def send_n1_end_message(self, recipient):
         """Send two possible players for a particular minion character."""
 
@@ -96,7 +96,7 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Dead players do not receive anything
         if not player.is_alive():
-            return 
+            return
 
         # Poisoned info
         if player.is_droisoned():
@@ -132,7 +132,7 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             await recipient.send(embed = embed)
         except discord.Forbidden:
             pass
-    
+
     def __create_droisoned_info(self, investigator_player):
         """Create the droisoned info for investigator"""
 
@@ -141,7 +141,7 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         registered_minion_type = random.choice(tb_minion_all)
 
         # Choosing candidates
-        candidates = [player for player in globvars.master_state.game.sitting_order 
+        candidates = [player for player in globvars.master_state.game.sitting_order
                       if player.user.id != investigator_player.user.id]
         random.shuffle(candidates)
         candidate_1 = candidates.pop()
@@ -176,10 +176,10 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             registered_minion_type = minion.role.true_self
 
         # Choose the other player
-        other_possibilities = [player for player in globvars.master_state.game.sitting_order 
+        other_possibilities = [player for player in globvars.master_state.game.sitting_order
                                if player.user.id != minion.user.id and player.user.id != investigator_player.user.id]
         other = random.choice(other_possibilities)
-        
+
         # Construct the message
         two_player_list = [minion, other]
         random.shuffle(two_player_list)

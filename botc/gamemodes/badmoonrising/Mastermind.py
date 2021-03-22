@@ -4,7 +4,7 @@ import json
 from botc import Character, Minion
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.mastermind.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -12,7 +12,7 @@ with open('botc/emojis.json') as json_file:
 
 
 class Mastermind(Minion, BadMoonRising, Character):
-    """Mastermind: If the Demon dies by execution, play for 1 more day. If a player 
+    """Mastermind: If the Demon dies by execution, play for 1 more day. If a player
     is then executed, their team loses
     """
 
@@ -35,4 +35,4 @@ class Mastermind(Minion, BadMoonRising, Character):
 
         self._role_enum = BMRRole.mastermind
         self._emoji = emojis["badmoonrising"]["mastermind"]
-        
+

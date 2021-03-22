@@ -43,7 +43,7 @@ class Fleave(Admin, name = language["system"]["admin_cog"]):
             # Cancel the start clear timer if no one has voted to start
             if len(globvars.start_votes) == 0 and start_votes_timer.is_running():
                 start_votes_timer.cancel()
-        
+
         # The player has not joined
         else:
             await ctx.send(fleaved_str.format(ctx.author.mention, member.name))

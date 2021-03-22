@@ -47,7 +47,7 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
     @commands.check(botutils.check_if_not_in_game)
     async def join(self, ctx):
         """Join command"""
-        
+
         import globvars
 
         if globvars.master_state.game:
@@ -91,7 +91,7 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
 
         # Still give everyone the role just in case of discord sync issue
         await botutils.add_alive_role(ctx.author)
-    
+
     @join.error
     async def join_error(self, ctx, error):
         """Error handling of the join command"""
@@ -99,7 +99,7 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

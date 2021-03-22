@@ -71,15 +71,15 @@ def update_state_machine():
 
 def find_role_in_all(role_name):
     """
-    Find a role name amongst all the loaded game packs. 
+    Find a role name amongst all the loaded game packs.
     Return the role class if it is found, else return None
 
     The game_packs variable is coded in the following way:
 
-    {'botc': {'game_obj': <botc.Game.Game object at 0x1187bffd0>, 'gamemodes': {'trouble-brewing': 
-    [Baron Obj, Butler Obj, Chef Obj, Drunk Obj, Empath Obj, Fortune Teller Obj, Imp Obj, 
-    Investigator Obj, Librarian Obj, Mayor Obj, Monk Obj, Poisoner Obj, Ravenkeeper Obj, 
-    Recluse Obj, Saint Obj, Scarlet Woman Obj, Slayer Obj, Soldier Obj, Undertaker Obj, 
+    {'botc': {'game_obj': <botc.Game.Game object at 0x1187bffd0>, 'gamemodes': {'trouble-brewing':
+    [Baron Obj, Butler Obj, Chef Obj, Drunk Obj, Empath Obj, Fortune Teller Obj, Imp Obj,
+    Investigator Obj, Librarian Obj, Mayor Obj, Monk Obj, Poisoner Obj, Ravenkeeper Obj,
+    Recluse Obj, Saint Obj, Scarlet Woman Obj, Slayer Obj, Soldier Obj, Undertaker Obj,
     Virgin Obj, Washerwoman Obj]}}}
     """
     match = None

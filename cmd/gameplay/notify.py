@@ -95,7 +95,7 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
             globvars.notify_list.append(ctx.author.id)
             msg = add_notify.format(botutils.BotEmoji.check)
             await ctx.send(msg)
-    
+
     @notify.command(
         pass_context = True,
         name = "remove",
@@ -123,7 +123,7 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

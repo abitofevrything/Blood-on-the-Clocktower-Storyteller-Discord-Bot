@@ -11,10 +11,10 @@ from ._utils import TroubleBrewing, TBRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.librarian.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     librarian_init = strings["gameplay"]["librarian_init"]
     librarian_init_zero = strings["gameplay"]["librarian_init_zero"]
@@ -33,7 +33,7 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Librarian: You start knowing that 1 of 2 players is a particular Outsider.
     (Or that zero are in play)
 
-    ===== LIBRARIAN ===== 
+    ===== LIBRARIAN =====
 
     true_self = librarian
     ego_self = librarian
@@ -54,9 +54,9 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     START:
     override regular night instruction -> NO  # default is to send nothing
     """
-    
+
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Townsfolk.__init__(self)
@@ -67,7 +67,7 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-                            
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/8/86/Librarian_Token.png"
         self._art_link_cropped = "https://imgur.com/mWMrJky.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Librarian"
@@ -81,14 +81,14 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     async def send_n1_end_message(self, recipient):
         """Send two possible players for a particular outsider character."""
 
@@ -99,7 +99,7 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Dead players do not receive anything
         if not player.is_alive():
-            return 
+            return
 
         # Poisoned info
         if player.is_droisoned():
@@ -133,7 +133,7 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             embed.set_thumbnail(url = link)
             embed.set_footer(text = copyrights_str)
             embed.timestamp = datetime.datetime.utcnow()
-        
+
         # No outsiders found
         else:
 
@@ -153,10 +153,10 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             await recipient.send(embed = embed)
         except discord.Forbidden:
             pass
-    
+
     def __create_droisoned_info(self, librarian_player):
         """Create the droisoned info for librarian"""
-        
+
         # 1/5 chance of no outsider (1/5 chance for each outsider type + this)
         if random.random() < 0.2:
             return None
@@ -166,14 +166,14 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         registered_outsider_type = random.choice(tb_outsider_all)
 
         # Choosing candidates
-        candidates = [player for player in globvars.master_state.game.sitting_order 
+        candidates = [player for player in globvars.master_state.game.sitting_order
                       if player.user.id != librarian_player.user.id]
         random.shuffle(candidates)
         candidate_1 = candidates.pop()
         candidate_2 = candidates.pop()
 
         return [candidate_1, candidate_2, registered_outsider_type]
-    
+
     def get_two_possible_outsiders(self, recipient):
         """Send two possible outsiders"""
 
@@ -194,17 +194,17 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             registered_outsider_type = outsider.role.social_self
 
             # Choose the other player
-            other_possibilities = [player for player in globvars.master_state.game.sitting_order 
+            other_possibilities = [player for player in globvars.master_state.game.sitting_order
                                 if player.user.id != outsider.user.id and player.user.id != recipient.id]
             other = random.choice(other_possibilities)
-            
+
             two_player_list = [outsider, other]
             random.shuffle(two_player_list)
             two_player_list.append(registered_outsider_type)
 
             globvars.logging.info(f">>> Librarian: Sent {outsider} and {other} as {registered_outsider_type}")
             return two_player_list
-        
+
         # We did not find any outsider
         else:
             globvars.logging.info(f">>> Librarian: Sent 0 outsider")

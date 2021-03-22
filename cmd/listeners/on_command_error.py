@@ -14,10 +14,10 @@ error_str = language["system"]["error"]
 
 class on_command_error(commands.Cog):
     """Event listener on_command_error"""
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         """The event triggered when an error is raised while invoking a command.
@@ -38,7 +38,7 @@ class on_command_error(commands.Cog):
         if cog:
             if cog._get_overridden_method(cog.cog_command_error) is not None:
                 return
-        
+
         ignored = (commands.CommandNotFound, )
 
         # Allows us to check for original exceptions raised and sent to CommandInvokeError.

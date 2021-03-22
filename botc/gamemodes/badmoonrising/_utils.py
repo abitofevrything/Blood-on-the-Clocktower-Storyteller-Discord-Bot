@@ -13,8 +13,8 @@ class BMRRole(enum.Enum):
     devilsadvocate = "Devil's Advocate"
     exorcist = "Exorcist"
     fool = "Fool"
-    gambler = "Gambler" 
-    godfather = "Godfather" 
+    gambler = "Gambler"
+    godfather = "Godfather"
     goon = "Goon"
     gossip = "Gossip"
     grandmother = "Grandmother"
@@ -41,4 +41,3 @@ class BadMoonRising:
 
         self._gm_of_appearance = Gamemode.bad_moon_rising
         self._gm_art_link = "https://bloodontheclocktower.com/wiki/images/d/d9/BMR_Logo.png"
-        

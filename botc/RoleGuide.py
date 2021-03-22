@@ -1,7 +1,7 @@
 """Contains the Role Guide class"""
 
 class RoleGuide:
-    """Role Guide class: provides the number of each category of characters given 
+    """Role Guide class: provides the number of each category of characters given
     the total number of players
     """
 
@@ -54,4 +54,3 @@ class RoleGuide:
     @property
     def nb_demons(self):
         return self._nb_demons
-    

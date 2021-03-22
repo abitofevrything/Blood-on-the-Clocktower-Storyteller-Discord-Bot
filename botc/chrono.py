@@ -18,13 +18,13 @@ class GameChrono:
 
     def __init__(self):
         self.current = 0
-    
+
     def next(self):
         self.current += 1
-    
+
     def is_night_1(self):
         return self.current == 1
-    
+
     @property
     def phase_id(self):
         return self.current
@@ -33,7 +33,7 @@ class GameChrono:
     def cycle(self):
         """The nth cycle"""
         return math.ceil(self.current/3)
-    
+
     @property
     def phase(self):
         """Whether night or day"""

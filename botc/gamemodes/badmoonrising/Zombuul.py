@@ -10,10 +10,10 @@ from ._utils import BadMoonRising, BMRRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.zombuul.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     demon_bluff_str = strings["gameplay"]["demonbluffs"]
     action_assign = strings["gameplay"]["action_assign"]
@@ -23,10 +23,10 @@ with open('botc/emojis.json') as json_file:
 
 
 class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
-    """Zombuul: Each night*, if no-one died today, choose a player: they die. The 1st time you die, 
+    """Zombuul: Each night*, if no-one died today, choose a player: they die. The 1st time you die,
     you do not, but appear to.
 
-    ===== ZOMBUUL ===== 
+    ===== ZOMBUUL =====
 
     true_self = zombuul
     ego_self = zombuul
@@ -69,12 +69,12 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
 
         self._role_enum = BMRRole.zombuul
         self._emoji = emojis["badmoonrising"]["zombuul"]
-    
+
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
-        
+
         # First line is the character instruction string
-        msg = f"{self.emoji} {self.instruction}" 
+        msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
 
         # Some characters have a line of addendum
@@ -88,7 +88,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
             msg += f"\n{self.demon_head_emoji} {demon_bluff_str.format(bluffs[0], bluffs[1], bluffs[2])}"
 
         return msg
-    
+
     def get_demon_bluffs(self):
         """Get the list of 3 demon bluffs"""
 
@@ -99,9 +99,9 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
         taken_townsfolks = [player.role.name for player in globvars.master_state.game.setup.townsfolks]
         taken_outsiders = [player.role.name for player in globvars.master_state.game.setup.outsiders]
 
-        possible_townsfolk_bluffs = [character for character in all_townsfolks 
+        possible_townsfolk_bluffs = [character for character in all_townsfolks
                                         if character.name not in taken_townsfolks]
-        possible_outsider_bluffs = [character for character in all_outsiders 
+        possible_outsider_bluffs = [character for character in all_outsiders
                                     if character.name not in taken_outsiders]
         random.shuffle(possible_townsfolk_bluffs)
         random.shuffle(possible_outsider_bluffs)
@@ -126,7 +126,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
 
         globvars.logging.info(f">>> Zombull: Received three demon bluffs {bluff_1}, {bluff_2} and {bluff_3}.")
         return (bluff_1, bluff_2, bluff_3)
-    
+
     def has_finished_night_action(self, player):
         """Return True if imp has submitted the kill action"""
 
@@ -137,7 +137,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.kill
         return True
-    
+
     @GameLogic.except_first_night
     @GameLogic.requires_one_target
     @GameLogic.changes_not_allowed
@@ -145,24 +145,24 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
         """Kill command"""
 
         butterfly = botutils.BotEmoji.butterfly
-        
+
         # Must be 1 target
         assert len(targets) == 1, "Received a number of targets different than 1 for zombuul 'kill'"
         action = Action(player, targets, ActionTypes.kill, globvars.master_state.game._chrono.phase_id)
         player.action_grid.register_an_action(action, globvars.master_state.game._chrono.phase_id)
         msg = butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
-    
+
     async def exec_kill(self, demon_player, killed_player):
         """Execute the kill action (night ability interaction)"""
 
         if demon_player.is_alive() and not demon_player.is_droisoned():
-            # Players who have received a status effect granting them safety from the demon 
+            # Players who have received a status effect granting them safety from the demon
             # do not die
             if killed_player.has_status_effect(StatusList.safety_from_demon):
                 return
             await killed_player.role.true_self.on_being_demon_killed(killed_player)
-        
+
     async def on_being_executed(self, executed_player):
         """Funtion that runs after the player has been executed.
         Overriding the parent behaviour.
@@ -175,7 +175,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
             game = globvars.master_state.game
             game.today_executed_player = executed_player
             return
-        
+
         # The second time the zombuul dies
         if executed_player.is_alive() and executed_player.is_apparently_dead():
 
@@ -191,7 +191,7 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
 
         # We only do any of the following if the zombuul is alive. Otherwise skip everything.
         if player.is_alive():
-        
+
             phase = globvars.master_state.game._chrono.phase_id
             action = player.action_grid.retrieve_an_action(phase)
             # The zombuul has submitted an action. We call the execution function immediately
@@ -200,8 +200,8 @@ class Zombuul(Demon, BadMoonRising, Character, RecurringAction):
                 targets = action.target_player
                 killed_player = targets[0]
                 await self.exec_kill(player, killed_player)
-            # The zombuul has not submitted an action. We will randomize the action and make 
-            # the zombuul kill one random player that is not the zombuul. 
+            # The zombuul has not submitted an action. We will randomize the action and make
+            # the zombuul kill one random player that is not the zombuul.
             else:
                 if player.is_alive():
                     killed_player = BOTCUtils.get_random_player_excluding(player)

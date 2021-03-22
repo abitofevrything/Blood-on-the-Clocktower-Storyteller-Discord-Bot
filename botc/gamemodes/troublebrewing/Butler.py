@@ -1,6 +1,6 @@
 """Contains the Butler Character class"""
 
-import json 
+import json
 import botutils
 import discord
 import configparser
@@ -10,10 +10,10 @@ from botc import Outsider, Character, Action, ActionTypes, BOTCUtils, RecurringA
 from ._utils import TroubleBrewing, TBRole
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.butler.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     action_assign = documentation["gameplay"]["action_assign"]
 
@@ -26,10 +26,10 @@ Config.read('config.INI')
 DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
-    """Butler: Each night, choose a player (not yourself): tomorrow, you may only vote if 
+    """Butler: Each night, choose a player (not yourself): tomorrow, you may only vote if
     they are voting too.
 
-    ===== BUTLER ===== 
+    ===== BUTLER =====
 
     true_self = butler
     ego_self = butler
@@ -53,7 +53,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Outsider.__init__(self)
@@ -64,7 +64,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-        
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/1/1a/Butler_Token.png"
         self._art_link_cropped = "https://imgur.com/UrELsAS.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Butler"
@@ -78,14 +78,14 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     def add_action_field_n1(self, embed_obj):
         """Send the stats list n1"""
 
@@ -93,16 +93,16 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         msg += globvars.master_state.game.create_sitting_order_stats_string()
         embed_obj.add_field(name = botutils.BotEmoji.butterfly + " **「 Your Action 」**", value = msg, inline = False)
         return embed_obj
-    
+
     def has_finished_night_action(self, player):
         """Return True if butler has submitted the serve action"""
-        
+
         if player.is_alive():
             current_phase_id = globvars.master_state.game._chrono.phase_id
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.serve
         return True
-    
+
     @GameLogic.no_self_targetting
     @GameLogic.requires_one_target
     @GameLogic.changes_not_allowed
@@ -119,13 +119,13 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
 
         msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"].format(targets[0].game_nametag)
         await player.user.send(msg)
-    
+
     async def exec_serve(self, butler_player, master_player):
         """Execute the serve action (night ability interaction)"""
 
         if butler_player.is_alive() and not butler_player.is_droisoned():
             butler_player.add_status_effect(ButlerService(butler_player, butler_player, master_player, 2))
-    
+
     async def process_night_ability(self, player):
         """Process night actions for the butler character.
         @player : the Butler player (Player object)
@@ -133,7 +133,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
 
         # We only do any of the following if the butler is alive. Otherwise skip everything.
         if player.is_alive():
-        
+
             phase = globvars.master_state.game._chrono.phase_id
             action = player.action_grid.retrieve_an_action(phase)
 
@@ -143,7 +143,7 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
                 targets = action.target_player
                 master_player = targets[0]
                 await self.exec_serve(player, master_player)
-            # The butler has not submitted an action. We randomize the master for him, 
+            # The butler has not submitted an action. We randomize the master for him,
             # DM him the choice of the master, and then call the execution function
             else:
                 master_player = BOTCUtils.get_random_player_excluding(player)

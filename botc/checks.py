@@ -24,7 +24,7 @@ def check_if_is_player(ctx):
 
 def can_use_serve(user_id):
     """Return true if the user can use the command "serve"
-    Characters that can serve: 
+    Characters that can serve:
     - Butler
     """
     from botc.gamemodes.troublebrewing._utils import TBRole

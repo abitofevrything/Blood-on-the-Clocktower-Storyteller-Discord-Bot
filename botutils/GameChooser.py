@@ -6,7 +6,7 @@ class GameChooser:
     """A class to faciliate gamemode choosing and voting"""
 
     from botc.Game import Game
-    
+
     _default_game = Game()
 
     _tb_game = Game(Gamemode.trouble_brewing)
@@ -18,7 +18,7 @@ class GameChooser:
     @property
     def default_game(self):
         return self._default_game
-    
+
     def get_selected_game(self):
         if self.selected_gamemode == Gamemode.trouble_brewing:
             return self. _tb_game

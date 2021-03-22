@@ -6,7 +6,7 @@ import botutils
 from botc import Phase
 from discord.ext import commands
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 with open('botutils/bot_text.json') as json_file:
@@ -19,13 +19,13 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         return botutils.check_if_admin(ctx)
 
     # ---------- FNOMINATION command ----------------------------------------
     @commands.command(
-        pass_context = True, 
+        pass_context = True,
         name = "fnomination",
         hidden = False,
         brief = documentation["doc"]["fnomination"]["brief"],
@@ -34,7 +34,7 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
     )
     async def fnomination(self, ctx):
         """fnomination command"""
-        
+
         import globvars
         if globvars.master_state.game.current_phase == Phase.day:
             from botc.gameloops import base_day_loop
@@ -44,7 +44,7 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
                 botc.switches.master_proceed_to_nomination = True
                 msg = documentation["doc"]["fnomination"]["feedback"].format(botutils.BotEmoji.success)
                 await ctx.send(msg)
-    
+
     @fnomination.error
     async def fnomination_error(self, ctx, error):
         # Check did not pass -> commands.CheckFailure
@@ -55,4 +55,4 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())

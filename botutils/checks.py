@@ -45,7 +45,7 @@ def check_if_not_in_empty(ctx):
 
 
 def check_if_lobby_or_dm_or_admin(ctx):
-    """Check the channel of the context, return True if it is sent in either 
+    """Check the channel of the context, return True if it is sent in either
     lobby or in a private channel.
     Admins can bypass.
     """
@@ -53,7 +53,7 @@ def check_if_lobby_or_dm_or_admin(ctx):
 
 
 def check_if_lobby_or_spec_or_dm_or_admin(ctx):
-    """Check the channel of the context, return True if it is sent in either 
+    """Check the channel of the context, return True if it is sent in either
     lobby, in spec chat, or in a private channel.
     Admins can bypass.
     """

@@ -10,4 +10,3 @@ class Outsider:
         self._category = Category.outsider
         self._team = Team.good
 
-        

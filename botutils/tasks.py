@@ -93,7 +93,7 @@ async def start_votes_timer():
 
 @tasks.loop(minutes = BACKUP_INTERVAL_MIN, count = None)
 async def backup_loop():
-    """A task to backup data in csv files: 
+    """A task to backup data in csv files:
     Notify and ignore information
     """
 
@@ -102,9 +102,9 @@ async def backup_loop():
     with open('ignore.csv', mode = 'w') as ignore_file:
         ignore_writer = csv.writer(ignore_file, delimiter = ',')
         ignore_writer.writerow(globvars.ignore_list)
-    
+
     with open('notify.csv', mode = 'w') as notify_file:
         notify_writer = csv.writer(notify_file, delimiter = ',')
         notify_writer.writerow(globvars.notify_list)
-    
+
     globvars.logging.info("Backing up data")

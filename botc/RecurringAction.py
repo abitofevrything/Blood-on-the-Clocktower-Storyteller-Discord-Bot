@@ -9,7 +9,7 @@ from botc import BOTCUtils
 
 butterfly = botutils.BotEmoji.butterfly
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
 
@@ -64,7 +64,7 @@ class RecurringAction:
             msg2 = self.action
             msg2 += globvars.master_state.game.create_sitting_order_stats_string()
             embed.add_field(name = butterfly + " **「 Your Action 」**", value = msg2, inline = False)
-            
+
             try:
                 await recipient.send(embed = embed)
             except discord.Forbidden:

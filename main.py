@@ -6,10 +6,10 @@ STORYTELLER BOT
 -------------------------
 [2020] Code by Xinverse
 
-NOTICE: The copyrights of the games belong to their respective holders, 
-unless otherwise specified. This project is an independent adaptation 
-of commercial board games into Discord bot format; the Developer is not 
-affiliated with them in any way. 
+NOTICE: The copyrights of the games belong to their respective holders,
+unless otherwise specified. This project is an independent adaptation
+of commercial board games into Discord bot format; the Developer is not
+affiliated with them in any way.
 
 """
 

@@ -36,7 +36,7 @@ class Quit(Gameplay, name = language["system"]["gameplay_cog"]):
             # This check is to ensure a player doesn't quit right after !start
             # before the game is fully set up and end up breaking the game.
             return
-        
+
         # The command user has joined; make them quit
         if globvars.master_state.pregame.is_joined(ctx.author.id):
             globvars.master_state.pregame.safe_remove_player(ctx.author.id)
@@ -55,10 +55,10 @@ class Quit(Gameplay, name = language["system"]["gameplay_cog"]):
         # The command user has not joined
         else:
             await ctx.send(quitted_str.format(ctx.author.mention))
-        
+
         # Still take away the role from everyone just in case of discord sync issue
         await botutils.remove_alive_role(ctx.author)
-    
+
     @quit.error
     async def quit_error(self, ctx, error):
         """Error handling of the quit command"""
@@ -66,7 +66,7 @@ class Quit(Gameplay, name = language["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

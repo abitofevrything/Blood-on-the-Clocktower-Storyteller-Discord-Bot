@@ -8,12 +8,12 @@ from botc import check_if_is_player, check_if_lobby, check_if_player_apparently_
     check_if_is_day, PlayerConverter, BOTCUtils, NotAPlayer, NotDay, NotLobbyChannel, \
     AliveOnlyCommand
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 error_str = language["system"]["error"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     nomination_ongoing = documentation["cmd_warnings"]["nomination_ongoing"]
     nominations_not_open = documentation["cmd_warnings"]["nominations_not_open"]
@@ -25,21 +25,21 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Nominate command - used for execution
     """
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         """Check performed on all commands of this cog.
         Must be a non-fleaved player to use these commands.
         """
         return check_if_is_player(ctx)  # Registered non-quit player -> NotAPlayer
-    
+
     # ---------- NOMINATE COMMAND (Voting) ----------------------------------------
     @commands.command(
-        pass_context = True, 
-        name = "nominate", 
-        hidden = False, 
+        pass_context = True,
+        name = "nominate",
+        hidden = False,
         aliases = ["nom"],
         brief = documentation["doc"]["nominate"]["brief"],
         help = documentation["doc"]["nominate"]["help"],
@@ -50,7 +50,7 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     @commands.check(check_if_player_apparently_alive)  # Player alive -> AliveOnlyCommand
     async def nominate(self, ctx, *, nominated: PlayerConverter()):
         """Nominate command
-        usage: nominate <player> 
+        usage: nominate <player>
         characters: living players
         """
         import globvars
@@ -60,7 +60,7 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         # A nomination is currently going on. The player cannot nominate.
         if nomination_loop.is_running():
             msg = nomination_ongoing.format(
-                ctx.author.mention, 
+                ctx.author.mention,
                 botutils.BotEmoji.x_emoji
             )
             await ctx.send(msg)
@@ -69,12 +69,12 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         # The day has not reached nomination phase yet. The player cannot nominate.
         elif base_day_loop.is_running():
             msg = nominations_not_open.format(
-                ctx.author.mention, 
+                ctx.author.mention,
                 botutils.BotEmoji.x_emoji
             )
             await ctx.send(msg)
             return
-        
+
         if player.can_nominate():
             if nominated.can_be_nominated():
                 # The player cannot nominate again today
@@ -84,19 +84,19 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 await nominated.role.true_self.on_being_nominated(player, nominated)
             else:
                 msg = cannot_be_nominated_again.format(
-                    ctx.author.mention, 
-                    botutils.BotEmoji.x_emoji, 
+                    ctx.author.mention,
+                    botutils.BotEmoji.x_emoji,
                     nominated.game_nametag
                 )
                 await ctx.send(msg)
         else:
             msg = cannot_nominate_again.format(
-                ctx.author.mention, 
+                ctx.author.mention,
                 botutils.BotEmoji.x_emoji
             )
             await ctx.send(msg)
 
-        
+
     @nominate.error
     async def nominate_error(self, ctx, error):
         emoji = botutils.BotEmoji.x_emoji
@@ -123,8 +123,7 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())
 
 def setup(client):
     client.add_cog(Nominate(client))
-    

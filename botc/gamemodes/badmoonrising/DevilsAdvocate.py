@@ -4,7 +4,7 @@ import json
 from botc import Character, Minion
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file: 
+with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
     character_text = json.load(json_file)[BMRRole.devilsadvocate.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -12,12 +12,12 @@ with open('botc/emojis.json') as json_file:
 
 
 class DevilsAdvocate(Minion, BadMoonRising, Character):
-    """Devil's Advocate: Each night, choose a living player (not the same as last night): 
+    """Devil's Advocate: Each night, choose a living player (not the same as last night):
     if executed tomorrow, they do not die.
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         BadMoonRising.__init__(self)
         Minion.__init__(self)

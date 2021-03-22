@@ -6,7 +6,7 @@ import botutils
 from botc import Phase
 from discord.ext import commands
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 with open('botutils/bot_text.json') as json_file:
@@ -19,13 +19,13 @@ class Fnight(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         return botutils.check_if_admin(ctx)
 
     # ---------- FNIGHT command ----------------------------------------
     @commands.command(
-        pass_context = True, 
+        pass_context = True,
         name = "fnight",
         hidden = False,
         brief = documentation["doc"]["fnight"]["brief"],
@@ -34,7 +34,7 @@ class Fnight(commands.Cog, name = documentation["misc"]["debug_cog"]):
     )
     async def fnight(self, ctx):
         """Fnight command"""
-        
+
         import globvars
         if globvars.master_state.game.current_phase == Phase.day:
 
@@ -43,11 +43,11 @@ class Fnight(commands.Cog, name = documentation["misc"]["debug_cog"]):
             # Stop the nomination loop if it is running
             if nomination_loop.is_running():
                 nomination_loop.cancel()
-            
+
             # Stop the base day loop if it is running
             if base_day_loop.is_running():
                 base_day_loop.cancel()
-            
+
             # Stop the debate timer loop if it is running
             if debate_timer.is_running():
                 debate_timer.cancel()
@@ -55,9 +55,9 @@ class Fnight(commands.Cog, name = documentation["misc"]["debug_cog"]):
             import botc.switches
             botc.switches.master_proceed_to_night = True
             msg = documentation["doc"]["fnight"]["feedback"].format(botutils.BotEmoji.success)
-            
+
             await ctx.send(msg)
-    
+
     @fnight.error
     async def fnight_error(self, ctx, error):
         # Check did not pass -> commands.CheckFailure
@@ -68,4 +68,4 @@ class Fnight(commands.Cog, name = documentation["misc"]["debug_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())

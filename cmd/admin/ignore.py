@@ -24,7 +24,7 @@ with open('botutils/bot_text.json') as json_file:
     clear_ignore = language["cmd"]["clear_ignore"]
     force_clear = language["cmd"]["force_clear"]
     ignore_sync = language["cmd"]["ignore_sync"]
-    
+
 
 class Ignore(Admin, name = language["system"]["admin_cog"]):
     """Ignore command"""
@@ -110,7 +110,7 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
                 member.id
             )
             await ctx.send(msg)
-    
+
     @ignore.command(
         pass_context = True,
         name = "sync",
@@ -129,7 +129,7 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
                 count += 1
         msg = ignore_sync.format(botutils.BotEmoji.check, count)
         await ctx.send(msg)
-    
+
     @ignore.group(
         pass_context = True,
         name = "clear",

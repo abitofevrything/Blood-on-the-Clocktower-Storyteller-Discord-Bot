@@ -15,13 +15,13 @@ Config.read("preferences.INI")
 TOWNSQUARE_COOLDOWN = Config["botc"]["TOWNSQUARE_COOLDOWN"]
 TOWNSQUARE_COOLDOWN = int(TOWNSQUARE_COOLDOWN)
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 error_str = language["system"]["error"]
 cooldown = language["errors"]["cmd_cooldown"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 townsquare_loading = documentation["cmd_warnings"]["townsquare_loading"]
@@ -31,12 +31,12 @@ class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Townsquare command - used for viewing the townsquare image
     """
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
-        """Check the channel of the context, return True if it is sent in either 
+        """Check the channel of the context, return True if it is sent in either
         lobby, or in spec chat.
         Admins can bypass.
         """
@@ -44,13 +44,13 @@ class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                botutils.check_if_lobby(ctx) or \
                botutils.check_if_dm(ctx) or \
                botutils.check_if_spec(ctx)
-    
+
     # ---------- TOWNSQUARE COMMAND (Stats) ----------------------------------------
     @commands.command(
-        pass_context = True, 
-        name = "townsquare", 
+        pass_context = True,
+        name = "townsquare",
         aliases = ["ts"],
-        hidden = False, 
+        hidden = False,
         brief = documentation["doc"]["townsquare"]["brief"],
         help = documentation["doc"]["townsquare"]["help"],
         description = documentation["doc"]["townsquare"]["description"]
@@ -82,7 +82,7 @@ class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())
 
 def setup(client):
     client.add_cog(Townsquare(client))

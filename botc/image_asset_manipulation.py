@@ -27,12 +27,12 @@ def alpha_to_color(image, color=(255, 255, 255)):
     image -- PIL RGBA Image object
     color -- Tuple r, g, b (default 255, 255, 255)
 
-    """ 
+    """
     x = np.array(image)
     r, g, b, a = np.rollaxis(x, axis=-1)
     r[a == 0] = color[0]
     g[a == 0] = color[1]
-    b[a == 0] = color[2] 
+    b[a == 0] = color[2]
     x = np.dstack([r, g, b, a])
     return Image.fromarray(x, 'RGBA')
 

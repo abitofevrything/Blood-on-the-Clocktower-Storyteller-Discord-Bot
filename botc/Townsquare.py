@@ -7,7 +7,7 @@ from botc.gamemodes import Gamemode
 
 
 class Townsquare:
-    """Townsquare object to show a graphical representation player sitting 
+    """Townsquare object to show a graphical representation player sitting
     order.
     """
 
@@ -29,9 +29,9 @@ class Townsquare:
         self.PIC_LENGTH = max(background.size)
 
         background.save(self.TOWNSQUARE_PATH, format="PNG")
-    
+
     @property
-    def BACKGROUND_PATH(self): 
+    def BACKGROUND_PATH(self):
         """Select a random background"""
         backgrounds = [
             "botc/assets/grimoire/townsquare_background1.png",
@@ -40,22 +40,22 @@ class Townsquare:
             "botc/assets/grimoire/townsquare_background4.png"
         ]
         return random.choice(backgrounds)
-    
+
     @property
     def token_width(self):
         """Find the width of each token based on the background size"""
         return math.ceil(self.PIC_SQUARE_SIDE/5.5)
-    
+
     @property
     def sitting_circle_radius(self):
         """Find the radius of the big sitting circle based on the background size"""
         return math.ceil(self.PIC_SQUARE_SIDE * 0.75 * 0.5)
-    
+
     @property
     def font_size(self):
         """Find the font size appropriate for the size of the image"""
         return math.ceil(self.PIC_SQUARE_SIDE * 0.04)
-    
+
     def create(self, game_obj):
 
         nb_players = len(game_obj.sitting_order)
@@ -91,7 +91,7 @@ class Townsquare:
                 background.paste(token, (new_x, new_y), token.convert("RGBA"))
             except Exception:
                 pass
-            
+
             text = player_obj.user.display_name
             w, h = font.getsize(text)
             new_x, new_y = self.translate_text(x, y, w)
@@ -99,7 +99,7 @@ class Townsquare:
             draw.text((new_x, new_y), text, (255, 255, 255), font = font)
 
         background.save(self.TOWNSQUARE_PATH)
-    
+
     def paste_gamemode_icon(self, game_obj, background):
 
         x = self.PIC_LENGTH / 2
@@ -131,7 +131,7 @@ class Townsquare:
 
         elif game_obj.gamemode == Gamemode.sects_and_violets:
             pass
-    
+
     def translate(self, x, y):
         image_center_x = self.PIC_LENGTH / 2
         image_center_y = self.PIC_SQUARE_SIDE / 2
@@ -140,7 +140,7 @@ class Townsquare:
         image_center_y -= self.token_width / 2
 
         return(int(x + image_center_x), int(y + image_center_y))
-    
+
     def translate_text(self, x, y, text_width):
         image_center_x = self.PIC_LENGTH / 2
         image_center_y = self.PIC_SQUARE_SIDE / 2
@@ -151,18 +151,17 @@ class Townsquare:
         offset = (text_width - self.token_width) / 2
 
         return(int(x + image_center_x - offset), int(y + image_center_y))
-    
+
     def get_image(self):
         return self.TOWNSQUARE_PATH
-    
+
     def get_rad_angle(self, nb_player):
         return 2 * math.pi / nb_player
-    
+
     def get_x_from_angle(self, rad_angle):
         """For the tokens only"""
         return self.sitting_circle_radius * math.sin(rad_angle)
-    
+
     def get_y_from_angle(self, rad_angle):
         """For the tokens only"""
         return self.sitting_circle_radius * math.cos(rad_angle)
-    

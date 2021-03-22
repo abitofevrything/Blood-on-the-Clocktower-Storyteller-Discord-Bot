@@ -25,10 +25,10 @@ Config.read('config.INI')
 
 DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.imp.value.lower()]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     strings = json.load(json_file)
     demon_bluff_str = strings["gameplay"]["demonbluffs"]
     action_assign = strings["gameplay"]["action_assign"]
@@ -40,10 +40,10 @@ with open('botc/emojis.json') as json_file:
 
 
 class Imp(Demon, TroubleBrewing, Character, RecurringAction):
-    """Imp: Each night*, choose a player: they die. If you kill yourself this way, 
+    """Imp: Each night*, choose a player: they die. If you kill yourself this way,
     a Minion becomes the Imp.
 
-    ===== IMP ===== 
+    ===== IMP =====
 
     true_self = imp
     ego_self = imp
@@ -68,7 +68,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Demon.__init__(self)
@@ -79,7 +79,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-        
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/4/42/Imp_Token.png"
         self._art_link_cropped = "https://imgur.com/ptpr9A1.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Imp"
@@ -89,9 +89,9 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
-        
+
         # First line is the character instruction string
-        msg = f"{self.emoji} {self.instruction}" 
+        msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
 
         # Some characters have a line of addendum
@@ -105,7 +105,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             msg += f"\n{self.demon_head_emoji} {demon_bluff_str.format(bluffs[0], bluffs[1], bluffs[2])}"
 
         return msg
-    
+
     def get_demon_bluffs(self):
         """Get the list of 3 demon bluffs"""
 
@@ -116,9 +116,9 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         taken_townsfolks = [player.role.name for player in globvars.master_state.game.setup.townsfolks]
         taken_outsiders = [player.role.name for player in globvars.master_state.game.setup.outsiders]
 
-        possible_townsfolk_bluffs = [character for character in all_townsfolks 
+        possible_townsfolk_bluffs = [character for character in all_townsfolks
                                         if character.name not in taken_townsfolks]
-        possible_outsider_bluffs = [character for character in all_outsiders 
+        possible_outsider_bluffs = [character for character in all_outsiders
                                     if character.name not in taken_outsiders]
         random.shuffle(possible_townsfolk_bluffs)
         random.shuffle(possible_outsider_bluffs)
@@ -143,7 +143,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
         globvars.logging.info(f">>> Imp: Received three demon bluffs {bluff_1}, {bluff_2} and {bluff_3}.")
         return (bluff_1, bluff_2, bluff_3)
-    
+
     def has_finished_night_action(self, player):
         """Return True if imp has submitted the kill action"""
 
@@ -154,13 +154,13 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.kill
         return True
-    
+
     @GameLogic.except_first_night
     @GameLogic.requires_one_target
     @GameLogic.changes_not_allowed
     async def register_kill(self, player, targets):
         """Kill command"""
-        
+
         # Must be 1 target
         assert len(targets) == 1, "Received a number of targets different than 1 for imp 'kill'"
         action = Action(player, targets, ActionTypes.kill, globvars.master_state.game._chrono.phase_id)
@@ -177,27 +177,27 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         else:
             msg = botutils.BotEmoji.butterfly + " " + character_text["feedback"][1].format(targets[0].game_nametag)
             await player.user.send(msg)
-    
+
     async def exec_kill(self, demon_player, killed_player):
         """Execute the kill action (night ability interaction)"""
 
         if demon_player.is_alive() and not demon_player.is_droisoned():
-            # Players who have received a status effect granting them safety from the demon 
+            # Players who have received a status effect granting them safety from the demon
             # do not die
             if killed_player.has_status_effect(StatusList.safety_from_demon):
                 return
             await killed_player.role.ego_self.on_being_demon_killed(killed_player)
-    
+
     async def _starpass(self, demon_player):
         """Starpassing ability works when the demon is killed by himself at night"""
-        
+
         # If imp starpasses to poisoner, the poisoned player should be no longer poisoned
         for player in globvars.master_state.game.sitting_order:
             for status in player.status_effects:
                 if status.effect == StatusList.poison:
                     status.manually_disable()
 
-        # If 5 or more players alive (not counting travelers), scarlet woman has priority 
+        # If 5 or more players alive (not counting travelers), scarlet woman has priority
         # over the promotion to demonhood
         if globvars.master_state.game.nb_alive_players >= 5:
 
@@ -222,7 +222,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                     except discord.Forbidden:
                         pass
                     return
-        
+
         # Otherwise, any random minion is selected
         # This list of minions could contain dead players
         minions = BOTCUtils.get_all_minions()
@@ -246,21 +246,21 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
     async def on_being_demon_killed(self, killed_player):
         """Function that runs after the player has been killed by the demon at night.
-        Overriding the parent behaviour. 
+        Overriding the parent behaviour.
         This implements the star passing mechanic.
         """
         if killed_player.is_alive():
             await self._starpass(killed_player)
             await killed_player.exec_real_death()
             globvars.master_state.game.night_deaths.append(killed_player)
-    
+
     async def on_being_executed(self, executed_player):
         """Funtion that runs after the player has been executed.
         Overriding the parent behaviour.
         Check for presence of scarlet woman and promote her to demonhood if applicable.
         """
         if executed_player.is_alive():
-            # If 5 or more players alive (not counting travelers), scarlet woman gets 
+            # If 5 or more players alive (not counting travelers), scarlet woman gets
             # promoted to demonhood
             if globvars.master_state.game.nb_alive_players >= 5:
 
@@ -288,7 +288,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             await executed_player.exec_real_death()
             game = globvars.master_state.game
             game.today_executed_player = executed_player
-    
+
     def __make_demonhood_promo_embed(self, promoted):
         """Helper function to create an embed to the player promoted to demonhood."""
 
@@ -306,7 +306,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         embed.timestamp = datetime.datetime.utcnow()
 
         return embed
-    
+
     async def process_night_ability(self, player):
         """Process night actions for the imp character.
         @player : the Imp player (Player object)
@@ -314,7 +314,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
         # We only do any of the following if the imp is alive. Otherwise skip everything.
         if player.is_alive():
-        
+
             phase = globvars.master_state.game._chrono.phase_id
             action = player.action_grid.retrieve_an_action(phase)
             # The imp has submitted an action. We call the execution function immediately
@@ -323,8 +323,8 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                 targets = action.target_player
                 killed_player = targets[0]
                 await self.exec_kill(player, killed_player)
-            # The imp has not submitted an action. We will randomize the action and make 
-            # the imp kill one random player that is not the imp. 
+            # The imp has not submitted an action. We will randomize the action and make
+            # the imp kill one random player that is not the imp.
             else:
                 if player.is_alive():
                     killed_player = BOTCUtils.get_random_player_excluding(player)

@@ -29,7 +29,7 @@ class Role(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
         import globvars
         found = botutils.find_role_in_all(role_name)
-        
+
         # We did not find the role, send them the whole list
         if found is None:
             await ctx.send(globvars.master_state.game_packs["botc"]["formatter"].create_complete_roles_list())
@@ -47,11 +47,11 @@ class Role(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # Case: missing argument -> we will print the entire list of roles
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(globvars.master_state.game_packs["botc"]["formatter"].create_complete_roles_list())
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

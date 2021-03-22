@@ -10,12 +10,12 @@ from botc import check_if_is_player, check_if_is_night, check_if_dm, RoleCannotU
     NotAPlayer, BOTCUtils, AliveOnlyCommand, NotNight, NotDMChannel
 from botutils import BotEmoji
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 error_str = language["system"]["error"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
 
 
@@ -23,19 +23,19 @@ class Read(commands.Cog, name = documentation["misc"]["abilities_cog"]):
     """BoTC in-game commands cog
     Read command - used by fortune teller
     """
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         """Check performed on all commands of this cog.
         Must be a non-fleaved player to use these commands.
         """
         return check_if_is_player(ctx)  # Registered non-quit player -> NotAPlayer
-    
+
     # ---------- READ COMMAND (Fortune Teller) ----------------------------------------
     @commands.command(
-        pass_context = True, 
+        pass_context = True,
         name = "read",
         hidden = False,
         brief = documentation["doc"]["read"]["brief"],
@@ -98,8 +98,7 @@ class Read(commands.Cog, name = documentation["misc"]["abilities_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())
 
 def setup(client):
     client.add_cog(Read(client))
-    

@@ -22,11 +22,11 @@ DAWN_MULTIPLIER = int(Config["botc"]["DAWN_MULTIPLIER"])
 DEBATE_TIME = int(Config["botc"]["DEBATE_TIME"])
 INCREMENT = int(Config["botc"]["INCREMENT"])
 
-with open('botutils/bot_text.json') as json_file: 
+with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
     error_str = language["system"]["error"]
 
-with open('botc/game_text.json') as json_file: 
+with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
     time_night = documentation["gameplay"]["time_night"]
     time_dawn = documentation["gameplay"]["time_dawn"]
@@ -38,28 +38,28 @@ with open('botc/game_text.json') as json_file:
 
 class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
-    Time command - used for viewing the time left for each different phase or 
+    Time command - used for viewing the time left for each different phase or
     stage of the game
     """
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
-        """Check the channel of the context, return True if it is sent in 
+        """Check the channel of the context, return True if it is sent in
         lobby or in spectators chat
         Admins can bypass.
         """
         return botutils.check_if_admin(ctx) or \
                check_if_is_player(ctx) or \
                botutils.check_if_spec(ctx)
-    
+
     # ---------- TIME COMMAND ----------------------------------------
     @commands.command(
-        pass_context = True, 
-        name = "time", 
-        aliases = ["t"], 
-        hidden = False, 
+        pass_context = True,
+        name = "time",
+        aliases = ["t"],
+        hidden = False,
         brief = documentation["doc"]["time"]["brief"],
         help = documentation["doc"]["time"]["help"],
         description = documentation["doc"]["time"]["description"]
@@ -73,7 +73,7 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
 
         # Day phase
         if globvars.master_state.game.current_phase == Phase.day:
-            
+
             # Day phase: pre-nomination (base day phase)
             if base_day_loop.is_running():
 
@@ -89,10 +89,10 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 )
 
                 await ctx.send(msg)
-            
+
             # Day phase: nomination loop is running
             elif nomination_loop.is_running():
-                
+
                 # We are in the debate phase
                 if debate_timer.is_running():
                     end_time = debate_timer.next_iteration
@@ -103,12 +103,12 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                         display_time(time_left)
                     )
                     await ctx.send(msg)
-                
+
                 # We are in the active voting phase
                 else:
                     msg = time_voting
                     await ctx.send(msg)
-            
+
             # Day phase: waiting for a nomination
             else:
                 start_time = globvars.master_state.game.nomination_iteration_date[0]
@@ -122,7 +122,7 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
 
         # Night phase
         elif globvars.master_state.game.current_phase == Phase.night:
-        
+
             min_night_duration = BASE_NIGHT
             max_night_duration = BASE_NIGHT + NIGHT_MULTIPLER * INCREMENT
             __time_elapsed = (datetime.datetime.now() - globvars.master_state.game.night_start_time).seconds
@@ -136,7 +136,7 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             )
 
             await ctx.send(msg)
-        
+
         # Dawn phase
         elif globvars.master_state.game.current_phase == Phase.dawn:
 
@@ -144,7 +144,7 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             max_dawn_duration = BASE_DAWN + DAWN_MULTIPLIER * INCREMENT
             __time_elapsed = (datetime.datetime.now() - globvars.master_state.game.dawn_start_time).seconds
             time_left = max_dawn_duration - __time_elapsed
-        
+
             msg = time_dawn.format(
                 display_time(min_dawn_duration),
                 display_time(max_dawn_duration),
@@ -164,4 +164,4 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
                 raise error
             except Exception:
                 await ctx.send(error_str)
-                await botutils.log(botutils.Level.error, traceback.format_exc()) 
+                await botutils.log(botutils.Level.error, traceback.format_exc())

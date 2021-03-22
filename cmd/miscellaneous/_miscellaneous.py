@@ -19,7 +19,7 @@ class Miscellaneous(commands.Cog, name = language["system"]["miscellaneous_cog"]
 
     def cog_check(self, ctx):
         return botutils.check_if_not_ignored(ctx)
-    
+
     async def cog_command_error(self, ctx, error):
         """Error handling on commands"""
 
@@ -30,7 +30,7 @@ class Miscellaneous(commands.Cog, name = language["system"]["miscellaneous_cog"]
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-        
+
         # For other cases we will want to see the error logged
         else:
             try:

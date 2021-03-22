@@ -1,13 +1,13 @@
 """Contains the Recluse Character class"""
 
-import json 
+import json
 import random
 from botc import Outsider, Character, Minion, Demon, NonRecurringAction
 from ._utils import TroubleBrewing, TBRole
 import botutils
 import globvars
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file: 
+with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.recluse.value.lower()]
 
 with open('botc/emojis.json') as json_file:
@@ -17,7 +17,7 @@ with open('botc/emojis.json') as json_file:
 class Recluse(Outsider, TroubleBrewing, Character, NonRecurringAction):
     """Recluse: You might register as evil & as a Minion or Demon, even if dead.
 
-    ===== RECLUSE ===== 
+    ===== RECLUSE =====
 
     true_self = recluse
     ego_self = recluse
@@ -39,7 +39,7 @@ class Recluse(Outsider, TroubleBrewing, Character, NonRecurringAction):
     """
 
     def __init__(self):
-        
+
         Character.__init__(self)
         TroubleBrewing.__init__(self)
         Outsider.__init__(self)
@@ -50,7 +50,7 @@ class Recluse(Outsider, TroubleBrewing, Character, NonRecurringAction):
         self._lore_string = character_text["lore"]
         self._brief_string = character_text["brief"]
         self._action = character_text["action"]
-        
+
         self._art_link = "https://bloodontheclocktower.com/wiki/images/b/bb/Recluse_Token.png"
         self._art_link_cropped = "https://imgur.com/9VMElqP.png"
         self._wiki_link = "https://bloodontheclocktower.com/wiki/Recluse"
@@ -64,14 +64,14 @@ class Recluse(Outsider, TroubleBrewing, Character, NonRecurringAction):
         # First line is the character instruction string
         msg = f"{self.emoji} {self.instruction}"
         addendum = character_text["n1_addendum"]
-        
+
         # Some characters have a line of addendum
         if addendum:
             scroll_emoji = botutils.BotEmoji.scroll
             msg += f"\n{scroll_emoji} {addendum}"
-            
+
         return msg
-    
+
     def set_new_social_self(self, player):
         """Social self: what the other players think he is.
         The recluse may register as a demon, a minion, or as recluse.

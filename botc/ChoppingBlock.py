@@ -1,7 +1,7 @@
 """Contains the Chopping Block class"""
 
 class ChoppingBlock:
-    """A class to store data about which player was about to be lynched, 
+    """A class to store data about which player was about to be lynched,
     and by how many votes
     """
 
@@ -14,4 +14,3 @@ class ChoppingBlock:
         """
         self.player_about_to_die = player
         self.nb_votes = nb_votes
-        
