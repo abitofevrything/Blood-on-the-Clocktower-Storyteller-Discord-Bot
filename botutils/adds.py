@@ -118,7 +118,7 @@ async def lock_lobby():
     for channel_id in LOCK_CHANNELS_SPECIAL_ID:
         channel = globvars.client.get_channel(int(channel_id))
         try:
-            await channel.set_permissions(alive_role, send_messages=False, connect=False)
+            await channel.set_permissions(alive_role, send_messages=False, connect=False, speak=False)
         except discord.errors.Forbidden:
             await log(Level.warning, f'Unable to lock {channel.mention}')
             await log(Level.error, traceback.format_exc())
@@ -144,7 +144,7 @@ async def unlock_lobby():
     for channel_id in LOCK_CHANNELS_SPECIAL_ID:
         channel = globvars.client.get_channel(int(channel_id))
         try:
-            await channel.set_permissions(alive_role, send_messages=None, connect=None)
+            await channel.set_permissions(alive_role, send_messages=None, connect=None, speak=None)
         except discord.errors.Forbidden:
             await log(Level.warning, f'Unable to unlock {channel.mention}')
             await log(Level.error, traceback.format_exc())
