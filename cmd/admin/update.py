@@ -41,7 +41,7 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
         p = subprocess.run(["git", "-C", os.path.dirname(sys.argv[0]), "pull", "--stat", "--ff-only"], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
         output = ""
-        for line in p.stdout.decode("utf-8"):
+        for line in p.stdout.decode("utf-8").splitlines():
             if len(output + line + "\n") <= 2000:
                 output += f"{line}\n"
             else:
