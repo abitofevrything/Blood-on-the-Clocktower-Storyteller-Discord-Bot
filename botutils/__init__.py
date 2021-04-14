@@ -15,10 +15,10 @@ from .checks import (check_if_admin, check_if_dm, check_if_in_pregame,
                      return_true)
 from .emoji import BotEmoji
 from .GameChooser import GameChooser
-from .helpers import (find_role_in_all, get_emoji, get_member_from_string,
-                      get_member_obj, get_user_obj, make_alive_ping,
-                      make_code_block, make_dead_ping, make_ping,
-                      make_role_ping, make_time_string, strip_ping,
+from .helpers import (AmbiguousUserError, find_role_in_all, get_emoji,
+                      get_member_from_string, get_member_obj, get_user_obj,
+                      make_alive_ping, make_code_block, make_dead_ping,
+                      make_ping, make_role_ping, make_time_string, strip_ping,
                       update_state_machine)
 from .MasterState import MasterState, StateMachine
 from .Pregame import Pregame

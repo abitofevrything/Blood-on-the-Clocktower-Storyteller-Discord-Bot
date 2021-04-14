@@ -28,6 +28,7 @@ playerstats_evil_wins_str = language["cmd"]["playerstats_evil_wins"]
 playerstats_evil_winrate_str = language["cmd"]["playerstats_evil_winrate"]
 playerstats_footer_str = language["cmd"]["playerstats_footer"]
 user_not_found_str = language["errors"]["user_not_found"]
+ambiguous_user_str = language["errors"]["ambiguous_user"]
 error_str = language["system"]["error"]
 
 
@@ -49,7 +50,11 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             user = ctx.author
 
         if isinstance(user, str):
-            user = botutils.get_member_from_string(user)
+            try:
+                user = botutils.get_member_from_string(user)
+            except botutils.AmbiguousUserError as e:
+                await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
+                return
 
         if not user:
             await ctx.send(user_not_found_str.format(ctx.author.mention))

@@ -16,6 +16,10 @@ ALIVE_ROLE_ID = Config["user"]["ALIVE_ROLE_ID"]
 DEAD_ROLE_ID = Config["user"]["DEAD_ROLE_ID"]
 
 
+class AmbiguousUserError(Exception):
+    pass
+
+
 def make_ping(userid):
     """Turn a user ID into a ping"""
     return f"<@{userid}>"
@@ -145,4 +149,7 @@ def get_member_from_string(string):
         return nicknames_contains[0]
     if len(ids_contains) == 1:
         return ids_contains[0]
+    all_matches = set([*usernames, *discriminators, *nicknames, *usernames_contains, *nicknames_contains, *ids_contains])
+    if all_matches:
+        raise AmbiguousUserError(f"Ambiguous user: {string}", all_matches)
     return None

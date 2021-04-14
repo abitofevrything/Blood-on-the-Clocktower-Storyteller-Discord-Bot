@@ -379,6 +379,7 @@
 
         "error_title": "Error",
         "user_not_found" : "{} :x: Specified user is not found.",
+        "ambiguous_user" : "{} :x: Specified user is ambiguous (one of {}).",
         "missing_user" : "{} :x: Missing argument, please specify a valid user.",
         "cmd_cooldown" : "{} {} This command has a cooldown. Please try again in **{}**.",
         "already_in_notify" : "{} {} You are already in the notify list.",
