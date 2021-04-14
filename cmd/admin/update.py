@@ -45,10 +45,10 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
             if len(output + line + "\n") <= 2000:
                 output += f"{line}\n"
             else:
-                await ctx.send(output)
+                await ctx.send(f"```{output}```")
                 output = ""
         if output:
-            await ctx.send(output)
+            await ctx.send(f"```{output}```")
 
         if p.returncode != 0:
             await ctx.send(language["cmd"]["update_exitcode"].format(p.returncode))
