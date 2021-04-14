@@ -104,3 +104,45 @@ def get_emoji(s):
             return str(em)
         else:
             return None
+
+
+def get_member_from_string(string):
+    """Find a member object from user input string.
+    Code inspired from belungawhale's discord werewolf project.
+    """
+    import globvars
+    string = string.lower()
+    usernames = []
+    discriminators = []
+    nicknames = []
+    ids_contains = []
+    usernames_contains = []
+    nicknames_contains = []
+    for member in globvars.client.get_guild(int(SERVER_ID)).members:
+        if string == str(member.id) or string.strip('<@!>') == str(member.id):
+            return member
+        if str(member).lower().startswith(string):
+            usernames.append(member)
+        if string.strip('#') == member.discriminator:
+            discriminators.append(member)
+        if member.display_name.lower().startswith(string):
+            nicknames.append(member)
+        if string in member.name.lower():
+            usernames_contains.append(member)
+        if string in member.display_name.lower():
+            nicknames_contains.append(member)
+        if string in str(member.id):
+            ids_contains.append(member)
+    if len(usernames) == 1:
+        return usernames[0]
+    if len(discriminators) == 1:
+        return discriminators[0]
+    if len(nicknames) == 1:
+        return nicknames[0]
+    if len(usernames_contains) == 1:
+        return usernames_contains[0]
+    if len(nicknames_contains) == 1:
+        return nicknames_contains[0]
+    if len(ids_contains) == 1:
+        return ids_contains[0]
+    return None
