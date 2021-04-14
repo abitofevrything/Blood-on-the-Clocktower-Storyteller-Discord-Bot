@@ -1,6 +1,7 @@
 """Contains the fjoin command cog"""
 
 import json
+from typing import Union
 
 import discord
 from discord.ext import commands
@@ -29,7 +30,7 @@ class Fjoin(Admin, name = language["system"]["admin_cog"]):
         help = language["doc"]["fjoin"]["help"],
         description = language["doc"]["fjoin"]["description"]
     )
-    async def fjoin(self, ctx, *members: discord.Member):
+    async def fjoin(self, ctx, *members: Union[discord.Member, discord.User, str]):
         """Force join command"""
 
         import globvars
@@ -37,6 +38,9 @@ class Fjoin(Admin, name = language["system"]["admin_cog"]):
         game = botutils.GameChooser().get_selected_game()
 
         for member in members:
+            if isinstance(member, str):
+                member = botutils.get_member_from_string(member)
+
             # The player is a bot
             if member.bot:
                 await ctx.send(cant_fjoin_bot.format(ctx.author.mention))
