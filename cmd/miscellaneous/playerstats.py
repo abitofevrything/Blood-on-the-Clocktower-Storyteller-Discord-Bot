@@ -51,6 +51,10 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
         if isinstance(user, str):
             user = botutils.get_member_from_string(user)
 
+        if not user:
+            await ctx.send(user_not_found_str.format(ctx.author.mention))
+            return
+
         with sqlite3.connect("data.sqlite3") as db:
             c = db.execute("SELECT SUM(total_games) FROM gamestats")
             total_games, = c.fetchone()
