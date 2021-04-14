@@ -42,11 +42,14 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
         help = language["doc"]["playerstats"]["help"],
         description = language["doc"]["playerstats"]["description"]
     )
-    async def playerstats(self, ctx, *, user: Union[discord.Member, discord.User] = None):
+    async def playerstats(self, ctx, *, user: Union[discord.Member, discord.User, str] = None):
         """Playerstats command"""
 
         if not user:
             user = ctx.author
+
+        if isinstance(user, str):
+            user = botutils.get_member_from_string(user)
 
         with sqlite3.connect("data.sqlite3") as db:
             c = db.execute("SELECT SUM(total_games) FROM gamestats")
