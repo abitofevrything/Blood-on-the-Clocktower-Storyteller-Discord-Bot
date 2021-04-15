@@ -26,7 +26,7 @@ class Role(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
         help = language["doc"]["role"]["help"],
         description = language["doc"]["role"]["description"]
     )
-    @commands.check(botutils.check_if_lobby_or_dm_or_admin)
+    @commands.check(botutils.check_if_lobby_or_spec_or_dm_or_admin)
     async def role(self, ctx, *, role_name):
         """Role command"""
 
