@@ -32,8 +32,16 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
         help = language["doc"]["gamestats"]["help"],
         description = language["doc"]["gamestats"]["description"]
     )
-    async def gamestats(self, ctx, players: int = None):
+    async def gamestats(self, ctx, players: str = None):
         """Gamestats command"""
+
+        if players.endswith('p') or players.endswith('P'):
+            players = players[:-1]
+
+        try:
+            players = int(players)
+        except Exception:
+            return await ctx.send(embed=discord.Embed(color=discord.Color.red(), title=error_title_str, description=gamestats_invalid_str))
 
         with sqlite3.connect("data.sqlite3") as db:
             if players:
