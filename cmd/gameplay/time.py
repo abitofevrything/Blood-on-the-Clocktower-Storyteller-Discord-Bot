@@ -37,7 +37,7 @@ class Time(Gameplay, name = language["system"]["gameplay_cog"]):
         help = language["doc"]["time"]["help"],
         description = language["doc"]["time"]["description"]
     )
-    @commands.check(botutils.check_if_lobby_or_dm_or_admin)
+    @commands.check(botutils.check_if_lobby_or_spec_or_dm_or_admin)
     @commands.check(botutils.check_if_not_in_empty)
     async def time(self, ctx):
         """Time command"""
