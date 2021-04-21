@@ -35,7 +35,7 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     async def gamestats(self, ctx, players: str = None):
         """Gamestats command"""
 
-        if players.endswith('p') or players.endswith('P'):
+        if players and players.lower().endswith('p'):
             players = players[:-1]
 
         try:
