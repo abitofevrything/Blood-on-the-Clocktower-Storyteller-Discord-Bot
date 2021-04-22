@@ -52,9 +52,9 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         lobby or in spectators chat
         Admins can bypass.
         """
-        return botutils.check_if_admin(ctx) or \
-               check_if_is_player(ctx) or \
-               botutils.check_if_spec(ctx)
+        return  botutils.check_if_admin(ctx) or \
+                botutils.check_if_spec(ctx) or \
+                check_if_is_player(ctx)
 
     # ---------- TIME COMMAND ----------------------------------------
     @commands.command(
