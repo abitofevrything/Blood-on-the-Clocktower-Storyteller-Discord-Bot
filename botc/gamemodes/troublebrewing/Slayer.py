@@ -1,14 +1,24 @@
 """Contains the Slayer Character class"""
 
+import configparser
 import json
+import random
+
+import discord
 
 import botutils
 import globvars
 from botc import (Action, ActionTypes, AlreadyDead, Category, Character, Flags,
                   Inventory, LorePicker, NonRecurringAction, Townsfolk)
-from botc.BOTCUtils import GameLogic
+from botc.BOTCUtils import BOTCUtils, GameLogic
+from botc.gamemodes.troublebrewing.Imp import Imp
 
 from ._utils import TBRole, TroubleBrewing
+
+Config = configparser.ConfigParser()
+Config.read('config.INI')
+
+DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
 
 with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
     character_text = json.load(json_file)[TBRole.slayer.value.lower()]
@@ -108,6 +118,32 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                     slayer = slayer_player.game_nametag,
                     slain = slain_player.game_nametag
                 )
+
+            if slain_player.is_alive():
+                # If 5 or more players alive (not counting travelers), scarlet woman gets
+                # promoted to demonhood
+                if globvars.master_state.game.nb_alive_players >= 5:
+
+                    from botc.gamemodes.troublebrewing import ScarletWoman
+
+                    # This list of scarletwomen could contain dead players
+                    scarletwomen = BOTCUtils.get_players_from_role_name(ScarletWoman()._role_enum)
+
+                    if scarletwomen:
+                        # We only want the alive, and not poisoned scarlet women
+                        alive_scarletwomen = [player for player in scarletwomen if player.is_alive() and not player.is_droisoned()]
+                        if alive_scarletwomen:
+                            promoted = random.choice(alive_scarletwomen)
+                            promoted._old_role_obj = promoted._role_obj
+                            await promoted.exec_change_role(Imp())
+
+                            if not DISABLE_DMS:
+                                embed = self.__make_demonhood_promo_embed(promoted)
+                                try:
+                                    await promoted.user.send(embed = embed)
+                                except discord.Forbidden:
+                                    pass
+
                 try:
                     await slain_player.exec_real_death()
                 except AlreadyDead:
