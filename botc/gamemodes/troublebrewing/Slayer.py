@@ -119,37 +119,37 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                     slain = slain_player.game_nametag
                 )
 
-            if slain_player.is_alive():
-                # If 5 or more players alive (not counting travelers), scarlet woman gets
-                # promoted to demonhood
-                if globvars.master_state.game.nb_alive_players >= 5:
+                if slain_player.is_alive():
+                    # If 5 or more players alive (not counting travelers), scarlet woman gets
+                    # promoted to demonhood
+                    if globvars.master_state.game.nb_alive_players >= 5:
 
-                    from botc.gamemodes.troublebrewing import ScarletWoman
+                        from botc.gamemodes.troublebrewing import ScarletWoman
 
-                    # This list of scarletwomen could contain dead players
-                    scarletwomen = BOTCUtils.get_players_from_role_name(ScarletWoman()._role_enum)
+                        # This list of scarletwomen could contain dead players
+                        scarletwomen = BOTCUtils.get_players_from_role_name(ScarletWoman()._role_enum)
 
-                    if scarletwomen:
-                        # We only want the alive, and not poisoned scarlet women
-                        alive_scarletwomen = [player for player in scarletwomen if player.is_alive() and not player.is_droisoned()]
-                        if alive_scarletwomen:
-                            promoted = random.choice(alive_scarletwomen)
-                            promoted._old_role_obj = promoted._role_obj
-                            await promoted.exec_change_role(Imp())
+                        if scarletwomen:
+                            # We only want the alive, and not poisoned scarlet women
+                            alive_scarletwomen = [player for player in scarletwomen if player.is_alive() and not player.is_droisoned()]
+                            if alive_scarletwomen:
+                                promoted = random.choice(alive_scarletwomen)
+                                promoted._old_role_obj = promoted._role_obj
+                                await promoted.exec_change_role(Imp())
 
-                            if not DISABLE_DMS:
-                                embed = self.__make_demonhood_promo_embed(promoted)
-                                try:
-                                    await promoted.user.send(embed = embed)
-                                except discord.Forbidden:
-                                    pass
+                                if not DISABLE_DMS:
+                                    embed = self.__make_demonhood_promo_embed(promoted)
+                                    try:
+                                        await promoted.user.send(embed = embed)
+                                    except discord.Forbidden:
+                                        pass
 
-                try:
-                    await slain_player.exec_real_death()
-                except AlreadyDead:
-                    pass
-                await botutils.send_lobby(string)
-                return
+                    try:
+                        await slain_player.exec_real_death()
+                    except AlreadyDead:
+                        pass
+                    await botutils.send_lobby(string)
+                    return
 
         # The ability fails no matter what for a droisoned slayer, or if the slain player
         # is not a demon
