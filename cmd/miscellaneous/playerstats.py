@@ -55,33 +55,47 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
         help = language["doc"]["playerstats"]["help"],
         description = language["doc"]["playerstats"]["description"]
     )
-    async def playerstats(self, ctx, user: Union[discord.Member, discord.User, str] = None, role=""):
+    async def playerstats(self, ctx, user_or_role: Union[discord.Member, discord.User, str] = None, role=""):
         """Playerstats command"""
 
-        if not user:
+        user = None
+
+        roles = itertools.chain(*setup["botc"]["gamemodes"].values())
+
+        if user_or_role and role:
+            try:
+                role = next(x for x in roles if role.lower() in x.name.lower()).name
+            except StopIteration:
+                return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
+
+            try:
+                user = botutils.get_member_from_string(user_or_role)
+            except botutils.AmbiguousUserError as e:
+                return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
+        elif user_or_role:
+            if isinstance(user_or_role, str):
+                try:
+                    user = botutils.get_member_from_string(user_or_role)
+                except botutils.AmbiguousUserError as e:
+                    return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
+
+                if user is None:
+                    try:
+                        role = next(x for x in roles if user_or_role.lower() in x.name.lower()).name
+                    except StopIteration:
+                        return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
+                    user = ctx.author
+            else:
+                user = user_or_role
+        else:
             user = ctx.author
 
-        if isinstance(user, str):
-            try:
-                user = botutils.get_member_from_string(user)
-            except botutils.AmbiguousUserError as e:
-                await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
-                return
-
-        if not user:
-            await ctx.send(user_not_found_str.format(ctx.author.mention))
-            return
+        if user is None:
+            return await ctx.send(user_not_found_str.format(ctx.author.mention))
 
         with sqlite3.connect("data.sqlite3") as db:
             c = db.execute("SELECT COUNT(*) FROM games")
             total_games = c.fetchone()[0]
-
-            if role:
-                roles = itertools.chain(*setup["botc"]["gamemodes"].values())
-                try:
-                    role = next(x for x in roles if role.lower() in x.name.lower()).name
-                except StopIteration:
-                    return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
             c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND role LIKE (?)", [user.id, role or "%"])
             games = c.fetchone()[0]
