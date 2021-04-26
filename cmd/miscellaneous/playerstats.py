@@ -1,5 +1,6 @@
 """Contains the playerstats command cog"""
 
+import itertools
 import json
 import sqlite3
 import traceback
@@ -76,7 +77,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             total_games = c.fetchone()[0]
 
             if role:
-                roles = ChainMap(*setup["botc"]["gamemodes"].values())
+                roles = dict(itertools.chain(*setup["botc"]["gamemodes"].values()))
                 try:
                     role = next(x for x in roles if role.lower() in x.name.lower()).name
                 except StopIteration:
