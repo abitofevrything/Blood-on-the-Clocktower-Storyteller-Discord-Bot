@@ -25,12 +25,14 @@ TOKEN_RESET = int(Config["duration"]["TOKEN_RESET"])
 STATUS_CYCLE = int(Config["duration"]["STATUS_CYCLE"])
 START_CLEAR = int(Config["duration"]["START_CLEAR"])
 BACKUP_INTERVAL_MIN = int(Config["duration"]["BACKUP_INTERVAL_MIN"])
+VOTESTOP_CLEAR = int(Config["duration"]["VOTESTOP_CLEAR"])
 
 with open('botutils/bot_text.json') as json_file:
     language = json.load(json_file)
 
 lobby_timeout_str = language["system"]["lobby_timeout"]
 not_enough_votes_to_start = language["system"]["not_enough_votes_to_start"]
+not_enough_votestop_votes = language["system"]["not_enough_votestop_votes"]
 
 
 @tasks.loop(seconds = TOKEN_RESET, count = None)
@@ -93,6 +95,14 @@ async def start_votes_timer():
     globvars.start_votes.clear()
     await botutils.send_lobby(not_enough_votes_to_start)
 
+@tasks.loop(count = 1)
+async def votestop_votes_timer():
+    """A task to clear votestop votes periodically"""
+
+    import globvars
+    await asyncio.sleep(VOTESTOP_CLEAR)
+    globvars.votestop_votes.clear()
+    await botutils.send_lobby(not_enough_votestop_votes)
 
 @tasks.loop(minutes = BACKUP_INTERVAL_MIN, count = None)
 async def backup_loop():

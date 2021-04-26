@@ -58,15 +58,13 @@
         "top_winrate": "Top {} by win rate",
         "top_evil_winrate" : "Top {} by evil win rate",
         "top_good_winrate" : "Top {} by good win rate",
-        "top_games": "Top {} by games played",
-        "top_wins": "Top {} by games won",
-        "top_winrate": "Top {} by win rate",
         "top_footer": "Based on {} game{}",
         "top_footer_winrate": "Players with at least {} game{}",
         "top_usage": "Argument must be one of `games`, `evilgames`, `goodgames`, `wins`, `evilwins`, `goodwins`, `winrate`, `evilwinrate` or `goodwinrate`.",
         "frestart": "{} {} Restarting",
         "frestart_confirm": "{} {} A game is currently in progress. If you still want to restart the bot, please use `!frestart --force`.",
-        "update_exitcode": ":x: Process exited with return code {}"
+        "update_exitcode": ":x: Process exited with return code {}",
+        "votestop_vote" : "{} has voted to stop the game. **{}** more vote{} needed."
 
     },
 
@@ -406,6 +404,7 @@
 
         "restart" : "Rebooted, powered on.",
         "not_enough_votes_to_start" : "Not enough votes to start, resetting start votes.",
+        "not_enough_votestop_votes" : "Not enough votes to end game, resetting stop votes.",
         "error" : "An error occurred and has been logged.",
         "lobby_timeout" : "{} The game has taken too long to start and has been cancelled!",
         "restarted_notify" : "{} The bot has restarted and the game has been cancelled. Type `!join` to start a new game.",

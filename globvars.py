@@ -31,4 +31,6 @@ notify_list = []
 
 start_votes = []
 
+votestop_votes = []
+
 last_notify = 0
