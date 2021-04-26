@@ -77,7 +77,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             total_games = c.fetchone()[0]
 
             if role:
-                roles = dict(itertools.chain(*setup["botc"]["gamemodes"].values()))
+                roles = itertools.chain(*setup["botc"]["gamemodes"].values())
                 try:
                     role = next(x for x in roles if role.lower() in x.name.lower()).name
                 except StopIteration:
