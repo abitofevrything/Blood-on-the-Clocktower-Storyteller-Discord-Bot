@@ -11,7 +11,7 @@ The copyrights to the BoTC game are owned by the Pandemonium Institute.
 * **Picowchew#1559** - *Contributor* - [Picowchew](https://github.com/Picowchew)
 * **nyuszika7h#0001** - *Contributor* - [nyuszika7h](https://github.com/nyuszika7h)
 
-For other contributors, please take a look at the [Contributors](https://github.com/Xinverse/Blood-on-the-Clocktower-Storyteller-Discord-Bot/graphs/contributors) page.
+For other contributors, please take a look at the [Contributors](https://github.com/nyuszika7h/Blood-on-the-Clocktower-Storyteller-Discord-Bot/graphs/contributors) page.
 
 ## License
 
