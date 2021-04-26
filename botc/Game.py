@@ -911,14 +911,14 @@ class Game(GameMeta):
     def has_received_all_expected_dawn_actions(self):
         """Check if all players with expected dawn actions have submitted them"""
         for player in self.sitting_order:
-            if not player.role.true_self.has_finished_dawn_action(player):
+            if not player.role.ego_self.has_finished_dawn_action(player):
                 return False
         return True
 
     def has_received_all_expected_night_actions(self):
         """Check if all players with expected night actions have submitted them"""
         for player in self.sitting_order:
-            if not player.role.true_self.has_finished_night_action(player):
+            if not player.role.ego_self.has_finished_night_action(player):
                 return False
         return True
 
