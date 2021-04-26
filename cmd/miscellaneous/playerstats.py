@@ -10,11 +10,15 @@ import discord
 from discord.ext import commands
 
 import botutils
+from botc.setups import setup
 
 from ._miscellaneous import Miscellaneous
 
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
+
+with open("botc/game_text.json") as json_file:
+    documentation = json.load(json_file)
 
 with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
@@ -22,6 +26,7 @@ with open("botc/emojis.json") as json_file:
 playerstats_title_str = language["cmd"]["playerstats_title"]
 playerstats_title_role_str = language["cmd"]["playerstats_title_role"]
 playerstats_no_games_str = language["cmd"]["playerstats_no_games"]
+playerstats_no_games_role_str = language["cmd"]["playerstats_no_games_role"]
 playerstats_games_str = language["cmd"]["playerstats_games"]
 playerstats_wins_str = language["cmd"]["playerstats_wins"]
 playerstats_winrate_str = language["cmd"]["playerstats_winrate"]
@@ -33,6 +38,7 @@ playerstats_evil_wins_str = language["cmd"]["playerstats_evil_wins"]
 playerstats_evil_winrate_str = language["cmd"]["playerstats_evil_winrate"]
 playerstats_footer_str = language["cmd"]["playerstats_footer"]
 user_not_found_str = language["errors"]["user_not_found"]
+role_not_found_str = documentation["cmd_warnings"]["role_not_found"]
 ambiguous_user_str = language["errors"]["ambiguous_user"]
 error_str = language["system"]["error"]
 
@@ -70,8 +76,11 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             total_games = c.fetchone()[0]
 
             if role:
-                c = db.execute("SELECT role FROM game_players WHERE role LIKE ('%' || ? || '%') LIMIT 1", [role])
-                role = c.fetchone()[0]
+                roles = ChainMap(*setup["botc"]["gamemodes"].values())
+                try:
+                    role = next(x for x in roles if role.lower() in x.name.lower()).name
+                except StopIteration:
+                    return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
             c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND role LIKE (?)", [user.id, role or "%"])
             games = c.fetchone()[0]
@@ -127,7 +136,10 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
                     embed.add_field(name=playerstats_evil_wins_str, value=str(evil_wins), inline=True)
                     embed.add_field(name=playerstats_evil_winrate_str, value=str(evil_winrate), inline=True)
             else:
-                embed.description = playerstats_no_games_str
+                if role:
+                    embed.description = playerstats_no_games_role_str.format(role)
+                else:
+                    embed.description = playerstats_no_games_str
 
             await ctx.send(embed=embed)
 

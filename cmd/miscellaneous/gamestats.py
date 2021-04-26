@@ -75,7 +75,7 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                     desc = gamestats_no_games_str
                 return await ctx.send(embed=discord.Embed(color=discord.Color.red(), title=error_title_str, description=desc))
 
-            embed = discord.Embed(color=discord.Color.blue(), title=title)
+            ember = discord.Embed(color=discord.Color.blue(), title=title)
             embed.add_field(name=gamestats_total_games_str, value=str(total_games), inline=True)
             embed.add_field(name=gamestats_good_wins_str, value=f"{good_wins} ({(good_wins / total_games) * 100:.1f}%)", inline=True)
             embed.add_field(name=gamestats_evil_wins_str, value=f"{evil_wins} ({(evil_wins / total_games) * 100:.1f}%)", inline=True)
