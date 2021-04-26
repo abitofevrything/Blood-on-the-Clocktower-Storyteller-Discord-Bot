@@ -104,7 +104,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
 
             if role:
                 embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_role_str.format(role))
-                emoji = botutils.get_emoji(ChainMap(*emojis.values())[role.lower().strip(" ")])
+                emoji = botutils.get_emoji(ChainMap(*emojis.values())[role.lower().replace(" ", "")])
                 if emoji:
                     embed.set_thumbnail(url=emoji.url)
             else:
