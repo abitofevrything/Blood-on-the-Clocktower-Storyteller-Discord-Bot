@@ -105,7 +105,7 @@ def get_emoji(s):
     else:
         em = globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))
         if em:
-            return str(em)
+            return em
         else:
             return None
 

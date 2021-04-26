@@ -15,6 +15,9 @@ from ._miscellaneous import Miscellaneous
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
+with open("botc/emojis.json") as json_file:
+    emojis = json.load(json_file)
+
 playerstats_title_str = language["cmd"]["playerstats_title"]
 playerstats_title_role_str = language["cmd"]["playerstats_title_role"]
 playerstats_no_games_str = language["cmd"]["playerstats_no_games"]
@@ -88,7 +91,13 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
                 c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'evil' AND won = TRUE", [user.id])
                 evil_wins = c.fetchone()[0]
 
-            embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_role_str.format(role) if role else playerstats_title_str)
+            if role:
+                embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_role_str.format(role))
+                emoji = botutils.get_emoji(emojis["troublebrewing"][role.lower().strip(" ")])  # TODO: Support other gamemodes
+                if emoji:
+                    embed.set_thumbnail(url=emoji.url)
+            else:
+                embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_str)
             embed.set_author(name=str(user), icon_url=user.avatar_url)
             embed.set_footer(text=playerstats_footer_str.format(total_games, "" if total_games == 1 else "s"))
 
