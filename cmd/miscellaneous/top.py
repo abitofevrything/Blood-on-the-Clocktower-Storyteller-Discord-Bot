@@ -69,21 +69,25 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             leaderboard = list()
             c.execute("""
-            SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
+            CREATE TEMPORARY VIEW IF NOT EXISTS winrate_view AS
+                SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
                 FROM game_players
                 GROUP BY user_id
-                HAVING games >= ? AND wins > 0
+            """)
+            c.execute("""
+            SELECT user_id, (wins*1.0)/games AS winrate
+                FROM winrate_view
+                WHERE games >= ? AND wins > 0
+                ORDER BY winrate DESC
             """, [actual_min_games])
             count = 0
 
             precision = 1
-            for (user_id, games, wins) in c.fetchall():
+            for (user_id, winrate) in c.fetchall():
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
-
-                winrate = wins / games
 
                 leaderboard.append((count + 1, user, winrate))
 
@@ -123,22 +127,26 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             leaderboard = list()
             c.execute("""
-            SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
+            CREATE TEMPORARY VIEW IF NOT EXISTS evil_winrate_view AS
+                SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
                 FROM game_players
                 WHERE alignment = 'evil'
                 GROUP BY user_id
-                HAVING games >= ? AND wins > 0
+            """)
+            c.execute("""
+            SELECT user_id, (wins*1.0)/games AS winrate
+                FROM evil_winrate_view
+                WHERE games >= ? AND wins > 0
+                ORDER BY winrate DESC
             """, [actual_min_games])
             count = 0
 
             precision = 1
-            for (user_id, evil_games, evil_wins) in c.fetchall():
+            for (user_id, evil_winrate) in c.fetchall():
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
-
-                evil_winrate = evil_wins / evil_games
 
                 leaderboard.append((count + 1, user, evil_winrate))
 
@@ -178,22 +186,26 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             leaderboard = list()
             c.execute("""
-            SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
+            CREATE TEMPORARY VIEW IF NOT EXISTS good_winrate_view AS
+                SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
                 FROM game_players
                 WHERE alignment = 'good'
                 GROUP BY user_id
-                HAVING games >= ? AND wins > 0
+            """)
+            c.execute("""
+            SELECT user_id, (wins*1.0)/games AS winrate
+                FROM good_winrate_view
+                WHERE games >= ? AND wins > 0
+                ORDER BY winrate DESC
             """, [actual_min_games])
             count = 0
 
             precision = 1
-            for (user_id, good_games, good_wins) in c.fetchall():
+            for (user_id, good_winrate) in c.fetchall():
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
-
-                good_winrate = good_wins / good_games
 
                 leaderboard.append((count + 1, user, good_winrate))
 
