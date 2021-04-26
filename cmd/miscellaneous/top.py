@@ -34,6 +34,7 @@ top_footer_winrate_str = language["cmd"]["top_footer_winrate"]
 
 top_usage_str = language["cmd"]["top_usage"]
 
+
 class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     """Top command cog"""
 
@@ -57,23 +58,32 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
         aliases = ["wr"]
     )
     async def top_winrate(self, ctx):
-        with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
+
+            c.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
 
             actual_min_games = min(total_games, min_games)
 
             leaderboard = list()
-            c = db.execute("SELECT user_id, ((wins*1.0)/games) AS winrate FROM playerstats WHERE games >= ? ORDER BY winrate DESC", (actual_min_games,))
+            c.execute("""
+            SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
+                FROM game_players
+                GROUP BY user_id
+                HAVING games >= ? AND wins > 0
+            """, [actual_min_games])
             count = 0
 
             precision = 1
-            for (user_id, winrate) in c.fetchall():
+            for (user_id, games, wins) in c.fetchall():
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
+
+                winrate = wins / games
 
                 leaderboard.append((count + 1, user, winrate))
 
@@ -91,7 +101,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             for (i, user, winrate) in leaderboard:
                 msg += f"{i}. **{discord.utils.escape_markdown(user.name)}** - {winrate * 100:.{precision}f}%\n"
-                
+
             title = top_winrate_str.format(min(limit, len(leaderboard)))
 
             embed = discord.Embed(color=discord.Color.orange(), title=title, description=msg)
@@ -105,22 +115,30 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_evil_winrate(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
 
             actual_min_games = min(total_games, min_games)
 
             leaderboard = list()
-            c = db.execute("SELECT user_id, ((evil_wins*1.0)/evil_games) AS winrate FROM playerstats WHERE evil_games >= ? ORDER BY winrate DESC", (actual_min_games,))
+            c.execute("""
+            SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
+                FROM game_players
+                WHERE alignment = 'evil'
+                GROUP BY user_id
+                HAVING games >= ? AND wins > 0
+            """, [actual_min_games])
             count = 0
 
             precision = 1
-            for (user_id, evil_winrate) in c.fetchall():
+            for (user_id, evil_games, evil_wins) in c.fetchall():
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
+
+                evil_winrate = evil_wins / evil_games
 
                 leaderboard.append((count + 1, user, evil_winrate))
 
@@ -138,7 +156,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             for (i, user, evil_winrate) in leaderboard:
                 msg += f"{i}. **{discord.utils.escape_markdown(user.name)}** - {evil_winrate * 100:.{precision}f}%\n"
-                
+
             title = top_evil_winrate_str.format(min(limit, len(leaderboard)))
 
             embed = discord.Embed(color=discord.Color.orange(), title=title, description=msg)
@@ -152,22 +170,30 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_good_winrate(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
 
             actual_min_games = min(total_games, min_games)
 
             leaderboard = list()
-            c = db.execute("SELECT user_id, ((good_wins*1.0)/good_games) AS winrate FROM playerstats WHERE good_games >= ? ORDER BY winrate DESC", (actual_min_games,))
+            c.execute("""
+            SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
+                FROM game_players
+                WHERE alignment = 'good'
+                GROUP BY user_id
+                HAVING games >= ? AND wins > 0
+            """, [actual_min_games])
             count = 0
 
             precision = 1
-            for (user_id, good_winrate) in c.fetchall():
+            for (user_id, good_games, good_wins) in c.fetchall():
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
+
+                good_winrate = good_wins / good_games
 
                 leaderboard.append((count + 1, user, good_winrate))
 
@@ -185,7 +211,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             for (i, user, good_winrate) in leaderboard:
                 msg += f"{i}. **{discord.utils.escape_markdown(user.name)}** - {good_winrate * 100:.{precision}f}%\n"
-                
+
             title = top_good_winrate_str.format(min(limit, len(leaderboard)))
 
             embed = discord.Embed(color=discord.Color.orange(), title=title, description=msg)
@@ -198,11 +224,16 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_games(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
-            c = db.execute("SELECT user_id, games FROM playerstats ORDER BY games DESC")
+            c.execute("""
+            SELECT user_id, COUNT(*) AS games
+                FROM game_players
+                GROUP BY user_id
+                ORDER BY games DESC
+            """)
 
             leaderboard = list()
             count = 0
@@ -235,11 +266,17 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_evil_games(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
-            c = db.execute("SELECT user_id, evil_games FROM playerstats ORDER BY evil_games DESC")
+            c.execute("""
+            SELECT user_id, COUNT(*) AS games
+                FROM game_players
+                WHERE alignment = 'evil'
+                GROUP BY user_id
+                ORDER BY games DESC
+            """)
 
             leaderboard = list()
             count = 0
@@ -272,11 +309,17 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_good_games(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
-            c = db.execute("SELECT user_id, good_games FROM playerstats ORDER BY good_games DESC")
+            c.execute("""
+            SELECT user_id, COUNT(*) AS games
+                FROM game_players
+                WHERE alignment = 'good'
+                GROUP BY user_id
+                ORDER BY games DESC
+            """)
 
             leaderboard = list()
             count = 0
@@ -308,11 +351,17 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_wins(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
-            c = db.execute("SELECT user_id, wins FROM playerstats ORDER BY wins DESC")
+            c.execute("""
+            SELECT user_id, COUNT(*) AS wins
+                FROM game_players
+                WHERE won = TRUE
+                GROUP BY user_id
+                ORDER BY wins DESC
+            """)
 
             leaderboard = list()
             count = 0
@@ -345,11 +394,18 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_evil_wins(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
+
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
-            c = db.execute("SELECT user_id, evil_wins FROM playerstats ORDER BY evil_wins DESC")
+            c.execute("""
+            SELECT user_id, COUNT(*) AS wins
+                FROM game_players
+                WHERE alignment = 'evil' AND won = TRUE
+                GROUP BY user_id
+                ORDER BY wins DESC
+            """)
 
             leaderboard = list()
             count = 0
@@ -382,11 +438,17 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_good_wins(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
-            c = db.execute("SELECT user_id, good_wins FROM playerstats ORDER BY good_wins DESC")
+            c.execute("""
+            SELECT user_id, COUNT(*) AS wins
+                FROM game_players
+                WHERE alignment = 'good' AND won = TRUE
+                GROUP BY user_id
+                ORDER BY wins DESC
+            """)
 
             leaderboard = list()
             count = 0

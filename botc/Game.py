@@ -402,19 +402,20 @@ class Game(GameMeta):
 
         gamemode = fancy.bold(self.gamemode.value)
 
-        with sqlite3.connect("data.sqlite3") as db:
-            player_count = len(self.sitting_order)
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
 
             # ----- The good team wins -----
             if self.winners == Team.good:
 
                 if not self.invalidated:
-                    db.execute('UPDATE gamestats SET total_games = total_games + 1 WHERE players = ?', (player_count,))
-                    db.execute('UPDATE gamestats SET good_wins = good_wins + 1 WHERE players = ?', (player_count,))
+                    c.execute("INSERT INTO games (ended_at, gamemode, players, winner) VALUES (DATETIME(), ?, ?, 'good')", [self.gamemode.value, len(self.sitting_order)])
+                    game_id = c.lastrowid
+
                 # Revealing the role list
                 role_list_str = ""
-                for player in self.sitting_order:
 
+                for player in self.sitting_order:
                     # The player is a drunk, we use the special reveal short string
                     if player.role.true_self.name == Drunk().name:
                         if player.has_status_effect(StatusList.red_herring):
@@ -459,14 +460,10 @@ class Game(GameMeta):
                     role_list_str += "\n"
 
                     if not self.invalidated:
-                        db.execute('INSERT OR IGNORE INTO playerstats (user_id) VALUES (?)', (player.user.id,))
-                        db.execute('UPDATE playerstats SET games = games + 1 WHERE user_id = ?', (player.user.id,))
-                        if player.role.true_self.is_good():
-                            db.execute('UPDATE playerstats SET wins = wins + 1 WHERE user_id = ?', (player.user.id,))
-                            db.execute('UPDATE playerstats SET good_games = good_games + 1 WHERE user_id = ?', (player.user.id,))
-                            db.execute('UPDATE playerstats SET good_wins = good_wins + 1 WHERE user_id = ?', (player.user.id,))
-                        else:
-                            db.execute('UPDATE playerstats SET evil_games = evil_games + 1 WHERE user_id = ?', (player.user.id,))
+                        r = player.old_role or player.role
+                        alignment = "good" if r.true_self.is_good() else "evil"
+                        c.execute("INSERT INTO game_players (game_id, user_id, alignment, role, won) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                  [game_id, player.user.id, alignment, r.true_self.name, r.true_self.is_evil()])
 
                 # The embed
                 embed = discord.Embed(
@@ -482,15 +479,14 @@ class Game(GameMeta):
 
             # ----- The evil team wins -----
             elif self.winners == Team.evil:
-
                 if not self.invalidated:
-                    db.execute('UPDATE gamestats SET total_games = total_games + 1 WHERE players = ?', (player_count,))
-                    db.execute('UPDATE gamestats SET evil_wins = evil_wins + 1 WHERE players = ?', (player_count,))
+                    c.execute("INSERT INTO games (ended_at, gamemode, players, winner) VALUES (DATETIME(), ?, ?, 'evil')", [self.gamemode.value, len(self.sitting_order)])
+                    game_id = c.lastrowid
 
                 # Revealing the role list
                 role_list_str = ""
-                for player in self.sitting_order:
 
+                for player in self.sitting_order:
                     # The player is a drunk, we use the special reveal short string
                     if player.role.true_self.name == Drunk().name:
                         if player.has_status_effect(StatusList.red_herring):
@@ -535,14 +531,10 @@ class Game(GameMeta):
                     role_list_str += "\n"
 
                     if not self.invalidated:
-                        db.execute('INSERT OR IGNORE INTO playerstats (user_id) VALUES (?)', (player.user.id,))
-                        db.execute('UPDATE playerstats SET games = games + 1 WHERE user_id = ?', (player.user.id,))
-                        if player.role.true_self.is_evil():
-                            db.execute('UPDATE playerstats SET wins = wins + 1 WHERE user_id = ?', (player.user.id,))
-                            db.execute('UPDATE playerstats SET evil_games = evil_games + 1 WHERE user_id = ?', (player.user.id,))
-                            db.execute('UPDATE playerstats SET evil_wins = evil_wins + 1 WHERE user_id = ?', (player.user.id,))
-                        else:
-                            db.execute('UPDATE playerstats SET good_games = good_games + 1 WHERE user_id = ?', (player.user.id,))
+                        r = player.role
+                        alignment = "good" if r.true_self.is_good() else "evil"
+                        c.execute("INSERT INTO game_players (game_id, user_id, alignment, role, wwon) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                                  [game_id, player.user.id, alignment, r.true_self.name, r.true_self.is_evil()])
 
                 # The embed
                 embed = discord.Embed(

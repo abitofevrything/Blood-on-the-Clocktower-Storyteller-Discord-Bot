@@ -36,7 +36,7 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
         """Gamestats command"""
 
         if players:
-            if players.lower().endswith('p'):
+            if players.lower().endswith("p"):
                 players = players[:-1]
 
             try:
@@ -46,17 +46,28 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
         with sqlite3.connect("data.sqlite3") as db:
             if players:
-                c = db.execute("SELECT total_games, good_wins, evil_wins FROM gamestats WHERE players = ?", (players,))
                 title = gamestats_title_players_str.format(players)
+
+                c = db.execute("SELECT COUNT(*) FROM games WHERE players = ?", [players])
+                total_games = c.fetchone()[0]
+
+                c = db.execute("SELECT COUNT(*) FROM games WHERE players = ? AND winner = 'good'", [players])
+                good_wins = c.fetchone()[0]
+
+                c = db.execute("SELECT COUNT(*) FROM games WHERE players = ? AND winner = 'evil'", [players])
+                evil_wins = c.fetchone()[0]
             else:
-                c = db.execute("SELECT SUM(total_games), SUM(good_wins), SUM(evil_wins) FROM gamestats")
                 title = gamestats_title_str
 
-            row = c.fetchone()
-            if not row:
-                return await ctx.send(embed=discord.Embed(color=discord.Color.red(), title=error_title_str, description=gamestats_invalid_str))
+                c = db.execute("SELECT COUNT(*) FROM games")
+                total_games = c.fetchone()[0]
 
-            total_games, good_wins, evil_wins = row
+                c = db.execute("SELECT COUNT(*) FROM games WHERE winner = 'good'")
+                good_wins = c.fetchone()[0]
+
+                c = db.execute("SELECT COUNT(*) FROM games WHERE winner = 'evil'")
+                evil_wins = c.fetchone()[0]
+
             if not total_games:
                 if players:
                     desc = gamestats_no_games_players_str.format(players)

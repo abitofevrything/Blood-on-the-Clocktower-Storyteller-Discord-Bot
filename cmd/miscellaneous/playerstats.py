@@ -16,6 +16,7 @@ with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
 playerstats_title_str = language["cmd"]["playerstats_title"]
+playerstats_title_role_str = language["cmd"]["playerstats_title_role"]
 playerstats_no_games_str = language["cmd"]["playerstats_no_games"]
 playerstats_games_str = language["cmd"]["playerstats_games"]
 playerstats_wins_str = language["cmd"]["playerstats_wins"]
@@ -43,7 +44,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
         help = language["doc"]["playerstats"]["help"],
         description = language["doc"]["playerstats"]["description"]
     )
-    async def playerstats(self, ctx, *, user: Union[discord.Member, discord.User, str] = None):
+    async def playerstats(self, ctx, user: Union[discord.Member, discord.User, str] = None, role=""):
         """Playerstats command"""
 
         if not user:
@@ -61,44 +62,60 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             return
 
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT SUM(total_games) FROM gamestats")
-            total_games, = c.fetchone()
+            c = db.execute("SELECT COUNT(*) FROM games")
+            total_games = c.fetchone()[0]
 
-            c = db.execute("SELECT games, wins, good_games, good_wins, evil_games, evil_wins FROM playerstats WHERE user_id = ?", (user.id,))
-            row = c.fetchone()
-            print(row)
+            if role:
+                c = db.execute("SELECT role FROM game_players WHERE role LIKE ('%' || ? || '%') LIMIT 1", [role])
+                role = c.fetchone()[0]
 
-            if row:
-                games, wins, good_games, good_wins, evil_games, evil_wins = row
-            else:
-                games, wins, good_games, good_wins, evil_games, evil_wins = 0, 0, 0, 0, 0, 0
+            c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND role LIKE (?)", [user.id, role or "%"])
+            games = c.fetchone()[0]
 
-            embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_str)
+            c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND role LIKE (?) AND won = TRUE", [user.id, role or "%"])
+            wins = c.fetchone()[0]
+
+            if not role:
+                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'good'", [user.id])
+                good_games = c.fetchone()[0]
+
+                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'good' AND won = TRUE", [user.id])
+                good_wins = c.fetchone()[0]
+
+                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'evil'", [user.id])
+                evil_games = c.fetchone()[0]
+
+                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'evil' AND won = TRUE", [user.id])
+                evil_wins = c.fetchone()[0]
+
+            embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_role_str.format(role) if role else playerstats_title_str)
             embed.set_author(name=str(user), icon_url=user.avatar_url)
             embed.set_footer(text=playerstats_footer_str.format(total_games, "" if total_games == 1 else "s"))
 
             if games > 0:
                 winrate = f"{(wins / games) * 100:.1f}%"
 
-                if good_games > 0:
-                    good_winrate = f"{(good_wins / good_games) * 100:.1f}%"
-                else:
-                    good_winrate = "N/A"
+                if not role:
+                    if good_games > 0:
+                        good_winrate = f"{(good_wins / good_games) * 100:.1f}%"
+                    else:
+                        good_winrate = "N/A"
 
-                if evil_games > 0:
-                    evil_winrate = f"{(evil_wins / evil_games) * 100:.1f}%"
-                else:
-                    evil_winrate = "N/A"
+                    if evil_games > 0:
+                        evil_winrate = f"{(evil_wins / evil_games) * 100:.1f}%"
+                    else:
+                        evil_winrate = "N/A"
 
                 embed.add_field(name=playerstats_games_str, value=str(games), inline=True)
                 embed.add_field(name=playerstats_wins_str, value=str(wins), inline=True)
-                embed.add_field(name=playerstats_winrate_str, value=str(winrate) + '\n\u200b', inline=True)
-                embed.add_field(name=playerstats_good_games_str, value=str(good_games), inline=True)
-                embed.add_field(name=playerstats_good_wins_str, value=str(good_wins), inline=True)
-                embed.add_field(name=playerstats_good_winrate_str, value=str(good_winrate) + '\n\u200b', inline=True)
-                embed.add_field(name=playerstats_evil_games_str, value=str(evil_games), inline=True)
-                embed.add_field(name=playerstats_evil_wins_str, value=str(evil_wins), inline=True)
-                embed.add_field(name=playerstats_evil_winrate_str, value=str(evil_winrate), inline=True)
+                embed.add_field(name=playerstats_winrate_str, value=str(winrate) + ('' if role else '\n\u200b'), inline=True)
+                if not role:
+                    embed.add_field(name=playerstats_good_games_str, value=str(good_games), inline=True)
+                    embed.add_field(name=playerstats_good_wins_str, value=str(good_wins), inline=True)
+                    embed.add_field(name=playerstats_good_winrate_str, value=str(good_winrate) + '\n\u200b', inline=True)
+                    embed.add_field(name=playerstats_evil_games_str, value=str(evil_games), inline=True)
+                    embed.add_field(name=playerstats_evil_wins_str, value=str(evil_wins), inline=True)
+                    embed.add_field(name=playerstats_evil_winrate_str, value=str(evil_winrate), inline=True)
             else:
                 embed.description = playerstats_no_games_str
 
