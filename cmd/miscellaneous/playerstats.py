@@ -3,6 +3,7 @@
 import json
 import sqlite3
 import traceback
+from collections import ChainMap
 from typing import Union
 
 import discord
@@ -93,7 +94,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
 
             if role:
                 embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_role_str.format(role))
-                emoji = botutils.get_emoji(emojis["troublebrewing"][role.lower().strip(" ")])  # TODO: Support other gamemodes
+                emoji = botutils.get_emoji(ChainMap(*emojis.values())[role.lower().strip(" ")])
                 if emoji:
                     embed.set_thumbnail(url=emoji.url)
             else:
