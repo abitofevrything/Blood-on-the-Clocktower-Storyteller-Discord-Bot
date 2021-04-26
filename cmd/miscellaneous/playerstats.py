@@ -69,7 +69,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
                 return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
             try:
-                user = botutils.get_member_from_string(user_or_role)
+                user = botutils.get_member_from_string(str(user_or_role))
             except botutils.AmbiguousUserError as e:
                 return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
         elif user_or_role:
