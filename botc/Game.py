@@ -409,7 +409,16 @@ class Game(GameMeta):
             if self.winners == Team.good:
 
                 if not self.invalidated:
-                    c.execute("INSERT INTO games (ended_at, gamemode, players, winner) VALUES (DATETIME(), ?, ?, 'good')", [self.gamemode.value, len(self.sitting_order)])
+                    c.execute("""
+                    INSERT INTO games
+                        (ended_at, gamemode, players, winner)
+                    VALUES
+                        (DATETIME(), :gamemode, :players, 'good')
+                    """, {
+                        "gamemode": self.gamemode.value,
+                        "players": len(self.sitting_order),
+                    })
+
                     game_id = c.lastrowid
 
                 # Revealing the role list
@@ -460,10 +469,20 @@ class Game(GameMeta):
                     role_list_str += "\n"
 
                     if not self.invalidated:
-                        r = player.old_role or player.role
-                        alignment = "good" if r.true_self.is_good() else "evil"
-                        c.execute("INSERT INTO game_players (game_id, user_id, alignment, role, won) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                  [game_id, player.user.id, alignment, r.true_self.name, r.true_self.is_evil()])
+                        role = player.old_role or player.role
+
+                        c.execute("""
+                        INSERT INTO game_players
+                            (game_id, user_id, alignment, role, won)
+                        VALUES
+                            (:game_id, :user_id, :alignment, :role, :won)
+                        """, {
+                            "game_id": game_id,
+                            "user_id": player.user.id,
+                            "alignment": "good" if role.true_self.is_good() else "evil",
+                            "role": role.true_self.name,
+                            "won": role.true_self.is_good(),
+                        })
 
                 # The embed
                 embed = discord.Embed(
@@ -480,7 +499,16 @@ class Game(GameMeta):
             # ----- The evil team wins -----
             elif self.winners == Team.evil:
                 if not self.invalidated:
-                    c.execute("INSERT INTO games (ended_at, gamemode, players, winner) VALUES (DATETIME(), ?, ?, 'evil')", [self.gamemode.value, len(self.sitting_order)])
+                    c.execute("""
+                    INSERT INTO games
+                        (ended_at, gamemode, players, winner)
+                    VALUES
+                        (DATETIME(), :gamemode, :players, 'evil')
+                    """, {
+                        "gamemode": self.gamemode.value,
+                        "players": len(self.sitting_order),
+                    })
+
                     game_id = c.lastrowid
 
                 # Revealing the role list
@@ -531,10 +559,20 @@ class Game(GameMeta):
                     role_list_str += "\n"
 
                     if not self.invalidated:
-                        r = player.role
-                        alignment = "good" if r.true_self.is_good() else "evil"
-                        c.execute("INSERT INTO game_players (game_id, user_id, alignment, role, wwon) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                                  [game_id, player.user.id, alignment, r.true_self.name, r.true_self.is_evil()])
+                        role = player.old_role or player.role
+
+                        c.execute("""
+                        INSERT INTO game_players
+                            (game_id, user_id, alignment, role, won)
+                        VALUES
+                            (:game_id, :user_id, :alignment, :role, :won)
+                        """, {
+                            "game_id": game_id,
+                            "user_id": player.user.id,
+                            "alignment": "good" if role.true_self.is_good() else "evil",
+                            "role": role.true_self.name,
+                            "won": role.true_self.is_evil(),
+                        })
 
                 # The embed
                 embed = discord.Embed(
