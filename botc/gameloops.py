@@ -6,6 +6,8 @@ import configparser
 import datetime
 import json
 import math
+import os
+import sys
 import traceback
 
 import discord
@@ -569,12 +571,15 @@ async def master_game_loop(game_obj):
             for status in player.status_effects:
                 status.wear_off()
 
-
 @master_game_loop.after_loop
 async def after_master_game_loop():
     global botc_game_obj
-    await botc_game_obj.end_game()
-
+    try:
+        await botc_game_obj.end_game()
+    except Exception:
+        await botutils.send_lobby(error_str)
+        await botutils.log(botutils.Level.error, traceback.format_exc())
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
 @master_game_loop.error
 async def master_loop_error(error):
@@ -587,3 +592,4 @@ async def master_loop_error(error):
         await botutils.log(botutils.Level.error, traceback.format_exc())
     finally:
         master_game_loop.cancel()
+        os.execl(sys.executable, sys.executable, *sys.argv)
