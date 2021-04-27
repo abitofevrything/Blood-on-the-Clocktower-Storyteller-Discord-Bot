@@ -106,6 +106,8 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 if not user:
                     continue
 
+                assert 0.00 <= winrate <= 1.00, f'invalid winrate for player {user}'
+
                 leaderboard.append((count + 1, user, winrate))
 
                 # If the current and previous wr are not the same but appear the same when truncated,
@@ -182,6 +184,8 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
+
+                assert 0.00 <= evil_winrate <= 1.00, f'invalid evil winrate for player {user}'
 
                 leaderboard.append((count + 1, user, evil_winrate))
 
@@ -260,6 +264,8 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
+
+                assert 0.00 <= good_winrate <= 1.00, f'invalid good winrate for player {user}'
 
                 leaderboard.append((count + 1, user, good_winrate))
 

@@ -91,6 +91,12 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 c = db.execute("SELECT COUNT(*) FROM game WHERE winner = 'evil'")
                 evil_wins = c.fetchone()[0]
 
+            good_winrate = good_wins / total_games
+            assert 0.00 <= good_winrate <= 1.00, 'invalid good winrate'
+
+            evil_winrate = evil_wins / total_games
+            assert 0.00 <= evil_winrate <= 1.00, 'invalid evil winrate'
+
             if not total_games:
                 if players:
                     desc = gamestats_no_games_players_str.format(players)
@@ -100,6 +106,6 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             embed = discord.Embed(color=discord.Color.blue(), title=title)
             embed.add_field(name=gamestats_total_games_str, value=str(total_games), inline=True)
-            embed.add_field(name=gamestats_good_wins_str, value=f"{good_wins} ({(good_wins / total_games) * 100:.1f}%)", inline=True)
-            embed.add_field(name=gamestats_evil_wins_str, value=f"{evil_wins} ({(evil_wins / total_games) * 100:.1f}%)", inline=True)
+            embed.add_field(name=gamestats_good_wins_str, value=f"{good_wins} ({good_winrate * 100:.1f}%)", inline=True)
+            embed.add_field(name=gamestats_evil_wins_str, value=f"{evil_wins} ({evil_winrate * 100:.1f}%)", inline=True)
             await ctx.send(embed=embed)

@@ -192,16 +192,22 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             embed.set_footer(text=playerstats_footer_str.format(total_games, "" if total_games == 1 else "s"))
 
             if games > 0:
-                winrate = f"{(wins / games) * 100:.1f}%"
+                winrate = wins / games
+                assert 0.00 <= winrate <= 1.00, 'invalid winrate'
+                winrate = f"{winrate * 100:.1f}%"
 
                 if not role:
                     if good_games > 0:
-                        good_winrate = f"{(good_wins / good_games) * 100:.1f}%"
+                        good_winrate = good_wins / good_games
+                        assert 0.00 <= good_winrate <= 1.00, 'invalid good winrate'
+                        good_winrate = f"{good_winrate * 100:.1f}%"
                     else:
                         good_winrate = "N/A"
 
                     if evil_games > 0:
-                        evil_winrate = f"{(evil_wins / evil_games) * 100:.1f}%"
+                        evil_winrate = evil_wins / evil_games
+                        assert 0.00 <= evil_winrate <= 1.00, 'invalid evil winrate'
+                        evil_winrate = f"{evil_winrate * 100:.1f}%"
                     else:
                         evil_winrate = "N/A"
 
