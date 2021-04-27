@@ -174,7 +174,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
                     game_player
                 WHERE
                     user_id = :user_id
-                    AND alignment = 'good'
+                    AND alignment = 'evil'
                     AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
                 """, {
                     "user_id": user.id,
