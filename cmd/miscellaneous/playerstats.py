@@ -94,26 +94,91 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
             return await ctx.send(user_not_found_str.format(ctx.author.mention))
 
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
 
-            c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND role LIKE (?)", [user.id, role or "%"])
+            c = db.execute("""
+            SELECT
+                COUNT(*)
+            FROM
+                game_player
+            WHERE
+                user_id = :user_id
+                AND role LIKE :role
+            """, {
+                "user_id": user.id,
+                "role": role or "%",
+            })
             games = c.fetchone()[0]
 
-            c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND role LIKE (?) AND won = TRUE", [user.id, role or "%"])
+            c = db.execute("""
+            SELECT
+                COUNT(*)
+            FROM
+                game_player
+            WHERE
+                user_id = :user_id
+                AND role LIKE :role
+                AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
+            """, {
+                "user_id": user.id,
+                "role": role or "%",
+            })
             wins = c.fetchone()[0]
 
             if not role:
-                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'good'", [user.id])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game_player
+                WHERE
+                    user_id = :user_id
+                    AND alignment = 'good'
+                """, {
+                    "user_id": user.id,
+                })
                 good_games = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'good' AND won = TRUE", [user.id])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game_player
+                WHERE
+                    user_id = :user_id
+                    AND alignment = 'good'
+                    AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
+                """, {
+                    "user_id": user.id,
+                })
                 good_wins = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'evil'", [user.id])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game_player
+                WHERE
+                    user_id = :user_id
+                    AND alignment = 'evil'
+                """, {
+                    "user_id": user.id,
+                })
                 evil_games = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM game_players WHERE user_id = ? AND alignment = 'evil' AND won = TRUE", [user.id])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game_player
+                WHERE
+                    user_id = :user_id
+                    AND alignment = 'good'
+                    AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
+                """, {
+                    "user_id": user.id,
+                })
                 evil_wins = c.fetchone()[0]
 
             if role:

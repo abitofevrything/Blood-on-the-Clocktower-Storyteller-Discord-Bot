@@ -59,23 +59,21 @@ class on_ready(commands.Cog):
             c = conn.cursor()
 
             c.execute("""
-            CREATE TABLE IF NOT EXISTS games (
+            CREATE TABLE IF NOT EXISTS game (
                 game_id INTEGER PRIMARY KEY NOT NULL,
                 ended_at DATETIME NOT NULL,
                 gamemode TEXT NOT NULL,
-                players INTEGER NOT NULL,
                 winner TEXT NOT NULL
             )
             """)
             c.execute("""
-            CREATE TABLE IF NOT EXISTS game_players (
+            CREATE TABLE IF NOT EXISTS game_player (
                 game_id INTEGER NOT NULL,
                 user_id INTEGER NOT NULL,
                 alignment TEXT NOT NULL,
                 role TEXT NOT NULL,
-                won BOOLEAN NOT NULL,
                 PRIMARY KEY (game_id, user_id),
-                FOREIGN KEY (game_id) REFERENCES games(game_id)
+                FOREIGN KEY (game_id) REFERENCES game (game_id)
             )
             """)
             c.execute("PRAGMA user_version = 3")

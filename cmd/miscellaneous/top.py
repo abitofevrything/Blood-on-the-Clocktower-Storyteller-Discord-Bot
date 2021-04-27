@@ -61,7 +61,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
         with sqlite3.connect("data.sqlite3") as conn:
             c = conn.cursor()
 
-            c.execute("SELECT COUNT(*) FROM games")
+            c.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
 
@@ -69,19 +69,36 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             leaderboard = list()
             c.execute("""
-            CREATE TEMPORARY VIEW IF NOT EXISTS winrate_view AS
-                SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
-                FROM game_players
-                GROUP BY user_id
+            CREATE TEMPORARY VIEW IF NOT EXISTS
+                winrate_view
+            AS
+                SELECT
+                    user_id,
+                    COUNT(*) AS games,
+                    COUNT(CASE WHEN alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id) THEN 1 END) AS wins
+                FROM
+                    game_player
+                INNER JOIN
+                    game
+                ON
+                    game.game_id = game_player.game_id
+                GROUP BY
+                    user_id
             """)
             c.execute("""
-            SELECT user_id, (wins*1.0)/games AS winrate
-                FROM winrate_view
-                WHERE games >= ? AND wins > 0
-                ORDER BY winrate DESC
+            SELECT
+                user_id,
+                (wins*1.0)/games AS winrate
+            FROM
+                winrate_view
+            WHERE
+                games >= ?
+                AND wins > 0
+            ORDER BY
+                winrate DESC
             """, [actual_min_games])
-            count = 0
 
+            count = 0
             precision = 1
             for (user_id, winrate) in c.fetchall():
                 # Check if user is still in the guild
@@ -119,7 +136,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_evil_winrate(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
 
@@ -127,20 +144,38 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             leaderboard = list()
             c.execute("""
-            CREATE TEMPORARY VIEW IF NOT EXISTS evil_winrate_view AS
-                SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
-                FROM game_players
-                WHERE alignment = 'evil'
-                GROUP BY user_id
+            CREATE TEMPORARY VIEW IF NOT EXISTS
+                evil_winrate_view
+            AS
+                SELECT
+                    user_id,
+                    COUNT(*) AS games,
+                    COUNT(CASE WHEN alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id) THEN 1 END) AS wins
+                FROM
+                    game_player
+                INNER JOIN
+                    game
+                ON
+                    game.game_id = game_player.game_id
+                WHERE
+                    alignment = 'evil'
+                GROUP BY
+                    user_id
             """)
             c.execute("""
-            SELECT user_id, (wins*1.0)/games AS winrate
-                FROM evil_winrate_view
-                WHERE games >= ? AND wins > 0
-                ORDER BY winrate DESC
+            SELECT
+                user_id,
+                (wins*1.0)/games AS winrate
+            FROM
+                evil_winrate_view
+            WHERE
+                games >= ?
+                AND wins > 0
+            ORDER BY
+                winrate DESC
             """, [actual_min_games])
-            count = 0
 
+            count = 0
             precision = 1
             for (user_id, evil_winrate) in c.fetchall():
                 # Check if user is still in the guild
@@ -178,28 +213,47 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_good_winrate(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
 
             actual_min_games = min(total_games, min_games)
 
             leaderboard = list()
+
             c.execute("""
-            CREATE TEMPORARY VIEW IF NOT EXISTS good_winrate_view AS
-                SELECT user_id, COUNT(*) AS games, COUNT(CASE WHEN won = TRUE THEN 1 END) AS wins
-                FROM game_players
-                WHERE alignment = 'good'
-                GROUP BY user_id
+            CREATE TEMPORARY VIEW IF NOT EXISTS
+                good_winrate_view
+            AS
+                SELECT
+                    user_id,
+                    COUNT(*) AS games,
+                    COUNT(CASE WHEN alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id) THEN 1 END) AS wins
+                FROM
+                    game_player
+                INNER JOIN
+                    game
+                ON
+                    game.game_id = game_player.game_id
+                WHERE
+                    alignment = 'good'
+                GROUP BY
+                    user_id
             """)
             c.execute("""
-            SELECT user_id, (wins*1.0)/games AS winrate
-                FROM good_winrate_view
-                WHERE games >= ? AND wins > 0
-                ORDER BY winrate DESC
+            SELECT
+                user_id,
+                (wins*1.0)/games AS winrate
+            FROM
+                good_winrate_view
+            WHERE
+                games >= ?
+                AND wins > 0
+            ORDER BY
+                winrate DESC
             """, [actual_min_games])
-            count = 0
 
+            count = 0
             precision = 1
             for (user_id, good_winrate) in c.fetchall():
                 # Check if user is still in the guild
@@ -236,13 +290,13 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_games(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
             c.execute("""
             SELECT user_id, COUNT(*) AS games
-                FROM game_players
+                FROM game_player
                 GROUP BY user_id
                 ORDER BY games DESC
             """)
@@ -278,16 +332,22 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_evil_games(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
             c.execute("""
-            SELECT user_id, COUNT(*) AS games
-                FROM game_players
-                WHERE alignment = 'evil'
-                GROUP BY user_id
-                ORDER BY games DESC
+            SELECT
+                user_id,
+                COUNT(*) AS games
+            FROM
+                game_player
+            WHERE
+                alignment = 'evil'
+            GROUP BY
+                user_id
+            ORDER BY
+                games DESC
             """)
 
             leaderboard = list()
@@ -321,16 +381,22 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_good_games(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
             c.execute("""
-            SELECT user_id, COUNT(*) AS games
-                FROM game_players
-                WHERE alignment = 'good'
-                GROUP BY user_id
-                ORDER BY games DESC
+            SELECT
+                user_id,
+                COUNT(*) AS games
+            FROM
+                game_player
+            WHERE
+                alignment = 'good'
+            GROUP BY
+                user_id
+            ORDER BY
+                games DESC
             """)
 
             leaderboard = list()
@@ -363,16 +429,22 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_wins(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
             c.execute("""
-            SELECT user_id, COUNT(*) AS wins
-                FROM game_players
-                WHERE won = TRUE
-                GROUP BY user_id
-                ORDER BY wins DESC
+            SELECT
+                user_id,
+                COUNT(*) AS wins
+            FROM
+                game_player
+            WHERE
+                alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
+            GROUP BY
+                user_id
+            ORDER BY
+                wins DESC
             """)
 
             leaderboard = list()
@@ -406,17 +478,24 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_evil_wins(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
 
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
             c.execute("""
-            SELECT user_id, COUNT(*) AS wins
-                FROM game_players
-                WHERE alignment = 'evil' AND won = TRUE
-                GROUP BY user_id
-                ORDER BY wins DESC
+            SELECT
+                user_id,
+                COUNT(*) AS wins
+            FROM
+                game_player
+            WHERE
+                alignment = 'evil'
+                AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
+            GROUP BY
+                user_id
+            ORDER BY
+                wins DESC
             """)
 
             leaderboard = list()
@@ -450,16 +529,23 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
     )
     async def top_good_wins(self, ctx):
         with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM games")
+            c = db.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
             footer = top_footer_str.format(total_games, "" if total_games == 1 else "s")
 
             c.execute("""
-            SELECT user_id, COUNT(*) AS wins
-                FROM game_players
-                WHERE alignment = 'good' AND won = TRUE
-                GROUP BY user_id
-                ORDER BY wins DESC
+            SELECT
+                user_id,
+                COUNT(*) AS wins
+            FROM
+                game_player
+            WHERE
+                alignment = 'good'
+                AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
+            GROUP BY
+                user_id
+            ORDER BY
+                wins DESC
             """)
 
             leaderboard = list()

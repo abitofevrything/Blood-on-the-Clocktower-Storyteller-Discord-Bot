@@ -410,10 +410,10 @@ class Game(GameMeta):
 
                 if not self.invalidated:
                     c.execute("""
-                    INSERT INTO games
-                        (ended_at, gamemode, players, winner)
+                    INSERT INTO game
+                        (ended_at, gamemode, winner)
                     VALUES
-                        (DATETIME(), :gamemode, :players, 'good')
+                        (DATETIME(), :gamemode, 'good')
                     """, {
                         "gamemode": self.gamemode.value,
                         "players": len(self.sitting_order),
@@ -472,16 +472,15 @@ class Game(GameMeta):
                         role = player.old_role or player.role
 
                         c.execute("""
-                        INSERT INTO game_players
-                            (game_id, user_id, alignment, role, won)
+                        INSERT INTO game_player
+                            (game_id, user_id, alignment, role)
                         VALUES
-                            (:game_id, :user_id, :alignment, :role, :won)
+                            (:game_id, :user_id, :alignment, :role)
                         """, {
                             "game_id": game_id,
                             "user_id": player.user.id,
                             "alignment": "good" if role.true_self.is_good() else "evil",
                             "role": role.true_self.name,
-                            "won": role.true_self.is_good(),
                         })
 
                 # The embed
@@ -500,10 +499,10 @@ class Game(GameMeta):
             elif self.winners == Team.evil:
                 if not self.invalidated:
                     c.execute("""
-                    INSERT INTO games
-                        (ended_at, gamemode, players, winner)
+                    INSERT INTO game
+                        (ended_at, gamemode, winner)
                     VALUES
-                        (DATETIME(), :gamemode, :players, 'evil')
+                        (DATETIME(), :gamemode, 'evil')
                     """, {
                         "gamemode": self.gamemode.value,
                         "players": len(self.sitting_order),
@@ -562,16 +561,15 @@ class Game(GameMeta):
                         role = player.old_role or player.role
 
                         c.execute("""
-                        INSERT INTO game_players
-                            (game_id, user_id, alignment, role, won)
+                        INSERT INTO game_player
+                            (game_id, user_id, alignment, role)
                         VALUES
-                            (:game_id, :user_id, :alignment, :role, :won)
+                            (:game_id, :user_id, :alignment, :role)
                         """, {
                             "game_id": game_id,
                             "user_id": player.user.id,
                             "alignment": "good" if role.true_self.is_good() else "evil",
                             "role": role.true_self.name,
-                            "won": role.true_self.is_evil(),
                         })
 
                 # The embed

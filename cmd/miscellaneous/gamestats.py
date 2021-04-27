@@ -48,24 +48,47 @@ class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
             if players:
                 title = gamestats_title_players_str.format(players)
 
-                c = db.execute("SELECT COUNT(*) FROM games WHERE players = ?", [players])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game
+                WHERE
+                    (SELECT COUNT(*) FROM game_player WHERE game.game_id = game_player.game_id) = :players
+                """, [players])
                 total_games = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM games WHERE players = ? AND winner = 'good'", [players])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game
+                WHERE
+                    (SELECT COUNT(*) FROM game_player WHERE game.game_id = game_player.game_id) = :players
+                    AND winner = 'good'
+                """, [players])
                 good_wins = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM games WHERE players = ? AND winner = 'evil'", [players])
+                c = db.execute("""
+                SELECT
+                    COUNT(*)
+                FROM
+                    game
+                WHERE
+                    (SELECT COUNT(*) FROM game_player WHERE game.game_id = game_player.game_id) = :players
+                    AND winner = 'evil'
+                """, [players])
                 evil_wins = c.fetchone()[0]
             else:
                 title = gamestats_title_str
 
-                c = db.execute("SELECT COUNT(*) FROM games")
+                c = db.execute("SELECT COUNT(*) FROM game")
                 total_games = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM games WHERE winner = 'good'")
+                c = db.execute("SELECT COUNT(*) FROM game WHERE winner = 'good'")
                 good_wins = c.fetchone()[0]
 
-                c = db.execute("SELECT COUNT(*) FROM games WHERE winner = 'evil'")
+                c = db.execute("SELECT COUNT(*) FROM game WHERE winner = 'evil'")
                 evil_wins = c.fetchone()[0]
 
             if not total_games:
