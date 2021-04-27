@@ -1,5 +1,6 @@
 """Contains game loop functions"""
 
+import ast
 import asyncio
 import configparser
 import datetime
@@ -36,6 +37,8 @@ CARD_NO_LYNCH = int(CARD_NO_LYNCH, 16)
 Config.read("config.INI")
 
 PREFIX = Config["settings"]["PREFIX"]
+ADMINS_ID = json.loads(Config["user"]["ADMINS_ID"])
+FORCE_VOTES = ast.literal_eval(Config["misc"]["FORCE_VOTES"])
 
 with open('botc/game_text.json') as json_file:
     documentation = json.load(json_file)
@@ -180,13 +183,13 @@ async def nomination_loop(game, nominator, nominated):
                 - Must be one of the two voting emojis
                 - Must be on the same voting call message
                 """
-                return user.id == player.user.id and \
+                return (user.id == player.user.id or (FORCE_VOTES and user.id in ADMINS_ID)) and \
                     str(reaction.emoji) in (approved_emoji, denied_emoji) and \
                     reaction.message.id == message.id
 
             try:
                 reaction, user = await globvars.client.wait_for('reaction_add', timeout=VOTE_TIMEOUT, check=check)
-                assert user.id == player.user.id, f"{user} reacted instead"
+                assert user.id == player.user.id or (FORCE_VOTES and user.id in ADMINS_ID), f"{user} reacted instead"
 
             # The player did not vote. It counts as a "No" (hand down)
             except asyncio.TimeoutError:
