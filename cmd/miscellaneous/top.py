@@ -1,38 +1,38 @@
 """Contains the top command cog"""
 
-import configparser
 import json
 import sqlite3
 
 import discord
+import toml
 from discord.ext import commands
 
 import globvars
 
 from ._miscellaneous import Miscellaneous
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-limit = int(Config["misc"]["TOP_LIMIT"])
-min_games = int(Config["misc"]["TOP_WINRATE_MIN_GAMES"])
+    limit = config["commands"]["top"]["limit"]
+    min_games = config["commands"]["top"]["winrate"]["min_games"]
 
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-top_games_str = language["cmd"]["top_games"]
-top_evil_games_str = language["cmd"]["top_evil_games"]
-top_good_games_str = language["cmd"]["top_good_games"]
-top_wins_str = language["cmd"]["top_wins"]
-top_evil_wins_str = language["cmd"]["top_evil_wins"]
-top_good_wins_str = language["cmd"]["top_good_wins"]
-top_winrate_str = language["cmd"]["top_winrate"]
-top_evil_winrate_str = language["cmd"]["top_evil_winrate"]
-top_good_winrate_str = language["cmd"]["top_good_winrate"]
-top_footer_str = language["cmd"]["top_footer"]
-top_footer_winrate_str = language["cmd"]["top_footer_winrate"]
+    top_games_str = language["cmd"]["top_games"]
+    top_evil_games_str = language["cmd"]["top_evil_games"]
+    top_good_games_str = language["cmd"]["top_good_games"]
+    top_wins_str = language["cmd"]["top_wins"]
+    top_evil_wins_str = language["cmd"]["top_evil_wins"]
+    top_good_wins_str = language["cmd"]["top_good_wins"]
+    top_winrate_str = language["cmd"]["top_winrate"]
+    top_evil_winrate_str = language["cmd"]["top_evil_winrate"]
+    top_good_winrate_str = language["cmd"]["top_good_winrate"]
+    top_footer_str = language["cmd"]["top_footer"]
+    top_footer_winrate_str = language["cmd"]["top_footer_winrate"]
 
-top_usage_str = language["cmd"]["top_usage"]
+    top_usage_str = language["cmd"]["top_usage"]
 
 
 class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):

@@ -1,6 +1,5 @@
 """Contains the BOTC Game class"""
 
-import configparser
 import datetime
 import json
 import random
@@ -8,6 +7,7 @@ import sqlite3
 
 import discord
 import pytz
+import toml
 
 import botutils
 import globvars
@@ -36,41 +36,32 @@ from .PlayerState import PlayerState
 from .RoleGuide import RoleGuide
 from .Townsfolk import Townsfolk
 
-Preferences = configparser.ConfigParser()
-Preferences.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-CARD_NIGHT = Preferences["colors"]["CARD_NIGHT"]
-CARD_NIGHT = int(CARD_NIGHT, 16)
+    CARD_NIGHT = preferences["colors"]["card_night"]
+    CARD_DAWN = preferences["colors"]["card_dawn"]
+    CARD_DAY = preferences["colors"]["card_day"]
 
-CARD_DAWN = Preferences["colors"]["CARD_DAWN"]
-CARD_DAWN = int(CARD_DAWN, 16)
+    TOWNSFOLK_COLOR = preferences["colors"]["townsfolk_color"]
+    DEMON_COLOR = preferences["colors"]["demon_color"]
 
-CARD_DAY = Preferences["colors"]["CARD_DAY"]
-CARD_DAY = int(CARD_DAY, 16)
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-TOWNSFOLK_COLOR = Preferences["colors"]["TOWNSFOLK_COLOR"]
-DEMON_COLOR = Preferences["colors"]["DEMON_COLOR"]
-TOWNSFOLK_COLOR = int(TOWNSFOLK_COLOR, 16)
-DEMON_COLOR = int(DEMON_COLOR, 16)
+    SERVER_ID = config["ids"]["server_id"]
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
-
-SERVER_ID = Config["user"]["SERVER_ID"]
-SERVER_ID = int(SERVER_ID)
-
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
 
 CONFLICTING_CMDS = [
-
    "cmd.gameplay"
-
 ]
 
 random.seed(datetime.datetime.now())
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     nightfall = strings["gameplay"]["nightfall"]
     daybreak = strings["gameplay"]["daybreak"]
     dawn = strings["gameplay"]["dawn"]
@@ -172,10 +163,7 @@ class GameLog:
         ```
         """
 
-        Config = configparser.ConfigParser()
-        Config.read("preferences.INI")
-
-        TIMEZONE = Config["location"]["TIME_ZONE"]
+        TIMEZONE = preferences["location"]["timezone"]
 
         d = datetime.datetime.now()
         timezone = pytz.timezone(TIMEZONE)

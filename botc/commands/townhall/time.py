@@ -1,10 +1,10 @@
 """Contains the time command"""
 
-import configparser
 import datetime
 import json
 import traceback
 
+import toml
 from discord.ext import commands
 
 import botutils
@@ -13,23 +13,25 @@ from botc.gameloops import (base_day_loop, calculate_base_day_duration,
                             debate_timer, nomination_loop)
 from library import display_time
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-# Lengths
-BASE_NIGHT = int(Config["botc"]["BASE_NIGHT"])
-NIGHT_MULTIPLER = int(Config["botc"]["NIGHT_MULTIPLER"])
-BASE_DAWN = int(Config["botc"]["BASE_DAWN"])
-DAWN_MULTIPLIER = int(Config["botc"]["DAWN_MULTIPLIER"])
-DEBATE_TIME = int(Config["botc"]["DEBATE_TIME"])
-INCREMENT = int(Config["botc"]["INCREMENT"])
+    # Lengths
+    BASE_NIGHT = preferences["botc"]["base_night"]
+    NIGHT_MULTIPLER = preferences["botc"]["night_multipler"]
+    BASE_DAWN = preferences["botc"]["base_dawn"]
+    DAWN_MULTIPLIER = preferences["botc"]["dawn_multiplier"]
+    DEBATE_TIME = preferences["botc"]["debate_time"]
+    INCREMENT = preferences["botc"]["increment"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
+
     error_str = language["system"]["error"]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
+
     time_night = documentation["gameplay"]["time_night"]
     time_dawn = documentation["gameplay"]["time_dawn"]
     time_day_base = documentation["gameplay"]["time_day_base"]

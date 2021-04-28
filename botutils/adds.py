@@ -1,25 +1,25 @@
 """Contains functions to handle roles and permissions"""
 
-import configparser
-import json
 import traceback
 
 import discord
+import toml
 
 import globvars
 
 from .sends import Level, log
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-LOBBY_CHANNEL_ID = Config["user"]["LOBBY_CHANNEL_ID"]
-SERVER_ID = Config["user"]["SERVER_ID"]
-ALIVE_ROLE_ID = Config["user"]["ALIVE_ROLE_ID"]
-DEAD_ROLE_ID = Config["user"]["DEAD_ROLE_ID"]
-ADMINS_ROLE_ID = Config["user"]["ADMINS_ROLE_ID"]
-LOCK_CHANNELS_ID = json.loads(Config["user"].get("LOCK_CHANNELS_ID", "[]"))
-LOCK_CHANNELS_SPECIAL_ID = json.loads(Config["user"].get("LOCK_CHANNELS_SPECIAL_ID", "[]"))
+    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
+    SERVER_ID = config["ids"]["server_id"]
+    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
+    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
+    ADMINS_ROLE_ID = config["ids"]["admins_role_id"]
+
+    LOCK_CHANNEL_IDS = config["lock"].get("channel_ids", [])
+    LOCK_SPECIAL_CHANNEL_IDS = config["lock"].get("special_channel_ids", [])
 
 
 async def add_admin_role(user):
@@ -107,7 +107,7 @@ async def lock_lobby():
 
     alive_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(ALIVE_ROLE_ID))
 
-    for channel_id in LOCK_CHANNELS_ID:
+    for channel_id in LOCK_CHANNEL_IDS:
         channel = globvars.client.get_channel(int(channel_id))
         try:
             await channel.set_permissions(alive_role, view_channel=False)
@@ -115,7 +115,7 @@ async def lock_lobby():
             await log(Level.warning, f'Unable to lock {channel.mention}')
             await log(Level.error, traceback.format_exc())
 
-    for channel_id in LOCK_CHANNELS_SPECIAL_ID:
+    for channel_id in LOCK_SPECIAL_CHANNEL_IDS:
         channel = globvars.client.get_channel(int(channel_id))
         try:
             await channel.set_permissions(alive_role, send_messages=False, connect=False, speak=False)
@@ -133,7 +133,7 @@ async def unlock_lobby():
 
     alive_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(ALIVE_ROLE_ID))
 
-    for channel_id in LOCK_CHANNELS_ID:
+    for channel_id in LOCK_CHANNEL_IDS:
         channel = globvars.client.get_channel(int(channel_id))
         try:
             await channel.set_permissions(alive_role, view_channel=None)
@@ -141,7 +141,7 @@ async def unlock_lobby():
             await log(Level.warning, f'Unable to unlock {channel.mention}')
             await log(Level.error, traceback.format_exc())
 
-    for channel_id in LOCK_CHANNELS_SPECIAL_ID:
+    for channel_id in LOCK_SPECIAL_CHANNEL_IDS:
         channel = globvars.client.get_channel(int(channel_id))
         try:
             await channel.set_permissions(alive_role, send_messages=None, connect=None, speak=None)

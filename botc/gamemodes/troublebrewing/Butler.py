@@ -1,9 +1,9 @@
 """Contains the Butler Character class"""
 
-import configparser
 import json
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -13,20 +13,22 @@ from botc.BOTCUtils import GameLogic
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.butler.value.lower()]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
+
     action_assign = documentation["gameplay"]["action_assign"]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
     """Butler: Each night, choose a player (not yourself): tomorrow, you may only vote if

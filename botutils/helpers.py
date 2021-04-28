@@ -1,19 +1,19 @@
 """Contains other helper functions"""
 
-import configparser
 import datetime
 import re
 
 import emoji
+import toml
 
 import globvars
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-SERVER_ID = Config["user"]["SERVER_ID"]
-ALIVE_ROLE_ID = Config["user"]["ALIVE_ROLE_ID"]
-DEAD_ROLE_ID = Config["user"]["DEAD_ROLE_ID"]
+    SERVER_ID = config["ids"]["server_id"]
+    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
+    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
 
 
 class AmbiguousUserError(Exception):

@@ -1,9 +1,9 @@
 """Contains the Monk Character class"""
 
-import configparser
 import json
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -13,16 +13,17 @@ from botc.BOTCUtils import GameLogic
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.monk.value.lower()]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
     """Monk: Each night*, choose a player (not yourself): they are safe from the Demon tonight.

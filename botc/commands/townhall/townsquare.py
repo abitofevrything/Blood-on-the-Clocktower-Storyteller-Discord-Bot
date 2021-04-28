@@ -1,32 +1,31 @@
 """Townsquare command"""
 
-import configparser
 import json
 import traceback
 
 import discord
+import toml
 from discord.ext import commands
 
 import botutils
 from botc import Townsquare as TownsquareImage
 from library import display_time
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-TOWNSQUARE_COOLDOWN = Config["botc"]["TOWNSQUARE_COOLDOWN"]
-TOWNSQUARE_COOLDOWN = int(TOWNSQUARE_COOLDOWN)
+    TOWNSQUARE_COOLDOWN = preferences["botc"]["townsquare_cooldown"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
-cooldown = language["errors"]["cmd_cooldown"]
+    error_str = language["system"]["error"]
+    cooldown = language["errors"]["cmd_cooldown"]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
 
-townsquare_loading = documentation["cmd_warnings"]["townsquare_loading"]
+    townsquare_loading = documentation["cmd_warnings"]["townsquare_loading"]
 
 
 class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):

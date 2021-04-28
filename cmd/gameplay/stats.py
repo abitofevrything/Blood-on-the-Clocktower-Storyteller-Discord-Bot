@@ -1,25 +1,26 @@
 """Contains the stats command cog"""
 
-import configparser
 import json
 import traceback
 
+import toml
 from discord.ext import commands
 
 import botutils
 
 from ._gameplay import Gameplay
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
 
-PREFIX = Config["settings"]["PREFIX"]
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-with open('botutils/bot_text.json') as json_file:
+    PREFIX = config["bot"]["prefix"]
+
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
-no_game = language["cmd"]["no_game"]
+    error_str = language["system"]["error"]
+    no_game = language["cmd"]["no_game"]
 
 
 class Stats(Gameplay, name = language["system"]["gameplay_cog"]):

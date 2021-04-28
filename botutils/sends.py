@@ -1,32 +1,27 @@
 """Contains functions to send messages"""
 
-import configparser
 import enum
 import json
+
+import toml
 
 import globvars
 
 from .helpers import make_ping
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-SERVER_ID = Config["user"]["SERVER_ID"]
-SERVER_ID = int(SERVER_ID)
-LOBBY_CHANNEL_ID = Config["user"]["LOBBY_CHANNEL_ID"]
-LOBBY_CHANNEL_ID = int(LOBBY_CHANNEL_ID)
-LOGGING_CHANNEL_ID = Config["user"]["LOGGING_CHANNEL_ID"]
-LOGGING_CHANNEL_ID = int(LOGGING_CHANNEL_ID)
-OWNER_ID = Config["user"]["OWNER_ID"]
-OWNER_ID = int(OWNER_ID)
-MAX_MESSAGE_LEN = Config["misc"]["MAX_MESSAGE_LEN"]
-MAX_MESSAGE_LEN = int(MAX_MESSAGE_LEN)
+    SERVER_ID = config["ids"]["server_id"]
+    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
+    LOGGING_CHANNEL_ID = config["ids"]["logging_channel_id"]
+    OWNER_ID = config["ids"]["owner_id"]
+    MAX_MESSAGE_LEN = config["bot"]["max_message_len"]
 
-
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-stats_pregame_header = language["cmd"]["stats_pregame_header"]
+    stats_pregame_header = language["cmd"]["stats_pregame_header"]
 
 
 class Level(enum.Enum):

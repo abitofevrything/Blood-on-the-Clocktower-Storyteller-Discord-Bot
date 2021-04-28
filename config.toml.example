@@ -1,0 +1,36 @@
+[bot]
+token = ""
+prefix = "!"
+max_message_len = 2000
+
+[ids]
+owner_id =
+admin_ids = []
+server_id =
+lobby_channel_id =
+spec_channel_id =
+logging_channel_id =
+alive_role_id =
+dead_role_id =
+admins_role_id =
+
+[lock]
+# Channels/categories to lock during game
+channel_ids = []
+# Use this if the channel you want to lock is gated behind a special role
+special_channel_ids = []
+
+[commands.playtest]
+playtesters = []
+
+[commands.top]
+limit = 15
+
+[commands.top.winrate]
+min_games = 15
+
+[debug]
+# Do not enable these for real games. Only enable them for testing.
+disable_pings = false
+disable_dms = false
+force_votes = false  # Allow admins to vote on behalf of others

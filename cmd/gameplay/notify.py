@@ -1,10 +1,10 @@
 """Contains the notify command cog"""
 
-import configparser
 import json
 import time
 import traceback
 
+import toml
 from discord import Status
 from discord.ext import commands
 
@@ -13,23 +13,25 @@ from library import display_time
 
 from ._gameplay import Gameplay
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
-SERVER_ID = int(Config["user"]["SERVER_ID"])
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-Preferences = configparser.ConfigParser()
-Preferences.read("preferences.INI")
-NOTIFY_COOLDOWN = int(Preferences["duration"]["NOTIFY_COOLDOWN"])
+    SERVER_ID = config["ids"]["server_id"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
+
+    NOTIFY_COOLDOWN = preferences["duration"]["notify_cooldown"]
+
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
-cooldown_str = language["errors"]["cmd_cooldown"]
-already_in_notify = language["errors"]["already_in_notify"]
-already_not_notify = language["errors"]["already_not_notify"]
-add_notify = language["cmd"]["add_notify"]
-remove_notify = language["cmd"]["remove_notify"]
+    error_str = language["system"]["error"]
+    cooldown_str = language["errors"]["cmd_cooldown"]
+    already_in_notify = language["errors"]["already_in_notify"]
+    already_not_notify = language["errors"]["already_not_notify"]
+    add_notify = language["cmd"]["add_notify"]
+    remove_notify = language["cmd"]["remove_notify"]
 
 
 class Notify(Gameplay, name = language["system"]["gameplay_cog"]):

@@ -1,24 +1,26 @@
 """Contains the Recurring Action class"""
 
-import configparser
 import datetime
 import json
 
 import discord
+import toml
 
 import botutils
 from botc import BOTCUtils
 
 butterfly = botutils.BotEmoji.butterfly
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     copyrights_str = strings["misc"]["copyrights"]
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 # ------- For Night -------
 

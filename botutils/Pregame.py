@@ -1,14 +1,14 @@
 """Contains the Pregame class"""
 
-import configparser
+import toml
 
 import globvars
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-SERVER_ID = Config["user"]["SERVER_ID"]
-SERVER_ID = int(SERVER_ID)
+    SERVER_ID = config["ids"]["server_id"]
+
 
 class Pregame:
     """Pregame class: for storing session before game start"""

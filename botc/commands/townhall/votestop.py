@@ -1,30 +1,27 @@
 """Votestop command"""
 
-from discord.ext import commands
 import json
-import configparser
 import math
+
+from discord.ext import commands
 
 from botc import check_if_is_player
 from botutils import check_if_lobby, votestop_votes_timer, send_lobby
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     bot_text = json.load(json_file)
+
     votestop_vote = bot_text["cmd"]["votestop_vote"]
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
-
-votestop_time = Config["duration"]["VOTESTOP_CLEAR"]
 
 class Votestop(commands.Cog, name = documentation["misc"]["townhall_cog"]):
-    
+
     def __init__(self, client):
         self.client = client
-    
+
     def cog_check(self, ctx):
         """Check performed on all commands of this cog.
         Must be a non-fleaved player to use these commands.
@@ -56,7 +53,7 @@ class Votestop(commands.Cog, name = documentation["misc"]["townhall_cog"]):
 
         if not votestop_votes_timer.is_running():
             votestop_votes_timer.start()
-        
+
         await send_lobby(votestop_vote.format(ctx.author.mention, votes_needed - len(globvars.votestop_votes), "" if votes_needed - len(globvars.votestop_votes) == 1 else "s"))
 
         if len(globvars.votestop_votes) >= votes_needed:

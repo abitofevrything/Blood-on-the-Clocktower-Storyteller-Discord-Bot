@@ -1,0 +1,40 @@
+[colors]
+card_normal = 0xffffff
+card_night = 0x226b6c
+card_dawn = 0xa88497
+card_day = 0xd6bb50
+in_game_normal = 0xff8647
+townsfolk_color = 0x0776f2
+outsider_color = 0x0776f2
+minion_color = 0xe10600
+demon_color = 0xe10600
+card_lynch = 0x669d34
+card_no_lynch = 0xb51a00
+
+[botc]
+base_night = 30
+night_multipler = 0
+base_dawn = 15
+dawn_multiplier = 0
+vote_timeout = 8
+delete_vote_after = 45
+debate_time = 45
+increment = 15
+whisper_cooldown = 15
+townsquare_cooldown = 60
+grimoire_show_time = 40
+whisper_show_time = 30
+
+[duration]
+start_clear = 60
+lobby_timeout = 1200
+tokens_given = 5
+token_reset = 10
+ignore_threshold = 7
+status_cycle = 20
+backup_interval_min = 5
+notify_cooldown = 3600
+votestop_clear = 30
+
+[location]
+timezone = "Canada/Eastern"

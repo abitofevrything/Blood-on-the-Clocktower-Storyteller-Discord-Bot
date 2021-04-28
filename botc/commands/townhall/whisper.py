@@ -1,11 +1,11 @@
 """Whisper command cog"""
 
 import asyncio
-import configparser
 import json
 import traceback
 
 import discord
+import toml
 from discord.ext import commands
 
 import botutils
@@ -15,28 +15,26 @@ from botc import (BOTCUtils, NotAPlayer, NotDay, NotDMChannel, PlayerConverter,
                   check_if_is_day, check_if_is_player)
 from library import display_time
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-WHISPER_COOLDOWN = Config["botc"]["WHISPER_COOLDOWN"]
-WHISPER_COOLDOWN = int(WHISPER_COOLDOWN)
-WHISPER_SHOW_TIME = Config["botc"]["WHISPER_SHOW_TIME"]
-WHISPER_SHOW_TIME = int(WHISPER_SHOW_TIME)
+    WHISPER_COOLDOWN = preferences["botc"]["whisper_cooldown"]
+    WHISPER_SHOW_TIME = preferences["botc"]["whisper_show_time"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
-cooldown = language["errors"]["cmd_cooldown"]
+    error_str = language["system"]["error"]
+    cooldown = language["errors"]["cmd_cooldown"]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
 
-recipient_blocked = documentation["cmd_warnings"]["recipient_blocked"]
-whisper_announcement = documentation["gameplay"]["whisper_announcement"]
-from_str = documentation["gameplay"]["from"]
-to_str = documentation["gameplay"]["to"]
-whisper_self = documentation["cmd_warnings"]["whisper_self"]
+    recipient_blocked = documentation["cmd_warnings"]["recipient_blocked"]
+    whisper_announcement = documentation["gameplay"]["whisper_announcement"]
+    from_str = documentation["gameplay"]["from"]
+    to_str = documentation["gameplay"]["to"]
+    whisper_self = documentation["cmd_warnings"]["whisper_self"]
 
 
 class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):

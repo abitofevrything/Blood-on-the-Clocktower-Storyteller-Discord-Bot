@@ -1,38 +1,37 @@
 """Contains some tasks/async loops"""
 
 import asyncio
-import configparser
 import csv
 import json
 
 import discord
+import toml
 from discord.ext import tasks
 
 import botutils
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-ALIVE_ROLE_ID = Config["user"]["ALIVE_ROLE_ID"]
-ALIVE_ROLE_ID = int(ALIVE_ROLE_ID)
-PREFIX = Config["settings"]["PREFIX"]
+    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
+    PREFIX = config["bot"]["prefix"]
 
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-LOBBY_TIMEOUT = Config["duration"]["LOBBY_TIMEOUT"]
-LOBBY_TIMEOUT = int(LOBBY_TIMEOUT)
-TOKEN_RESET = int(Config["duration"]["TOKEN_RESET"])
-STATUS_CYCLE = int(Config["duration"]["STATUS_CYCLE"])
-START_CLEAR = int(Config["duration"]["START_CLEAR"])
-BACKUP_INTERVAL_MIN = int(Config["duration"]["BACKUP_INTERVAL_MIN"])
-VOTESTOP_CLEAR = int(Config["duration"]["VOTESTOP_CLEAR"])
+    LOBBY_TIMEOUT = preferences["duration"]["lobby_timeout"]
+    TOKEN_RESET = preferences["duration"]["token_reset"]
+    STATUS_CYCLE = preferences["duration"]["status_cycle"]
+    START_CLEAR = preferences["duration"]["start_clear"]
+    BACKUP_INTERVAL_MIN = preferences["duration"]["backup_interval_min"]
+    VOTESTOP_CLEAR = preferences["duration"]["votestop_clear"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-lobby_timeout_str = language["system"]["lobby_timeout"]
-not_enough_votes_to_start = language["system"]["not_enough_votes_to_start"]
-not_enough_votestop_votes = language["system"]["not_enough_votestop_votes"]
+    lobby_timeout_str = language["system"]["lobby_timeout"]
+    not_enough_votes_to_start = language["system"]["not_enough_votes_to_start"]
+    not_enough_votestop_votes = language["system"]["not_enough_votestop_votes"]
 
 
 @tasks.loop(seconds = TOKEN_RESET, count = None)

@@ -1,10 +1,10 @@
 """Contains the Scarlet Woman Character class"""
 
-import configparser
 import json
 import random
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -13,16 +13,17 @@ from botc import (BOTCUtils, Character, Minion, NonRecurringAction, Outsider,
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.scarletwoman.value.lower()]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 class ScarletWoman(Minion, TroubleBrewing, Character, NonRecurringAction):
     """Scarlet Woman: If there are 5 or more players alive & the Demon dies, you become the Demon.

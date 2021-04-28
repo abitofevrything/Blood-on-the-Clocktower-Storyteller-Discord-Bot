@@ -1,18 +1,16 @@
 """Playtest command cog"""
 
-import configparser
-import json
-
+import toml
 from discord.ext import commands
 
 import botutils
 
 from ._admin import Admin
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-PLAYTESTERS = json.loads(Config["misc"]["PLAYTESTERS"])
+    PLAYTESTERS = config["commands"]["playtest"].get("playtesters", [])
 
 
 class Playtest(Admin):

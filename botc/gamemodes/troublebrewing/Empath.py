@@ -1,32 +1,34 @@
 """Contains the Empath Character class"""
 
-import configparser
 import datetime
 import json
 import random
 
 import discord
+import toml
 
 import botutils
 from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.empath.value.lower()]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     empath_nightly = strings["gameplay"]["empath_nightly"]
     copyrights_str = strings["misc"]["copyrights"]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Empath: Each night, you learn how many of your 2 alive neighbors are evil.

@@ -135,12 +135,10 @@ dmypy.json
 botc_bot.code-workspace
 .vscode/
 
-# local
-config.INI
-preferences.INI
-stasis.csv
-notify.csv
-ignore.csv
+# Local
+*.INI
+*.toml
+*.csv
 grimoire.png
 townsquare.png
 playtest.py

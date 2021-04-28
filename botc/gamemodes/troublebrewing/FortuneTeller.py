@@ -1,11 +1,11 @@
 """Contains the Fortune Teller Character class"""
 
-import configparser
 import datetime
 import json
 import random
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -15,11 +15,12 @@ from botc.BOTCUtils import GameLogic
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.fortuneteller.value.lower()]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     fortune_teller_nightly = strings["gameplay"]["fortune_teller_nightly"]
     copyrights_str = strings["misc"]["copyrights"]
     yes = strings["gameplay"]["yes"]
@@ -27,13 +28,14 @@ with open('botc/game_text.json') as json_file:
     good_link = strings["images"]["good"]
     evil_link = strings["images"]["evil"]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
     """Fortune Teller: Each night, choose 2 players: you learn if either is a Demon.

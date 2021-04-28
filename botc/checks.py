@@ -1,15 +1,15 @@
 """Contains some checking functions for botc commands"""
 
-import configparser
+import toml
 
 from botc import (AliveOnlyCommand, BOTCUtils, DeadOnlyCommand, NotAPlayer,
                   NotDawn, NotDay, NotDMChannel, NotLobbyChannel, NotNight,
                   RoleCannotUseCommand)
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-LOBBY_CHANNEL_ID = Config["user"]["LOBBY_CHANNEL_ID"]
+    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
 
 
 def check_if_is_player(ctx):

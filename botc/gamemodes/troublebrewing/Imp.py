@@ -1,11 +1,11 @@
 """Contains the Imp Character class"""
 
-import configparser
 import datetime
 import json
 import random
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -16,29 +16,27 @@ from botc.gamemodes.troublebrewing.Soldier import Soldier
 
 from ._utils import TBRole, TroubleBrewing
 
-Preferences = configparser.ConfigParser()
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-Preferences.read("preferences.INI")
+    DEMON_COLOR = preferences["colors"]["demon_color"]
 
-DEMON_COLOR = Preferences["colors"]["DEMON_COLOR"]
-DEMON_COLOR = int(DEMON_COLOR, 16)
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
-
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.imp.value.lower()]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
     demon_bluff_str = strings["gameplay"]["demonbluffs"]
     action_assign = strings["gameplay"]["action_assign"]
     role_change = strings["gameplay"]["role_change"]
     copyrights_str = strings["misc"]["copyrights"]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
 

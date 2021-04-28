@@ -1,23 +1,24 @@
 """Contains the ignore command cog"""
 
-import configparser
 import json
 
 import discord
+import toml
 from discord.ext import commands
 
 import botutils
 
 from ._admin import Admin
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-PREFIX = Config["settings"]["PREFIX"]
-SERVER_ID = int(Config["user"]["SERVER_ID"])
+    PREFIX = config["bot"]["prefix"]
+    SERVER_ID = config["ids"]["server_id"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
+
     add_ignore = language["cmd"]["add_ignore"]
     remove_ignore = language["cmd"]["remove_ignore"]
     already_ignored = language["cmd"]["already_ignored"]

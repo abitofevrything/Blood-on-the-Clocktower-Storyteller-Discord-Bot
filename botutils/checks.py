@@ -1,18 +1,17 @@
 """Contains checks"""
 
-import configparser
-import json
+import toml
 
 import botutils
 import globvars
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-LOBBY_CHANNEL_ID = Config["user"]["LOBBY_CHANNEL_ID"]
-SPEC_CHANNEL_ID = Config["user"]["SPEC_CHANNEL_ID"]
-OWNER_ID = Config["user"]["OWNER_ID"]
-ADMINS_ID = json.loads(Config["user"]["ADMINS_ID"])
+    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
+    SPEC_CHANNEL_ID = config["ids"]["spec_channel_id"]
+    OWNER_ID = config["ids"]["owner_id"]
+    ADMIN_IDS = config["ids"]["admin_ids"]
 
 
 def __is_lobby(ctx):
@@ -27,7 +26,7 @@ def __is_specchat(ctx):
 
 def __is_admin(ctx):
     """Check the author of the context, return True if they have admin perms or higher"""
-    return ctx.author.id in ADMINS_ID or ctx.author.id == int(OWNER_ID)
+    return ctx.author.id in ADMIN_IDS or ctx.author.id == int(OWNER_ID)
 
 
 def check_if_in_pregame(ctx):

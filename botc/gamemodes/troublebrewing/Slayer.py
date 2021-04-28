@@ -1,10 +1,10 @@
 """Contains the Slayer Character class"""
 
-import configparser
 import json
 import random
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -15,15 +15,15 @@ from botc.gamemodes.troublebrewing.Imp import Imp
 
 from ._utils import TBRole, TroubleBrewing
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.slayer.value.lower()]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
 

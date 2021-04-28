@@ -1,11 +1,11 @@
 """Contains the Investigator Character class"""
 
-import configparser
 import datetime
 import json
 import random
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -14,21 +14,23 @@ from botc import (BOTCUtils, Category, Character, Minion, NonRecurringAction,
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.investigator.value.lower()]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     investigator_init = strings["gameplay"]["investigator_init"]
     copyrights_str = strings["misc"]["copyrights"]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+
 
 class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Investigator: You start knowing 1 of 2 players is a particular Minion.

@@ -1,12 +1,12 @@
 """Contains the Spy Character class"""
 
 import asyncio
-import configparser
 import datetime
 import json
 import random
 
 import discord
+import toml
 from discord.ext import tasks
 
 import botutils
@@ -16,26 +16,25 @@ from botc import (BOTCUtils, Character, Minion, NonRecurringAction, Outsider,
 
 from ._utils import TBRole, TroubleBrewing
 
-Preferences = configparser.ConfigParser()
-Preferences.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-GRIMOIRE_SHOW_TIME = Preferences["botc"]["GRIMOIRE_SHOW_TIME"]
-GRIMOIRE_SHOW_TIME = int(GRIMOIRE_SHOW_TIME)
+    GRIMOIRE_SHOW_TIME = preferences["botc"]["grimoire_show_time"]
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
+with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
     character_text = json.load(json_file)[TBRole.spy.value.lower()]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
     copyrights_str = strings["misc"]["copyrights"]
     spy_nightly = strings["gameplay"]["spy_nightly"]
 
-with open('botc/emojis.json') as json_file:
+with open("botc/emojis.json") as json_file:
     emojis = json.load(json_file)
 
 

@@ -13,10 +13,10 @@ affiliated with them in any way.
 
 """
 
-import configparser
 import json
 
 import discord
+import toml
 from discord.ext import commands
 
 import globvars  # isort: split
@@ -26,12 +26,12 @@ import botutils
 
 if __name__ == "__main__":
 
-    Config = configparser.ConfigParser()
-    Config.read("config.INI")
+    with open("config.toml") as fd:
+        config = toml.load(fd)
 
-    TOKEN = Config["secret"]["TOKEN"]
-    OWNER_ID = Config["user"]["OWNER_ID"]
-    PREFIX = Config["settings"]["PREFIX"]
+        TOKEN = config["bot"]["token"]
+        OWNER_ID = config["ids"]["owner_id"]
+        PREFIX = config["bot"]["prefix"]
 
     globvars.init_client()
     globvars.init_master_state()
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     intents.members = True
     intents.presences = True
 
-    if Config["misc"].get("DISABLE_PINGS", "").lower() == "true":
+    if config["debug"].get("disable_pings", False):
         allowed_mentions = discord.AllowedMentions.none()
     else:
         allowed_mentions = discord.AllowedMentions(everyone=False)

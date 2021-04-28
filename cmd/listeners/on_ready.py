@@ -1,24 +1,23 @@
 """Contains the on_ready event listener"""
 
-import configparser
 import csv
 import json
 import sqlite3
 
+import toml
 from discord.ext import commands
 
 import botutils
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-SERVER_ID = Config["user"]["SERVER_ID"]
-LOBBY_CHANNEL_ID = Config["user"]["LOBBY_CHANNEL_ID"]
-ALIVE_ROLE_ID = Config["user"]["ALIVE_ROLE_ID"]
-DEAD_ROLE_ID = Config["user"]["DEAD_ROLE_ID"]
-LOCK_CHANNELS_SPECIAL_ID = json.loads(Config["user"].get("LOCK_CHANNELS_SPECIAL_ID", "[]"))
+    SERVER_ID = config["ids"]["server_id"]
+    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
+    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
+    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
 restart_msg = language["system"]["restart"]

@@ -1,20 +1,21 @@
 """Contains cog for general out of game / info related botc commands"""
 
-import configparser
 import json
 
 import discord
+import toml
 from discord.ext import commands
 
 import botutils
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-CARD_NORMAL = int(Config["colors"]["CARD_NORMAL"], 16)
+    CARD_NORMAL = preferences["colors"]["card_normal"]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     copyrights_str = strings["misc"]["copyrights"]
     res_title = strings["misc"]["res_title"]
     res_desc = strings["misc"]["res_desc"]

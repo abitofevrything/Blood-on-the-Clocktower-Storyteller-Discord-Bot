@@ -1,10 +1,10 @@
 """Contains the Character class"""
 
-import configparser
 import datetime
 import json
 
 import discord
+import toml
 
 import botutils
 import globvars
@@ -16,28 +16,23 @@ from .errors import AlreadyDead
 from .flag_inventory import Flags, Inventory
 from .Team import Team
 
-Preferences = configparser.ConfigParser()
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-Preferences.read("preferences.INI")
+    TOWNSFOLK_COLOR = preferences["colors"]["townsfolk_color"]
+    OUTSIDER_COLOR = preferences["colors"]["outsider_color"]
+    MINION_COLOR = preferences["colors"]["minion_color"]
+    DEMON_COLOR = preferences["colors"]["demon_color"]
 
-TOWNSFOLK_COLOR = Preferences["colors"]["TOWNSFOLK_COLOR"]
-OUTSIDER_COLOR = Preferences["colors"]["OUTSIDER_COLOR"]
-MINION_COLOR = Preferences["colors"]["MINION_COLOR"]
-DEMON_COLOR = Preferences["colors"]["DEMON_COLOR"]
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-TOWNSFOLK_COLOR = int(TOWNSFOLK_COLOR, 16)
-OUTSIDER_COLOR = int(OUTSIDER_COLOR, 16)
-MINION_COLOR = int(MINION_COLOR, 16)
-DEMON_COLOR = int(DEMON_COLOR, 16)
+    DISABLE_DMS = config["debug"].get("disable_dms", False)
+    PREFIX = config["bot"]["prefix"]
 
-Config = configparser.ConfigParser()
-Config.read('config.INI')
-
-DISABLE_DMS = Config["misc"].get("DISABLE_DMS", "").lower() == "true"
-PREFIX = Config["settings"]["PREFIX"]
-
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     strings = json.load(json_file)
+
     copyrights_str = strings["misc"]["copyrights"]
     role_dm = strings["gameplay"]["role_dm"]
     welcome_dm = strings["gameplay"]["welcome_dm"]

@@ -1,10 +1,10 @@
 """Contains the time command cog"""
 
-import configparser
 import json
 import traceback
 from datetime import datetime, timezone
 
+import toml
 from discord.ext import commands
 
 import botutils
@@ -12,18 +12,17 @@ from botutils import lobby_timeout
 
 from ._gameplay import Gameplay
 
-Config = configparser.ConfigParser()
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-Config.read("preferences.INI")
-LOBBY_TIMEOUT = Config["duration"]["LOBBY_TIMEOUT"]
-LOBBY_TIMEOUT = int(LOBBY_TIMEOUT)
+    LOBBY_TIMEOUT = preferences["duration"]["lobby_timeout"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
-lobby_timeout_str = language["system"]["lobby_timeout"]
-time_pregame = language["cmd"]["time_pregame"]
+    error_str = language["system"]["error"]
+    lobby_timeout_str = language["system"]["lobby_timeout"]
+    time_pregame = language["cmd"]["time_pregame"]
 
 
 class Time(Gameplay, name = language["system"]["gameplay_cog"]):

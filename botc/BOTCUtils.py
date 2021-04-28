@@ -1,24 +1,24 @@
 """Contains some BoTC game related utility functions"""
 
 import asyncio
-import configparser
 import json
 import random
 
+import toml
 from discord.ext import commands, tasks
 
 from botutils import BotEmoji
 
 from .Category import Category
 
-Config = configparser.ConfigParser()
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-MAX_MESSAGE_LEN = Config["misc"]["MAX_MESSAGE_LEN"]
-MAX_MESSAGE_LEN = int(MAX_MESSAGE_LEN)
+    MAX_MESSAGE_LEN = config["bot"]["max_message_len"]
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
+
     player_not_found = documentation["cmd_warnings"]["player_not_found"]
     no_self_targetting_str = documentation["cmd_warnings"]["no_self_targetting_str"]
     except_first_night_str = documentation["cmd_warnings"]["except_first_night_str"]

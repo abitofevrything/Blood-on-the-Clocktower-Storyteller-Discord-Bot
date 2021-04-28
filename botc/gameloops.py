@@ -1,8 +1,6 @@
 """Contains game loop functions"""
 
-import ast
 import asyncio
-import configparser
 import datetime
 import json
 import math
@@ -11,39 +9,39 @@ import sys
 import traceback
 
 import discord
+import toml
 from discord.ext import tasks
 
 import botutils
 from botc import ChoppingBlock
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-# Lengths
-BASE_NIGHT = int(Config["botc"]["BASE_NIGHT"])
-NIGHT_MULTIPLER = int(Config["botc"]["NIGHT_MULTIPLER"])
-BASE_DAWN = int(Config["botc"]["BASE_DAWN"])
-DAWN_MULTIPLIER = int(Config["botc"]["DAWN_MULTIPLIER"])
-VOTE_TIMEOUT = int(Config["botc"]["VOTE_TIMEOUT"])
-DELETE_VOTE_AFTER = int(Config["botc"]["DELETE_VOTE_AFTER"])
-DEBATE_TIME = int(Config["botc"]["DEBATE_TIME"])
-INCREMENT = int(Config["botc"]["INCREMENT"])
+    # Lengths
+    BASE_NIGHT = preferences["botc"]["base_night"]
+    NIGHT_MULTIPLER = preferences["botc"]["night_multipler"]
+    BASE_DAWN = preferences["botc"]["base_dawn"]
+    DAWN_MULTIPLIER = preferences["botc"]["dawn_multiplier"]
+    VOTE_TIMEOUT = preferences["botc"]["vote_timeout"]
+    DELETE_VOTE_AFTER = preferences["botc"]["delete_vote_after"]
+    DEBATE_TIME = preferences["botc"]["debate_time"]
+    INCREMENT = preferences["botc"]["increment"]
 
-# Colors
-CARD_LYNCH = Config["colors"]["CARD_LYNCH"]
-CARD_LYNCH = int(CARD_LYNCH, 16)
-CARD_NO_LYNCH = Config["colors"]["CARD_NO_LYNCH"]
-CARD_NO_LYNCH = int(CARD_NO_LYNCH, 16)
+    # Colors
+    CARD_LYNCH = preferences["colors"]["card_lynch"]
+    CARD_NO_LYNCH = preferences["colors"]["card_no_lynch"]
 
-# Config
-Config.read("config.INI")
+with open("config.toml") as fd:
+    config = toml.load(fd)
 
-PREFIX = Config["settings"]["PREFIX"]
-ADMINS_ID = json.loads(Config["user"]["ADMINS_ID"])
-FORCE_VOTES = ast.literal_eval(Config["misc"]["FORCE_VOTES"])
+    PREFIX = config["bot"]["prefix"]
+    ADMIN_IDS = config["ids"]["admin_ids"]
+    FORCE_VOTES = config["debug"].get("force_votes", False)
 
-with open('botc/game_text.json') as json_file:
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
+
     approved_seal = documentation["images"]["approved_seal"]
     denied_seal = documentation["images"]["denied_seal"]
     ghost_vote_url = documentation["images"]["ghost_vote"]
@@ -71,8 +69,9 @@ with open('botc/game_text.json') as json_file:
     execution = documentation["gameplay"]["execution"]
     copyrights_str = documentation["misc"]["copyrights"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
+
     error_str = language["system"]["error"]
 
 global botc_game_obj
@@ -185,13 +184,13 @@ async def nomination_loop(game, nominator, nominated):
                 - Must be one of the two voting emojis
                 - Must be on the same voting call message
                 """
-                return (user.id == player.user.id or (FORCE_VOTES and user.id in ADMINS_ID)) and \
+                return (user.id == player.user.id or (FORCE_VOTES and user.id in ADMIN_IDS)) and \
                     str(reaction.emoji) in (approved_emoji, denied_emoji) and \
                     reaction.message.id == message.id
 
             try:
                 reaction, user = await globvars.client.wait_for('reaction_add', timeout=VOTE_TIMEOUT, check=check)
-                assert user.id == player.user.id or (FORCE_VOTES and user.id in ADMINS_ID), f"{user} reacted instead"
+                assert user.id == player.user.id or (FORCE_VOTES and user.id in ADMIN_IDS), f"{user} reacted instead"
 
             # The player did not vote. It counts as a "No" (hand down)
             except asyncio.TimeoutError:

@@ -1,24 +1,24 @@
 """Contains the on_command event listener"""
 
-import configparser
 import json
 
 import discord
+import toml
 from discord.ext import commands
 
 import botutils
 
-Config = configparser.ConfigParser()
-Config.read("preferences.INI")
+with open("preferences.toml") as fd:
+    preferences = toml.load(fd)
 
-IGNORE_THRESHOLD = int(Config["duration"]["IGNORE_THRESHOLD"])
-TOKENS_GIVEN = int(Config["duration"]["TOKENS_GIVEN"])
-TOKEN_RESET = int(Config["duration"]["TOKEN_RESET"])
+    IGNORE_THRESHOLD = preferences["duration"]["ignore_threshold"]
+    TOKENS_GIVEN = preferences["duration"]["tokens_given"]
+    TOKEN_RESET = preferences["duration"]["token_reset"]
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-ignore = language["system"]["ignore"]
+    ignore = language["system"]["ignore"]
 
 
 class on_command(commands.Cog):
