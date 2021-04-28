@@ -1,6 +1,7 @@
 """Contains the notify command cog"""
 
 import json
+import sqlite3
 import time
 import traceback
 
@@ -48,7 +49,6 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
     @commands.check(botutils.check_if_not_in_game)
     async def notify(self, ctx):
         """Notify command"""
-
         if ctx.invoked_subcommand is None:
             import globvars
 
@@ -60,25 +60,37 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
             if botutils.check_if_lobby(ctx):
                 globvars.last_notify = time.time()
 
-            pings = []
+            users_to_ping = []
 
-            users_to_ping = sorted(set(globvars.notify_list) - set(globvars.ignore_list))
+            with sqlite3.connect("data.sqlite3") as conn:
+                c = conn.cursor()
+
+                c.execute("SELECT user_id FROM notify")
+                for row in c.fetchall():
+                    userid = row[0]
+                    users_to_ping.append(userid)
+
+                c.execute("SELECT user_id FROM ignore")
+                for row in c.fetchall():
+                    userid = row[0]
+                    if userid in users_to_ping:
+                        users_to_ping.remove(userid)
+
+            pings = []
 
             for userid in users_to_ping:
                 member = globvars.client.get_guild(SERVER_ID).get_member(userid)
 
-                # member found, only ping them if they are not offline
-                if member:
-                    if member.status != Status.offline and \
-                        member.id not in globvars.master_state.pregame and \
-                        member.id != ctx.author.id:
-                        pings.append(member.mention)
+                # Only ping if in server and not offline, already joined or the user who's calling !notify
+                if (member and
+                        member.status != Status.offline and
+                        member.id not in globvars.master_state.pregame and
+                        member.id != ctx.author.id):
+                    pings.append(member.mention)
 
-                # member not present in server, remove their id
-                else:
-                    globvars.notify_list.remove(userid)
+            pings = " ".join(pings)
 
-            msg = f"{ctx.author.mention} {botutils.BotEmoji.mention} {' '.join(pings)}"
+            msg = f"{ctx.author.mention} {botutils.BotEmoji.mention} {pings}"
             await ctx.send(msg)
 
     @notify.command(
@@ -91,15 +103,17 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
     )
     async def add(self, ctx):
         """Add the user to the notify list"""
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
 
-        import globvars
-        if ctx.author.id in globvars.notify_list:
-            msg = already_in_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
-            await ctx.send(msg)
-        else:
-            globvars.notify_list.append(ctx.author.id)
-            msg = add_notify.format(botutils.BotEmoji.check)
-            await ctx.send(msg)
+            c.execute("INSERT OR IGNORE INTO notify (user_id) VALUES (:user_id)", {"user_id": ctx.author.id})
+
+            if c.rowcount:
+                msg = add_notify.format(botutils.BotEmoji.check)
+            else:
+                msg = already_in_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
+
+        await ctx.send(msg)
 
     @notify.command(
         pass_context = True,
@@ -111,15 +125,17 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
     )
     async def remove(self, ctx):
         """Remove the user from the notify list"""
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
 
-        import globvars
-        if ctx.author.id in globvars.notify_list:
-            globvars.notify_list.remove(ctx.author.id)
-            msg = remove_notify.format(botutils.BotEmoji.check)
-            await ctx.send(msg)
-        else:
-            msg = already_not_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
-            await ctx.send(msg)
+            c.execute("DELETE FROM notify WHERE user_id = :user_id", {"user_id": ctx.author.id})
+
+            if c.rowcount:
+                msg = remove_notify.format(botutils.BotEmoji.check)
+            else:
+                msg = already_not_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
+
+        await ctx.send(msg)
 
     @notify.error
     async def notify_error(self, ctx, error):

@@ -1,6 +1,7 @@
 """Contains the on_command event listener"""
 
 import json
+import sqlite3
 
 import discord
 import toml
@@ -41,11 +42,15 @@ class on_command(commands.Cog):
 
         # The user has surpassed the threshold, and will be ignored
         if globvars.ratelimit_dict[str(ctx.author.id)] > IGNORE_THRESHOLD:
-            if not ctx.author.id in globvars.ignore_list:
-                globvars.ignore_list.append(ctx.author.id)
-                msg = f"{ctx.author.mention} was added to the ignore list for rate limiting."
-                await botutils.log(botutils.Level.warning, msg)
-                await ctx.send(ignore.format(ctx.author.mention, IGNORE_THRESHOLD, TOKEN_RESET))
+            with sqlite3.connect("data.sqlite3") as conn:
+                c = conn.cursor()
+
+                c.execute("INSERT OR IGNORE INTO ignore (user_id) VALUES (:user_id)", {"user_id": ctx.author.id})
+
+                if c.rowcount:
+                    msg = f"{ctx.author.mention} was added to the ignore list for rate limiting."
+                    await botutils.log(botutils.Level.warning, msg)
+                    await ctx.send(ignore.format(ctx.author.mention, IGNORE_THRESHOLD, TOKEN_RESET))
 
         if globvars.ratelimit_dict[str(ctx.author.id)] >= TOKENS_GIVEN:
             pass

@@ -1,6 +1,7 @@
 """Contains the ignore command cog"""
 
 import json
+import sqlite3
 
 import discord
 import toml
@@ -45,19 +46,28 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
         """If no subcommand is invoked, display the list of ignored users"""
         if ctx.invoked_subcommand is None:
             import globvars
-            n = len(globvars.ignore_list)
-            if n:
-                msg = people_total.format(n, botutils.BotEmoji.people)
-                msg += "\n"
-                for userid in globvars.ignore_list:
-                    user = globvars.client.get_user(int(userid))
-                    msg += f"**{user.name}**#**{user.discriminator}** `({userid})`"
-                    msg += ", "
-                # Remove ", " from the end of msg
-                msg = msg[:-2]
-                await ctx.send(msg)
-            else:
-                await ctx.send(ignore_list_empty)
+
+            with sqlite3.connect("data.sqlite3") as conn:
+                c = conn.cursor()
+
+                c.execute("SELECT user_id FROM ignore")
+                rows = c.fetchall()
+                if rows:
+                    msg = people_total.format(len(rows), botutils.BotEmoji.people) + "\n"
+
+                    for row in rows:
+                        userid = row[0]
+                        user = globvars.client.get_user(userid)
+
+                        msg += f"**{user.name}**#**{user.discriminator}** `({userid})`"
+                        msg += ", "
+
+                    # Remove ", " from the end of msg
+                    msg = msg[:-2]
+
+                    await ctx.send(msg)
+                else:
+                    await ctx.send(ignore_list_empty)
 
     @ignore.command(
         pass_context = True,
@@ -69,22 +79,25 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     )
     async def add(self, ctx, *, member: discord.Member):
         """Add a user into the ignore list"""
-        import globvars
-        if member.id not in globvars.ignore_list:
-            globvars.ignore_list.append(member.id)
-            msg = add_ignore.format(
-                botutils.BotEmoji.check,
-                member.display_name,
-                member.id
-            )
-            await ctx.send(msg)
-        else:
-            msg = already_ignored.format(
-                ctx.author.mention,
-                botutils.BotEmoji.x_emoji,
-                member.display_name,
-                member.id
-            )
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
+
+            c.execute("INSERT OR IGNORE INTO ignore (user_id) VALUES (:user_id)", {"user_id": member.id})
+
+            if c.rowcount:
+                msg = add_ignore.format(
+                    botutils.BotEmoji.check,
+                    member.display_name,
+                    member.id
+                )
+            else:
+                msg = already_ignored.format(
+                    ctx.author.mention,
+                    botutils.BotEmoji.x_emoji,
+                    member.display_name,
+                    member.id
+                )
+
             await ctx.send(msg)
 
     @ignore.command(
@@ -97,22 +110,25 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     )
     async def remove(self, ctx, *, member: discord.Member):
         """Remove a user from the ignore list"""
-        import globvars
-        if member.id not in globvars.ignore_list:
-            msg = not_ignored.format(
-                ctx.author.mention,
-                botutils.BotEmoji.x_emoji,
-                member.display_name,
-                member.id
-            )
-            await ctx.send(msg)
-        else:
-            globvars.ignore_list.remove(member.id)
-            msg = remove_ignore.format(
-                botutils.BotEmoji.check,
-                member.display_name,
-                member.id
-            )
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
+
+            c.execute("DELETE FROM ignore WHERE user_id = :user_id", {"user_id": member.id})
+
+            if c.rowcount:
+                msg = remove_ignore.format(
+                    botutils.BotEmoji.check,
+                    member.display_name,
+                    member.id
+                )
+            else:
+                msg = not_ignored.format(
+                    ctx.author.mention,
+                    botutils.BotEmoji.x_emoji,
+                    member.display_name,
+                    member.id
+                )
+
             await ctx.send(msg)
 
     @ignore.command(
@@ -125,12 +141,21 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     async def sync(self, ctx):
         """Remove users that are not in the server"""
         import globvars
-        count = 0
-        guild = globvars.client.get_guild(SERVER_ID)
-        for userid in globvars.ignore_list:
-            if guild.get_member(userid) is None:
-                globvars.ignore_list.remove(userid)
-                count += 1
+
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
+
+            count = 0
+            guild = globvars.client.get_guild(SERVER_ID)
+
+            c.execute("SELECT user_id FROM ignore")
+
+            for row in c.fetchall():
+                userid = row[0]
+                if guild.get_member(userid) is None:
+                    c.execute("DELETE FROM ignore WHERE user_id = :user_id", {"user_id": userid})
+                    count += 1
+
         msg = ignore_sync.format(botutils.BotEmoji.check, count)
         await ctx.send(msg)
 
@@ -144,13 +169,18 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     async def clear(self, ctx):
         """Clear the ignore list"""
         if ctx.invoked_subcommand is None:
-            import globvars
-            n = len(globvars.ignore_list)
-            if n:
-                msg = clear_ignore.format(ctx.author.mention, n, PREFIX)
+            with sqlite3.connect("data.sqlite3") as conn:
+                c = conn.cursor()
+
+                c.execute("SELECT COUNT(*) FROM ignore")
+                count = c.fetchone()[0]
+
+                if count:
+                    msg = clear_ignore.format(ctx.author.mention, count, PREFIX)
+                else:
+                    msg = ignore_list_empty
+
                 await ctx.send(msg)
-            else:
-                await ctx.send(ignore_list_empty)
 
     @clear.command(
         pass_context = True,
@@ -161,7 +191,10 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     )
     async def force(self, ctx):
         """Force flag for the clear subcommand"""
-        import globvars
-        globvars.ignore_list.clear()
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
+
+            c.execute("DELETE FROM ignore")
+
         msg = force_clear.format(botutils.BotEmoji.check)
         await ctx.send(msg)

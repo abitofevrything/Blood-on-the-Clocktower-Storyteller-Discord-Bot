@@ -1,5 +1,6 @@
 """Contains checks"""
 
+import sqlite3
 import toml
 
 import botutils
@@ -89,11 +90,17 @@ def check_if_spec(ctx):
 
 def check_if_not_ignored(ctx):
     """Check the author of the context, return True if they are not ignored"""
-    import globvars
     if __is_admin(ctx):
         return True
-    else:
-        return not ctx.author.id in globvars.ignore_list
+
+    with sqlite3.connect("data.sqlite3") as conn:
+        c = conn.cursor()
+
+        c.execute("SELECT EXISTS(SELECT 1 FROM ignore WHERE user_id = :user_id)", {"user_id": ctx.author.id})
+        row = c.fetchone()
+        ignored = row[0]
+
+        return not ignored
 
 
 def return_false(ctx):
