@@ -2,7 +2,12 @@
 name = "Blood-on-the-Clocktower-Storyteller-Discord-Bot"
 version = "0.4.0-beta"
 description = "Discord Bot implementation of the new social deduction game, Blood on the Clocktower. Games are text-based and fully autonomous."
-authors = ["Xinverse <rad57.2958@gmail.com>", "Picowchew <58180935+Picowchew@users.noreply.github.com>", "nyuszika7h <nyuszika7h@gmail.com>"]
+authors = [
+  "Xinverse <rad57.2958@gmail.com>",
+  "Picowchew <58180935+Picowchew@users.noreply.github.com>",
+  "nyuszika7h <nyuszika7h@gmail.com>",
+  "Abitofevrything <54505189+abitofevrything@users.noreply.github.com>"
+]
 license = "AGPLv3"
 
 [tool.poetry.dependencies]

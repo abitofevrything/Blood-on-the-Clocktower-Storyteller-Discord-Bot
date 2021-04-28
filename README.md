@@ -5,11 +5,12 @@ You can join our Discord community using this link: https://discord.gg/M6xffPn.
 
 The copyrights to the BoTC game are owned by the Pandemonium Institute.
 
-## Author
+## Authors
 
 * **Xinverse#5440** - [Xinverse](https://github.com/Xinverse)
 * **Picowchew#1559** - *Contributor* - [Picowchew](https://github.com/Picowchew)
 * **nyuszika7h#0001** - *Contributor* - [nyuszika7h](https://github.com/nyuszika7h)
+* **Abitofevrything#1422** - *Contributor* - [Abitofevrything](https://github.com/Abitofevrything)
 
 For other contributors, please take a look at the [Contributors](https://github.com/nyuszika7h/Blood-on-the-Clocktower-Storyteller-Discord-Bot/graphs/contributors) page.
 
