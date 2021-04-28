@@ -35,11 +35,11 @@ Finally, run the `main.py` file to start the bot.
 
 Install Python 3.9+
 
-Clone this repository. Rename `config.INI.example` to `config.INI` and `preferences.INI.example` to `preferences.INI`, and fill in the fields inside `config.INI`. To change gameplay-related settings, edit `preferences.INI`.
+Clone this repository. Rename `config.toml.example` to `config.toml` and `preferences.toml.example` to `preferences.toml`, and fill in the fields inside `config.toml`. To change gameplay-related settings, edit `preferences.toml`.
 
 Rename `notify.csv.example` to `notify.csv`, `ignore.csv.example` to `ignore.csv`, `emojis.json.example` to `emojis.json` and `botc/emojis.json.example` to `botc/emojis.json`.
 
-Run `pip install -r requirements.txt` to install the required dependencies.
+Run `poetry install` or `pip install -r requirements.txt` to install the required dependencies.
 
 Set the environment variable `PYTHONUTF8` to `1`.
 
