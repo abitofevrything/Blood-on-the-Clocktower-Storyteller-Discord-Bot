@@ -146,3 +146,4 @@ log.txt
 data.sqlite3
 emojis.json
 botc/emojis.json
+botc.pid
