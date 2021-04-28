@@ -7,6 +7,7 @@ from .playerstats import Playerstats
 from .role import Role
 from .top import Top
 from .uptime import Uptime
+from .sync import Sync
 
 
 def setup(client):
@@ -19,3 +20,4 @@ def setup(client):
     client.add_cog(Gamestats(client))
     client.add_cog(Playerstats(client))
     client.add_cog(Top(client))
+    client.add_cog(Sync(client))

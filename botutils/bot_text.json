@@ -64,7 +64,8 @@
         "frestart": "{} {} Restarting",
         "frestart_confirm": "{} {} A game is currently in progress. If you still want to restart the bot, please use `!frestart --force`.",
         "update_exitcode": ":x: Process exited with return code {}",
-        "votestop_vote" : "{} has voted to stop the game. **{}** more vote{} needed."
+        "votestop_vote" : "{} has voted to stop the game. **{}** more vote{} needed.",
+        "sync_success" : "{} {} Successfully synced bot state."
 
     },
 
@@ -380,7 +381,15 @@
               "outputs": [],
               "weights": []
 
-        }
+        },
+
+        "sync" : {
+
+            "brief": "sync the bot state",
+            "help": "Sync the bot state. This will attempt to restore any softlocks.",
+            "description": "[SYNC] command"
+
+      }
 
     },
 
