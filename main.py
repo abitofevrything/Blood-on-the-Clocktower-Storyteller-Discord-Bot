@@ -13,9 +13,13 @@ affiliated with them in any way.
 
 """
 
+import atexit
 import json
+import os
+import sys
 
 import discord
+import psutil
 import toml
 from discord.ext import commands
 
@@ -25,6 +29,26 @@ import botc
 import botutils
 
 if __name__ == "__main__":
+    try:
+        with open("botc.pid") as fd:
+            pid = int(fd.read())
+    except (FileNotFoundError, ValueError):
+        pass
+    else:
+        if psutil.pid_exists(pid):
+            print(f"Error: Another instance of the bot is already running (PID {pid}). Please close it before starting a new instance.")
+            sys.exit(1)
+        else:
+            print("PID file is stale, removing")
+            os.unlink("botc.pid")
+
+    with open("botc.pid", "w") as fd:
+        fd.write(str(os.getpid()))
+
+    def remove_pidfile():
+        os.unlink("botc.pid")
+
+    atexit.register(remove_pidfile)
 
     with open("config.toml") as fd:
         config = toml.load(fd)
