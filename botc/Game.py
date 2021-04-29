@@ -1,5 +1,6 @@
 """Contains the BOTC Game class"""
 
+import asyncio
 import datetime
 import json
 import random
@@ -226,6 +227,9 @@ class Game(GameMeta):
 
         # Temporary dawn data
         self.dawn_start_time = None  # datetime()
+
+        # Is the game doing something without the gameloop being active?
+        self.working = False
 
     @property
     def nb_players(self):
@@ -643,7 +647,9 @@ class Game(GameMeta):
         """Start the game.
         Must be implemented.
         """
-
+        self.working = True
+        # If game is still starting after 60s, something went wrong
+        asyncio.create_task(self.clear_working(60))
         # Cancel the timer
         if botutils.start_votes_timer.is_running():
             botutils.start_votes_timer.cancel()
@@ -685,6 +691,8 @@ class Game(GameMeta):
         globvars.client.load_extension("botc.commands.debug")
         # Start the game loop
         self.gameloop.start(self)
+
+        self.working = False
 
     async def compute_dawn_ability_interactions(self):
         """Order of Action
@@ -1002,6 +1010,10 @@ class Game(GameMeta):
         """End the game, compute winners etc.
         Must be implemented.
         """
+        self.working = True
+        # If game is still ending after 60s, something went wrong
+        asyncio.create_task(self.clear_working(60))
+
         # Send the lobby game conclusion message
         await self.send_lobby_closing_message()
         # Remove roles
@@ -1040,6 +1052,8 @@ class Game(GameMeta):
         await botutils.unlock_lobby()
         # Update the global state
         botutils.update_state_machine()
+
+        self.working = False
 
     async def make_nightfall(self):
         """Transition the game into night phase"""
@@ -1280,3 +1294,7 @@ class Game(GameMeta):
 
                         break
         await self.check_winning_conditions()
+    
+    async def clear_working(self, seconds):
+        await asyncio.sleep(seconds)
+        self.working = False
