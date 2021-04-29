@@ -218,7 +218,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                     if DISABLE_DMS:
                         return
 
-                    embed = self.__make_demonhood_promo_embed(promoted)
+                    embed = self._make_demonhood_promo_embed(promoted)
                     try:
                         await promoted.user.send(embed = embed)
                     except discord.Forbidden:
@@ -240,7 +240,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                 if DISABLE_DMS:
                     return
 
-                embed = self.__make_demonhood_promo_embed(promoted)
+                embed = self._make_demonhood_promo_embed(promoted)
                 try:
                     await promoted.user.send(embed = embed)
                 except discord.Forbidden:
@@ -282,7 +282,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                         if DISABLE_DMS:
                             return
 
-                        embed = self.__make_demonhood_promo_embed(promoted)
+                        embed = self._make_demonhood_promo_embed(promoted)
                         try:
                             await promoted.user.send(embed = embed)
                         except discord.Forbidden:
@@ -292,7 +292,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             game = globvars.master_state.game
             game.today_executed_player = executed_player
 
-    def __make_demonhood_promo_embed(self, promoted):
+    def _make_demonhood_promo_embed(self, promoted):
         """Helper function to create an embed to the player promoted to demonhood."""
 
         recipient = promoted.user

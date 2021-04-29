@@ -138,7 +138,7 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                                 await promoted.exec_change_role(Imp())
 
                                 if not DISABLE_DMS:
-                                    embed = self.__make_demonhood_promo_embed(promoted)
+                                    embed = Imp._make_demonhood_promo_embed(Imp(), promoted)
                                     try:
                                         await promoted.user.send(embed = embed)
                                     except discord.Forbidden:
