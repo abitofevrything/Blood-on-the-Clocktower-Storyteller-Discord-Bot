@@ -42,7 +42,7 @@ class Frestart(commands.Cog, name = language["system"]["admin_cog"]):
             return
 
         await ctx.send(language["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))
-        os.execl(sys.executable, sys.executable, *sys.argv)
+        botutils.restart_bot()
 
     @frestart.error
     async def frestart_error(self, ctx, error):

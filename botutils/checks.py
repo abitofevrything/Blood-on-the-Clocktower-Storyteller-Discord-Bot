@@ -96,7 +96,7 @@ def check_if_not_ignored(ctx):
     with sqlite3.connect("data.sqlite3") as conn:
         c = conn.cursor()
 
-        c.execute("SELECT EXISTS(SELECT 1 FROM ignore WHERE user_id = :user_id)", {"user_id": ctx.author.id})
+        c.execute("SELECT EXISTS (SELECT 1 FROM ignore WHERE user_id = :user_id)", {"user_id": ctx.author.id})
         row = c.fetchone()
         ignored = row[0]
 

@@ -1,7 +1,9 @@
 """Contains other helper functions"""
 
 import datetime
+import os
 import re
+import sys
 
 import emoji
 import toml
@@ -153,3 +155,8 @@ def get_member_from_string(string):
     if all_matches:
         raise AmbiguousUserError(f"Ambiguous user: {string}", all_matches)
     return None
+
+
+def restart_bot():
+    os.unlink("botc.pid")
+    os.execl(sys.executable, sys.executable, *sys.argv)

@@ -18,8 +18,8 @@ from .GameChooser import GameChooser
 from .helpers import (AmbiguousUserError, find_role_in_all, get_emoji,
                       get_member_from_string, get_member_obj, get_user_obj,
                       make_alive_ping, make_code_block, make_dead_ping,
-                      make_ping, make_role_ping, make_time_string, strip_ping,
-                      update_state_machine)
+                      make_ping, make_role_ping, make_time_string,
+                      restart_bot, strip_ping, update_state_machine)
 from .MasterState import MasterState, StateMachine
 from .Pregame import Pregame
 from .sends import (Level, create_code_block, log, send_lobby,
