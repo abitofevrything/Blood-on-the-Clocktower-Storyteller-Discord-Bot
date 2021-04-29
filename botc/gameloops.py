@@ -578,7 +578,7 @@ async def after_master_game_loop():
     except Exception:
         await botutils.send_lobby(error_str)
         await botutils.log(botutils.Level.error, traceback.format_exc())
-        botutils.restart_bot()
+        await botutils.restart_bot(None, notify=False, force=True)
 
 @master_game_loop.error
 async def master_loop_error(error):
@@ -591,4 +591,4 @@ async def master_loop_error(error):
         await botutils.log(botutils.Level.error, traceback.format_exc())
     finally:
         master_game_loop.cancel()
-        botutils.restart_bot()
+        await botutils.restart_bot(None, notify=False, force=True)

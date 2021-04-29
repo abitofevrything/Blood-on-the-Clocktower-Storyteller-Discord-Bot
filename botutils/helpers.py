@@ -1,6 +1,7 @@
 """Contains other helper functions"""
 
 import datetime
+import json
 import os
 import re
 import sys
@@ -8,6 +9,7 @@ import sys
 import emoji
 import toml
 
+import botutils
 import globvars
 
 with open("config.toml") as fd:
@@ -16,6 +18,11 @@ with open("config.toml") as fd:
     SERVER_ID = config["ids"]["server_id"]
     ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
     DEAD_ROLE_ID = config["ids"]["dead_role_id"]
+
+with open("botutils/bot_text.json") as json_file:
+    language = json.load(json_file)
+
+    error_str = language["system"]["error"]
 
 
 class AmbiguousUserError(Exception):
@@ -157,6 +164,15 @@ def get_member_from_string(string):
     return None
 
 
-def restart_bot():
-    os.unlink("botc.pid")
+async def restart_bot(ctx, notify=True, force=False):
+    if globvars.master_state.game and not force:
+        return await ctx.send(language["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.x_emoji))
+
+    if notify:
+        await ctx.send(language["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))
+
+    try:
+        os.unlink("botc.pid")
+    except FileNotFoundError:
+        pass
     os.execl(sys.executable, sys.executable, *sys.argv)

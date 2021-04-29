@@ -9,12 +9,11 @@ import traceback
 from discord.ext import commands
 
 import botutils
-import globvars
 
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
+    error_str = language["system"]["error"]
 
 
 class Update(commands.Cog, name = language["system"]["admin_cog"]):
@@ -57,12 +56,7 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
         if b"Already up to date" in p.stdout:
             return
 
-        if globvars.master_state.game:
-            await ctx.send(language["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.x_emoji))
-            return
-
-        await ctx.send(language["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))
-        botutils.restart_bot()
+        await botutils.restart_bot(ctx)
 
     @update.error
     async def update_error(self, ctx, error):

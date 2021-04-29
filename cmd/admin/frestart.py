@@ -13,7 +13,7 @@ import globvars
 with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-error_str = language["system"]["error"]
+    error_str = language["system"]["error"]
 
 
 class Frestart(commands.Cog, name = language["system"]["admin_cog"]):
@@ -36,13 +36,7 @@ class Frestart(commands.Cog, name = language["system"]["admin_cog"]):
     )
     async def frestart(self, ctx, arg=None):
         """Frestart command"""
-
-        if globvars.master_state.game and arg != "--force":
-            await ctx.send(language["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.x_emoji))
-            return
-
-        await ctx.send(language["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))
-        botutils.restart_bot()
+        await botutils.restart_bot(ctx, force=(arg == "--force"))
 
     @frestart.error
     async def frestart_error(self, ctx, error):
