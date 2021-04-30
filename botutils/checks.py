@@ -17,17 +17,17 @@ with open("config.toml") as fd:
 
 def __is_lobby(ctx):
     """Check the channel of the context, return True if it is in the lobby channel"""
-    return ctx.channel.id == int(LOBBY_CHANNEL_ID)
+    return ctx.channel.id == LOBBY_CHANNEL_ID
 
 
 def __is_specchat(ctx):
     """Check the channel of the context, return True if it is in the spec chat"""
-    return ctx.channel.id == int(SPEC_CHANNEL_ID)
+    return ctx.channel.id == SPEC_CHANNEL_ID
 
 
 def __is_admin(ctx):
     """Check the author of the context, return True if they have admin perms or higher"""
-    return ctx.author.id in ADMIN_IDS or ctx.author.id == int(OWNER_ID)
+    return ctx.author.id in ADMIN_IDS or ctx.author.id == OWNER_ID
 
 
 def check_if_in_pregame(ctx):

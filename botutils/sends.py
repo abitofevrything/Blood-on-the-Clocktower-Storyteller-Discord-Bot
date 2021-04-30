@@ -33,7 +33,7 @@ class Level(enum.Enum):
 
 async def __send_log(message):
     """Send a message to the logs"""
-    log_channel = globvars.client.get_channel(int(LOGGING_CHANNEL_ID))
+    log_channel = globvars.client.get_channel(LOGGING_CHANNEL_ID)
     await log_channel.send(message)
 
 
@@ -89,6 +89,6 @@ async def log(level, message):
 
 async def send_lobby(message, embed = None, file = None, delete_after = None):
     """Send a message to the lobby"""
-    lobby_channel = globvars.client.get_channel(int(LOBBY_CHANNEL_ID))
+    lobby_channel = globvars.client.get_channel(LOBBY_CHANNEL_ID)
     ret = await lobby_channel.send(message, embed = embed, file = file, delete_after = delete_after)
     return ret

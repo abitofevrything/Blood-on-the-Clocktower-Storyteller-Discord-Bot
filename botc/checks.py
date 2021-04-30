@@ -211,7 +211,7 @@ def check_if_dm(ctx):
 
 def check_if_lobby(ctx):
     """Check if the command is invoked in the lobby."""
-    if ctx.channel.id == int(LOBBY_CHANNEL_ID):
+    if ctx.channel.id == LOBBY_CHANNEL_ID:
         return True
     else:
         raise NotLobbyChannel("Only lobby allowed (BoTC)")

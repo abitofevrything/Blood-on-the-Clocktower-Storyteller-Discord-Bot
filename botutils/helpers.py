@@ -58,7 +58,7 @@ def strip_ping(raw):
 
 def get_member_obj(userid):
     """Get the member object from the user ID"""
-    return globvars.client.get_guild(int(SERVER_ID)).get_member(int(userid))
+    return globvars.client.get_guild(SERVER_ID).get_member(int(userid))
 
 
 def get_user_obj(userid):
@@ -131,7 +131,7 @@ def get_member_from_string(string):
     ids_contains = []
     usernames_contains = []
     nicknames_contains = []
-    for member in globvars.client.get_guild(int(SERVER_ID)).members:
+    for member in globvars.client.get_guild(SERVER_ID).members:
         if string == str(member.id) or string.strip('<@!>') == str(member.id):
             return member
         if str(member).lower().startswith(string):

@@ -109,8 +109,8 @@ class on_ready(commands.Cog):
 
         pings = []
 
-        alive_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(ALIVE_ROLE_ID))
-        dead_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(DEAD_ROLE_ID))
+        alive_role = globvars.client.get_guild(SERVER_ID).get_role(ALIVE_ROLE_ID)
+        dead_role = globvars.client.get_guild(SERVER_ID).get_role(DEAD_ROLE_ID)
 
         num_alive = len(alive_role.members)
         num_dead = len(dead_role.members)
@@ -120,7 +120,7 @@ class on_ready(commands.Cog):
         if num_dead:
             pings.append(botutils.make_role_ping(DEAD_ROLE_ID))
         if pings:
-            lobby_channel = globvars.client.get_channel(int(LOBBY_CHANNEL_ID))
+            lobby_channel = globvars.client.get_channel(LOBBY_CHANNEL_ID)
             await lobby_channel.send(restarted_notify_msg.format(" ".join(pings)))
 
         for player in alive_role.members:

@@ -46,8 +46,8 @@ class Sync(commands.Cog, name = language["system"]["miscellaneous_cog"]):
             try:
                 await botutils.unlock_lobby()
 
-                alive_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(ALIVE_ROLE_ID))
-                dead_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(DEAD_ROLE_ID))
+                alive_role = globvars.client.get_guild(SERVER_ID).get_role(ALIVE_ROLE_ID)
+                dead_role = globvars.client.get_guild(SERVER_ID).get_role(DEAD_ROLE_ID)
 
                 for player in alive_role.members:
                     await botutils.remove_alive_role(player)
@@ -99,7 +99,7 @@ class Sync(commands.Cog, name = language["system"]["miscellaneous_cog"]):
             try:
                 await botutils.unlock_lobby()
                 
-                dead_role = globvars.client.get_guild(int(SERVER_ID)).get_role(int(DEAD_ROLE_ID))
+                dead_role = globvars.client.get_guild(SERVER_ID).get_role(DEAD_ROLE_ID)
                 for player in dead_role.members:
                     await botutils.remove_dead_role(player)
             except Exception:
