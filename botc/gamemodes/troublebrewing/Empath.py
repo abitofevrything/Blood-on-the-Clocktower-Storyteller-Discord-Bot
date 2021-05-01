@@ -8,7 +8,9 @@ import discord
 import toml
 
 import botutils
+import globvars
 from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -93,15 +95,13 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     def __create_droisoned_info(self):
         """Create drunk/poisoned information for the empath info"""
-
-        import globvars
         nb_evils = random.choice(range(3))
         log_msg = f">>> Empath: [droisoned] {nb_evils} alive evil neighbours"
         globvars.logging.info(log_msg)
         return nb_evils
 
     async def send_n1_end_message(self, recipient):
-        """Send the number of pairs of evils sitting together."""
+        """Send the number of alive evil neighbours"""
 
         if DISABLE_DMS:
             return
@@ -116,17 +116,22 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Poisoned info
         if player.is_droisoned():
-            evil_pair_count = self.__create_droisoned_info()
+            nb_evils = self.__create_droisoned_info()
         # Good info
         else:
-            evil_pair_count = self.get_nb_evil_neighbours(recipient)
-        link = get_number_image(evil_pair_count)
+            nb_evils = self.get_nb_evil_neighbours(recipient)
+        link = get_number_image(nb_evils)
+
+        # Add information to replay
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Empath) learns of "\
+                                            f"{nb_evils} alive evil neighbour(s)\n"
 
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
         msg += self.emoji + " " + self.instruction
         msg += "\n"
-        msg += empath_nightly.format(evil_pair_count)
+        msg += empath_nightly.format(nb_evils)
 
         embed = discord.Embed(description = msg)
         embed.set_thumbnail(url = link)
@@ -139,14 +144,12 @@ class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             pass
 
     async def send_regular_night_end_dm(self, recipient):
-        """Send the number of pairs of evils sitting together."""
+        """Send the number of alive evil neighbours"""
 
         await self.send_n1_end_message(recipient)
 
     def get_nb_evil_neighbours(self, recipient):
-        """Send the number of alive evil neighbours"""
-
-        import globvars
+        """Get the number of alive evil neighbours"""
 
         # Find all alive players
         alive_players = [player for player in globvars.master_state.game.sitting_order

@@ -9,10 +9,9 @@ import toml
 
 import botutils
 import globvars
-from botc import (Action, ActionTypes, AlreadyDead, Character, Demon, Outsider,
+from botc import (Action, ActionTypes, Character, Demon, Outsider,
                   RecurringAction, StatusList, Townsfolk)
 from botc.BOTCUtils import BOTCUtils, GameLogic
-from botc.gamemodes.troublebrewing.Soldier import Soldier
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -182,12 +181,17 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
     async def exec_kill(self, demon_player, killed_player):
         """Execute the kill action (night ability interaction)"""
 
-        if demon_player.is_alive() and not demon_player.is_droisoned():
-            # Players who have received a status effect granting them safety from the demon
-            # do not die
-            if killed_player.has_status_effect(StatusList.safety_from_demon):
-                return
+        success = "unsuccessfully "
+
+        # Players who have received a status effect granting them safety from the demon do not die
+        if demon_player.is_alive() and not demon_player.is_droisoned() and\
+                not killed_player.has_status_effect(StatusList.safety_from_demon):
+            success = ""
             await killed_player.role.ego_self.on_being_demon_killed(killed_player)
+
+        # Add information to replay
+        globvars.master_state.game.replay += f"- {demon_player.user.name} (Imp) {success}kills "\
+                                    f"{killed_player.user.name} ({killed_player.role.true_self})\n"
 
     async def _starpass(self, demon_player):
         """Starpassing ability works when the demon is killed by himself at night"""
@@ -212,6 +216,11 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                 alive_scarletwomen = [player for player in scarletwomen if player.is_alive() and not player.is_droisoned()]
                 if alive_scarletwomen:
                     promoted = random.choice(alive_scarletwomen)
+
+                    # Add information to replay
+                    globvars.master_state.game.replay += f"- {promoted.user.name} (Scarlet Woman) "\
+                                                        "becomes Imp\n"
+
                     promoted._old_role_obj = promoted._role_obj
                     await promoted.exec_change_role(Imp())
 
@@ -234,6 +243,11 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             alive_minions = [player for player in minions if player.is_alive()]
             if alive_minions:
                 promoted = random.choice(alive_minions)
+
+                # Add information to replay
+                globvars.master_state.game.replay += f"- {promoted.user.name} "\
+                                                    f"({promoted.role.true_self}) becomes Imp\n"
+
                 promoted._old_role_obj = promoted._role_obj
                 await promoted.exec_change_role(Imp())
 
@@ -257,7 +271,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             globvars.master_state.game.night_deaths.append(killed_player)
 
     async def on_being_executed(self, executed_player):
-        """Funtion that runs after the player has been executed.
+        """Function that runs after the player has been executed.
         Overriding the parent behaviour.
         Check for presence of scarlet woman and promote her to demonhood if applicable.
         """
@@ -276,17 +290,20 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                     alive_scarletwomen = [player for player in scarletwomen if player.is_alive() and not player.is_droisoned()]
                     if alive_scarletwomen:
                         promoted = random.choice(alive_scarletwomen)
+
+                        # Add information to replay
+                        globvars.master_state.game.replay += f"- {promoted.user.name} "\
+                                                            "(Scarlet Woman) becomes Imp\n"
+
                         promoted._old_role_obj = promoted._role_obj
                         await promoted.exec_change_role(Imp())
 
-                        if DISABLE_DMS:
-                            return
-
-                        embed = self._make_demonhood_promo_embed(promoted)
-                        try:
-                            await promoted.user.send(embed = embed)
-                        except discord.Forbidden:
-                            pass
+                        if not DISABLE_DMS:
+                            embed = self._make_demonhood_promo_embed(promoted)
+                            try:
+                                await promoted.user.send(embed = embed)
+                            except discord.Forbidden:
+                                pass
 
             await executed_player.exec_real_death()
             game = globvars.master_state.game
@@ -329,19 +346,16 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
             # The imp has not submitted an action. We will randomize the action and make
             # the imp kill one random player that is not the imp.
             else:
-                if player.is_alive():
-                    killed_player = BOTCUtils.get_random_player_excluding(player)
-                    await self.exec_kill(player, killed_player)
+                killed_player = BOTCUtils.get_random_player_excluding(player)
+                await self.exec_kill(player, killed_player)
 
-                    if DISABLE_DMS:
-                        return
+                if DISABLE_DMS:
+                    return
 
-                    msg = botutils.BotEmoji.butterfly
-                    msg += " "
-                    msg += action_assign.format(killed_player.game_nametag)
-                    try:
-                        await player.user.send(msg)
-                    except discord.Forbidden:
-                        pass
-                else:
+                msg = botutils.BotEmoji.butterfly
+                msg += " "
+                msg += action_assign.format(killed_player.game_nametag)
+                try:
+                    await player.user.send(msg)
+                except discord.Forbidden:
                     pass

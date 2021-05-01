@@ -207,6 +207,7 @@ class Game(GameMeta):
         self.gameloop = master_game_loop
         self.winners = None  # botc.Team object
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
+        self.replay = "```asciidoc\n"
 
         if DISABLE_DMS:
             # Also don't count game in win rates if dms are disabled.
@@ -675,6 +676,12 @@ class Game(GameMeta):
         # Send the opening dm to all players
         for player in self._player_obj_list:
             await player.role.ego_self.send_opening_dm_embed(player.user)
+        # Include the starting information for the replay
+        d = datetime.datetime.now()
+        timezone = pytz.timezone(preferences["location"]["timezone"])
+        d_formatted = timezone.localize(d).strftime("%b %d, %Y | %I:%M:%S %p %Z")
+        self.replay += f"Start: {d_formatted}\n"\
+                        f"[BoTC: {self.gamemode.value}, {len(self.sitting_order)} players]\n"
         # Log the game data
         await GameLog(self).send_game_obj_log_str()
         # Unload conflicting commands
@@ -1014,7 +1021,17 @@ class Game(GameMeta):
         self.working = True
         # If game is still ending after 60s, something went wrong
         asyncio.create_task(self.clear_working(60))
-
+        # Include the ending information for the replay and send it
+        winning_team = "No one"
+        if self.winners == Team.good:
+            winning_team = "Good"
+        elif self.winners == Team.evil:
+            winning_team = "Evil"
+        d = datetime.datetime.now()
+        timezone = pytz.timezone(preferences["location"]["timezone"])
+        d_formatted = timezone.localize(d).strftime("%b %d, %Y | %I:%M:%S %p %Z")
+        self.replay += f"[{winning_team} wins]\nEnd: {d_formatted}\n```"
+        await botutils.send_replay(self.replay)
         # Send the lobby game conclusion message
         await self.send_lobby_closing_message()
         # Remove roles
@@ -1301,7 +1318,7 @@ class Game(GameMeta):
 
                         break
         await self.check_winning_conditions()
-    
+
     async def clear_working(self, seconds):
         await asyncio.sleep(seconds)
         self.working = False

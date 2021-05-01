@@ -347,8 +347,8 @@
         },
 
         "fnight" : {
-            "brief" : "change the game's phase to Nighttime",
-            "help" : "This debugging command forcefully transitions the game from the Daytime phase to the Nighttime phase.",
+            "brief" : "change the game's phase to nighttime",
+            "help" : "This debugging command forcefully transitions the game from the daytime phase to the nighttime phase.",
             "description" : "[FNIGHT] command - BOTC (debug)",
             "feedback" : "{} Successfully transitioned to the Night Phase."
         },
@@ -369,7 +369,7 @@
 
         "fnomination" : {
             "brief" : "start the nominations if it's daytime",
-            "help" : "This debugging command forcefully fast-forwards the game from the Daytime base phase to the nominations phase.",
+            "help" : "This debugging command forcefully fast-forwards the game from the daytime base phase to the nominations phase.",
             "description" : "[FNOMINATION] command - BOTC (debug)",
             "feedback" : "{} Successfully fast-forwarded to the nominations."
         },

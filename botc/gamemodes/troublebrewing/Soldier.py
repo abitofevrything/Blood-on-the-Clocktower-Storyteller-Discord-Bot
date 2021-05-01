@@ -79,4 +79,4 @@ class Soldier(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         """
 
         if not player.is_droisoned() and player.is_alive():
-            player.add_status_effect(SafetyFromDemon(Storyteller(), player, 2))
+            player.add_status_effect(SafetyFromDemon(Storyteller(), player))

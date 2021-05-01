@@ -11,6 +11,7 @@ import botutils
 import globvars
 from botc import (BOTCUtils, Category, Character, Minion, NonRecurringAction,
                   Townsfolk)
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -113,6 +114,13 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         registered_minion_type = two_player_list[2]
         link = registered_minion_type.art_link
         assert registered_minion_type.category == Category.minion, f"Investigator received {registered_minion_type}"
+
+        # Add information to replay
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Investigator) knows that "\
+                        f"{two_player_list[0].user.name} ({two_player_list[0].role.true_self}) or "\
+                        f"{two_player_list[1].user.name} ({two_player_list[1].role.true_self}) is "\
+                        f"{registered_minion_type}\n"
 
         # Get rid of the last element (the minion type)
         two_player_list.pop()

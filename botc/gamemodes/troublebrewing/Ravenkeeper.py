@@ -13,6 +13,7 @@ from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, Minion,
                   NonRecurringAction, Outsider, RavenkeeperActivated,
                   StatusList, Townsfolk)
 from botc.BOTCUtils import GameLogic
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -55,7 +56,7 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -133,7 +134,7 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                 pass
 
     async def exec_learn(self, ravenkeeper_player, learn_player):
-        """Execute the learn command (dawn ability interaction)"""
+        """Execute the learn action (dawn ability interaction)"""
 
         if DISABLE_DMS:
             return
@@ -160,6 +161,11 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         link = learned_character_type._art_link_cropped
         recipient = ravenkeeper_player.user
+
+        # Add information to replay
+        drunk = "Drunk " if ravenkeeper_player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Ravenkeeper) learns "\
+                                    f"that {learn_player.user.name} is {learned_character_type}\n"
 
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
@@ -216,6 +222,6 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             learn_player = targets[0]
             await self.exec_learn(player, learn_player)
         # The ravenkeeper has not submitted an action. We will not randomize the action since
-        # the reading ability is a "priviledged" ability
+        # the learning ability is a "privileged" ability
         else:
             pass

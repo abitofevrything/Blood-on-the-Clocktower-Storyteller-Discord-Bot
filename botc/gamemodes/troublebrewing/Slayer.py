@@ -12,6 +12,7 @@ from botc import (Action, ActionTypes, AlreadyDead, Category, Character, Flags,
                   Inventory, LorePicker, NonRecurringAction, Townsfolk)
 from botc.BOTCUtils import BOTCUtils, GameLogic
 from botc.gamemodes.troublebrewing.Imp import Imp
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -48,7 +49,7 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -120,6 +121,12 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                 )
 
                 if slain_player.is_alive():
+
+                    # Add information to replay
+                    globvars.master_state.game.replay += f"- {slayer_player.user.name} (Slayer) "\
+                                f"slays {slain_player.user.name} ({slain_player.role.true_self}, "\
+                                f"registering as {slain_player.role.social_self})\n"
+
                     # If 5 or more players alive (not counting travelers), scarlet woman gets
                     # promoted to demonhood
                     if globvars.master_state.game.nb_alive_players >= 5:
@@ -134,6 +141,11 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                             alive_scarletwomen = [player for player in scarletwomen if player.is_alive() and not player.is_droisoned()]
                             if alive_scarletwomen:
                                 promoted = random.choice(alive_scarletwomen)
+
+                                # Add information to replay
+                                globvars.master_state.game.replay += f"- {promoted.user.name} "\
+                                                                    "(Scarlet Woman) becomes Imp\n"
+
                                 promoted._old_role_obj = promoted._role_obj
                                 await promoted.exec_change_role(Imp())
 
@@ -150,6 +162,13 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                         pass
                     await botutils.send_lobby(string)
                     return
+
+        # Add information to replay
+        drunk = "Drunk " if slayer_player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {slayer_player.user.name} ({drunk}Slayer) "\
+                                            f"unsuccessfully slays {slain_player.user.name} "\
+                                            f"({slain_player.role.true_self}, registering "\
+                                            f"as {slain_player.role.social_self})\n"
 
         # The ability fails no matter what for a droisoned slayer, or if the slain player
         # is not a demon

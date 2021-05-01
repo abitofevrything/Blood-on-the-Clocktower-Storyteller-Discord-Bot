@@ -41,7 +41,7 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -99,7 +99,14 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                 virgin_player.role.true_self.inventory.remove_item_from_inventory(Flags.virgin_first_nomination)
                 # The nominator player registers as a new social self
                 nominator_player.role.set_new_social_self(nominator_player)
+                # Add information to replay
+                globvars.master_state.game.replay += f"- {virgin_player.user.name} (Virgin) is "\
+                                    f"nominated for the 1st time, by {nominator_player.user.name} "\
+                                    f"({nominator_player.role.true_self}, registering as "\
+                                    f"{nominator_player.role.social_self})"
                 if nominator_player.role.social_self.category == Category.townsfolk:
+                    globvars.master_state.game.replay += f", so {nominator_player.user.name} is "\
+                                                        "executed\n"
                     msg = immediately_executed.format(
                         botutils.BotEmoji.guillotine,
                         nominator_player.game_nametag
@@ -109,6 +116,7 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                     import botc.switches
                     botc.switches.master_proceed_to_night = True
                     return
+                globvars.master_state.game.replay += "\n"
 
         from botc.gameloops import nomination_loop
         nomination_loop.start(globvars.master_state.game, nominator_player, virgin_player)

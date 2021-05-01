@@ -1,13 +1,11 @@
 """Contains the Spy Character class"""
 
-import asyncio
 import datetime
 import json
 import random
 
 import discord
 import toml
-from discord.ext import tasks
 
 import botutils
 import globvars
@@ -61,7 +59,7 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -113,9 +111,15 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
             self._social_role = chosen
             globvars.logging.info(f">>> Spy [social_self] Registered as {chosen}.")
 
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {player.user.name} (Spy) registers as {chosen}\n"
+
         else:
             self._social_role = Spy()
             globvars.logging.info(f">>> Spy [social_self] Registered as {Spy()}.")
+
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {player.user.name} (Spy) unsuccessfully registers\n"
 
     async def __send_grimoire(self, recipient):
         """Send the spy grimoire"""

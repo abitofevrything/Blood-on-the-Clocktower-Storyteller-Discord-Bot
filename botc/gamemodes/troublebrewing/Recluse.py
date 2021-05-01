@@ -84,3 +84,6 @@ class Recluse(Outsider, TroubleBrewing, Character, NonRecurringAction):
         chosen = random.choice(possibilities)
         self._social_role = chosen
         globvars.logging.info(f">>> Recluse [social_self] Registered as {chosen}.")
+
+        # Add information to replay
+        globvars.master_state.game.replay += f"- {player.user.name} (Recluse) registers as {chosen}\n"

@@ -12,6 +12,7 @@ import globvars
 from botc import (Action, ActionTypes, Category, Character, RecurringAction,
                   RedHerring, StatusList, Storyteller, Townsfolk)
 from botc.BOTCUtils import GameLogic
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -161,6 +162,13 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
             link = evil_link if response else good_link
             recipient = fortune_teller_player.user
 
+            # Add information to replay
+            drunk = "Drunk " if fortune_teller_player.role.true_self.name == Drunk().name else ""
+            either = "either" if response else "neither"
+            globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Fortune Teller) "\
+                f"learns that {either} {read_player_1.user.name} ({read_player_1.role.true_self}) "\
+                f"or {read_player_2.user.name} ({read_player_2.role.true_self}) is a Demon\n"
+
             msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
             msg += "\n"
             msg += self.emoji + " " + self.instruction
@@ -196,6 +204,6 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
             read_player_2 = targets[1]
             await self.exec_read(player, read_player_1, read_player_2)
         # The fortune teller has not submitted an action. We will not randomize the action since
-        # the reading ability is a "priviledged" ability
+        # the reading ability is a "privileged" ability
         else:
             pass

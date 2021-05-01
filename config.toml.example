@@ -9,6 +9,7 @@ admin_ids = []
 server_id =
 lobby_channel_id =
 spec_channel_id =
+replay_channel_id =
 logging_channel_id =
 alive_role_id =
 dead_role_id =

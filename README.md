@@ -20,7 +20,7 @@ This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICEN
 
 ## Installation
 
-### If you are on a Unix-based OS (Linux or MacOS):
+### If you are on a Unix-based OS (Linux or macOS):
 
 Install Python 3.6+.
 
@@ -34,7 +34,7 @@ Finally, run the `main.py` file to start the bot.
 
 ### If you are on Windows:
 
-Install Python 3.9+
+Install Python 3.9+.
 
 Clone this repository. Rename `config.toml.example` to `config.toml` and `preferences.toml.example` to `preferences.toml`, and fill in the fields inside `config.toml`. To change gameplay-related settings, edit `preferences.toml`.
 

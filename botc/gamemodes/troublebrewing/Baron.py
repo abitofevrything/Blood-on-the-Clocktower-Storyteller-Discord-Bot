@@ -3,10 +3,7 @@
 import json
 import random
 
-import discord
-
 import botutils
-import globvars
 from botc import BOTCUtils, Character, Minion, NonRecurringAction, Townsfolk
 from botc.Outsider import Outsider
 

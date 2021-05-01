@@ -337,7 +337,7 @@ async def nomination_loop(game, nominator, nominated):
 
 async def night_loop(game):
     """Night loop
-    ----- Night :
+    ----- Night:
         30 seconds min
         90 seconds max
         At intervals of 15 seconds when all actions are submitted (45, 60, 75)
@@ -346,9 +346,11 @@ async def night_loop(game):
 
     # Transition to night fall
     await game.make_nightfall()
+    # Make replay header for night
+    game.replay += f"= Night {game._chrono.cycle}\n"
     # Start night
     if not game._chrono.is_night_1():
-        # Night 1 is alraedy handled by the opening dm
+        # Night 1 is already handled by the opening dm
         await before_night(game)
     # Base night length
     for _ in range(BASE_NIGHT):
@@ -374,7 +376,7 @@ async def night_loop(game):
 
 async def dawn_loop(game):
     """Dawn loop
-    ----- Dawn :
+    ----- Dawn:
         15 seconds min
         30 seconds max
         At intervals of 15 seconds (15, 30)
@@ -430,6 +432,10 @@ async def day_loop(game):
 
     # Start day
     await game.make_daybreak()
+
+    # Make replay header for day
+    game.replay += f"= Day {game._chrono.cycle}\n"
+
     # Base day length
     base_day_length = calculate_base_day_duration(game)
     base_day_loop.start(base_day_length)
@@ -476,6 +482,11 @@ async def day_loop(game):
                 if game.chopping_block:
                     player_about_to_die = game.chopping_block.player_about_to_die
                     if player_about_to_die:
+
+                        # Add information to replay
+                        game.replay += f"- {player_about_to_die.user.name} "\
+                                        f"({player_about_to_die.role.true_self}) is executed\n"
+
                         await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
                         msg = botutils.BotEmoji.guillotine + " " + execution.format(
                             game.chopping_block.player_about_to_die.game_nametag,
@@ -551,12 +562,12 @@ async def master_game_loop(game_obj):
     Day end
     etc.
 
-    ----- Night :
+    ----- Night:
         30 seconds min
         90 seconds max
         At intervals of 15 seconds when all actions are submitted (45, 60, 75)
 
-    ----- Dawn :
+    ----- Dawn:
         15 seconds min
         30 seconds max
         At intervals of 15 seconds (15, 30)

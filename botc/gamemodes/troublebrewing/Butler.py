@@ -128,8 +128,15 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
     async def exec_serve(self, butler_player, master_player):
         """Execute the serve action (night ability interaction)"""
 
+        success = "unsuccessfully "
+
         if butler_player.is_alive() and not butler_player.is_droisoned():
+            success = ""
             butler_player.add_status_effect(ButlerService(butler_player, butler_player, master_player, 2))
+
+        # Add information to replay
+        globvars.master_state.game.replay += f"- {butler_player.user.name} (Butler) {success}"\
+                            f"serves {master_player.user.name} ({master_player.role.true_self})\n"
 
     async def process_night_ability(self, player):
         """Process night actions for the butler character.

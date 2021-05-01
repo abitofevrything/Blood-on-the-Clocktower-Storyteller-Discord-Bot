@@ -10,6 +10,7 @@ import toml
 import botutils
 import globvars
 from botc import BOTCUtils, Category, Character, NonRecurringAction, Townsfolk
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -53,7 +54,7 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -112,6 +113,13 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         registered_townsfolk_type = two_player_list[2]
         link = registered_townsfolk_type.art_link
         assert registered_townsfolk_type.category == Category.townsfolk, "Washerwoman did not receive a townsfolk character"
+
+        # Add information to replay
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Washerwoman) knows that "\
+                        f"{two_player_list[0].user.name} ({two_player_list[0].role.true_self}) or "\
+                        f"{two_player_list[1].user.name} ({two_player_list[1].role.true_self}) is "\
+                        f"{registered_townsfolk_type}\n"
 
         # Get rid of the last element
         two_player_list.pop()

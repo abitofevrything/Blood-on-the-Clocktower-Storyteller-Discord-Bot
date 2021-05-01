@@ -1,15 +1,13 @@
 """Contains the Scarlet Woman Character class"""
 
 import json
-import random
 
 import discord
 import toml
 
 import botutils
 import globvars
-from botc import (BOTCUtils, Character, Minion, NonRecurringAction, Outsider,
-                  Townsfolk)
+from botc import (Character, Minion, NonRecurringAction)
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -28,11 +26,11 @@ with open("config.toml") as fd:
 class ScarletWoman(Minion, TroubleBrewing, Character, NonRecurringAction):
     """Scarlet Woman: If there are 5 or more players alive & the Demon dies, you become the Demon.
 
-    ===== SCARLET WASHERWOMAN =====
+    ===== SCARLET WOMAN =====
 
-    true_self = washerwoman
-    ego_self = washerwoman
-    social_self = washerwoman
+    true_self = scalet woman
+    ego_self = scarlet woman
+    social_self = scarlet woman
 
     commands:
     - None
@@ -48,7 +46,7 @@ class ScarletWoman(Minion, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):

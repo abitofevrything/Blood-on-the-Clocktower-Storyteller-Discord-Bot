@@ -38,7 +38,7 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -111,6 +111,12 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                         deflected_to = random.choice(possibilities)
                         if deflected_to.has_status_effect(StatusList.safety_from_demon):
                             return
+
+                        # Add information to replay
+                        globvars.master_state.game.replay += f"- {killed_player.user.name} "\
+                                            f"(Mayor) bounces kill to {deflected_to.user.name} "\
+                                            f"({deflected_to.role.true_self})\n"
+
                         await deflected_to.role.true_self.on_being_demon_killed(deflected_to)
 
                     # All the surviving players cannot die from demon, the mayor must die.
@@ -140,6 +146,11 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         if mayor_player.is_alive() and not mayor_player.is_droisoned():
             if globvars.master_state.game.nb_alive_players == 3:
                 if not globvars.master_state.game.today_executed_player:
+
+                    # Add information to replay
+                    globvars.master_state.game.replay += f"- {mayor_player.user.name} (Mayor) is "\
+                                                "alive, 3 players live, and no execution occurs\n"
+
                     globvars.master_state.game.winners = Team.good
                     if master_game_loop.is_running():
                         master_game_loop.cancel()

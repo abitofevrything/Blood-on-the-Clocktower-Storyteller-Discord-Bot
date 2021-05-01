@@ -8,8 +8,10 @@ import discord
 import toml
 
 import botutils
+import globvars
 from botc import (BOTCUtils, Character, Demon, Minion, NonRecurringAction,
                   Outsider, Townsfolk)
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -52,8 +54,8 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> YES  # default is to send nothing
-                                       => Send passive nightly information
+    override regular night instruction? -> YES  # default is to send nothing
+                                        => Send passive nightly information
     """
 
     def __init__(self):
@@ -93,7 +95,6 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     def __create_droisoned_info(self):
         """Create drunk/poisoned information for the undertaker info"""
 
-        import globvars
         executed_player = globvars.master_state.game.today_executed_player
 
         # If someone has been executed
@@ -145,7 +146,6 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         if player.is_droisoned():
             character_of_executed = self.__create_droisoned_info()
         else:
-            import globvars
             executed_player = globvars.master_state.game.today_executed_player
             if executed_player:
                 executed_player.role.set_new_social_self(executed_player)
@@ -153,21 +153,22 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             else:
                 character_of_executed = None
 
+        if not character_of_executed:
+            return
+
+        # Add information to replay
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Undertaker) learns that "\
+                                        f"{executed_player.user.name} is {character_of_executed}\n"
+
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
         msg += self.emoji + " " + self.instruction
         msg += "\n"
-
-        if not character_of_executed:
-            return
-
         msg += undertaker_nightly.format(character_of_executed.name)
 
         embed = discord.Embed(description = msg)
-
-        if character_of_executed:
-            embed.set_thumbnail(url = character_of_executed._art_link_cropped)
-
+        embed.set_thumbnail(url = character_of_executed._art_link_cropped)
         embed.set_footer(text = copyrights_str)
         embed.timestamp = datetime.datetime.utcnow()
 

@@ -2,7 +2,6 @@
 
 import json
 
-import discord
 import toml
 
 import botutils
@@ -10,6 +9,7 @@ import globvars
 from botc import (Action, ActionTypes, Character, RecurringAction,
                   SafetyFromDemon, Townsfolk)
 from botc.BOTCUtils import GameLogic
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -46,8 +46,8 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> YES  # default is to send nothing
-                                       => Send query for "protect" command
+    override regular night instruction? -> YES  # default is to send nothing
+                                        => Send query for "protect" command
     """
 
     def __init__(self):
@@ -115,10 +115,15 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
         await player.user.send(msg)
 
     async def exec_protect(self, monk_player, protected_player):
-        """Execute the protection action (night ability interaction)"""
+        """Execute the protect action (night ability interaction)"""
 
         if not monk_player.is_droisoned() and monk_player.is_alive():
-            protected_player.add_status_effect(SafetyFromDemon(monk_player, protected_player, 2))
+            protected_player.add_status_effect(SafetyFromDemon(monk_player, protected_player))
+
+        # Add information to replay
+        drunk = "Drunk " if monk_player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {monk_player.user.name} ({drunk}Monk) protects "\
+                            f"{protected_player.user.name} ({protected_player.role.true_self})\n"
 
     async def process_night_ability(self, player):
         """Process night actions for the monk character.
@@ -133,8 +138,7 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
             targets = action.target_player
             protected_player = targets[0]
             await self.exec_protect(player, protected_player)
-        # The imp has not submitted an action. We will not randomize the action because this
-        # is a priviledged ability
+        # The monk has not submitted an action. We will not randomize the action since
+        # the protecting ability is a "privileged" ability
         else:
             pass
-

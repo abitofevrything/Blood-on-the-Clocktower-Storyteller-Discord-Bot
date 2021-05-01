@@ -10,6 +10,7 @@ import toml
 import botutils
 import globvars
 from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -92,8 +93,6 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     def __create_droisoned_info(self):
         """Create drunk/poisoned information for the n1 chef info"""
-
-        import globvars
         total_nb_evils = len(globvars.master_state.game.setup.minions) + \
             len(globvars.master_state.game.setup.demon)
         possibilities = range(total_nb_evils)
@@ -124,6 +123,11 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             evil_pair_count = self.get_nb_pairs_of_evils()
         link = get_number_image(evil_pair_count)
 
+        # Add information to replay
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Chef) knows of "\
+                                            f"{evil_pair_count} evil pair(s)\n"
+
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
         msg += self.emoji + " " + self.instruction
@@ -142,8 +146,6 @@ class Chef(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     def get_nb_pairs_of_evils(self):
         """Get the number of pairs of evils sitting together."""
-
-        import globvars
 
         # We initialize what their social self is going to be for this round of inspection
         for player in globvars.master_state.game.sitting_order:

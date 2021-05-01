@@ -298,7 +298,7 @@ class Character:
             color = DEMON_COLOR
 
         opening_dm = role_dm.format(
-            user = recipient.name + recipient.discriminator,
+            user = str(recipient),
             role_name_str = self.ego_self.name,
             category_str = self.ego_self.category.value,
             team_str = self.ego_self.team.value,
@@ -338,7 +338,7 @@ class Character:
         return embed_obj
 
     def create_n1_instr_str(self):
-        """Create the instruction field on the n1 D.
+        """Create the instruction field on the n1 DM.
         Must be implemented by all child classes.
         """
         raise NotImplementedError
@@ -386,7 +386,7 @@ class Character:
         nomination_loop.start(globvars.master_state.game, nominator_player, nominated_player)
 
     async def on_being_executed(self, executed_player):
-        """Funtion that runs after the player has been executed.
+        """Function that runs after the player has been executed.
         Default behaviour is to execute the player's real death (real state)
         Override by child classes and / or other classes inherited by child classes.
         """
@@ -466,9 +466,14 @@ class Character:
         All non-slayers characters will be able to use the slay command just like the slayer,
         but without any consequences for the game.
         """
+        # Add information to replay
+        globvars.master_state.game.replay += f"- {slayer_player.user.name} "\
+            f"({slayer_player.role.true_self}) unsuccessfully slays {slain_player.user.name} "\
+            f"({slain_player.role.true_self}, registering as {slain_player.role.social_self})\n"
 
         # Remove the unique use ability from the player's inventory
         slayer_player.role.ego_self.inventory.remove_item_from_inventory(Flags.slayer_unique_attempt)
+
         # The ability fails no matter what, because the player is not a slayer
         string = LorePicker().pick(LorePicker().SLAY_FAIL)
         string = string.format(

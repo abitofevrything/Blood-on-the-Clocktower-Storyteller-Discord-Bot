@@ -22,7 +22,7 @@ from .helpers import (AmbiguousUserError, find_role_in_all, get_emoji,
                       restart_bot, strip_ping, update_state_machine)
 from .MasterState import MasterState, StateMachine
 from .Pregame import Pregame
-from .sends import (Level, create_code_block, log, send_lobby,
+from .sends import (Level, create_code_block, log, send_lobby, send_replay,
                     send_pregame_stats)
 from .tasks import (after_lobby_timeout, cycling_bot_status,
                     lobby_timeout, rate_limit_commands, start_votes_timer,

@@ -11,6 +11,7 @@ import botutils
 import globvars
 from botc import (BOTCUtils, Category, Character, NonRecurringAction, Outsider,
                   Townsfolk)
+from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -56,7 +57,7 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -112,12 +113,20 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         else:
             two_player_list = self.get_two_possible_outsiders(recipient)
 
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+
         # If there are outsiders found:
         if two_player_list:
 
             registered_outsider_type = two_player_list[2]
             link = registered_outsider_type.art_link
             assert registered_outsider_type.category == Category.outsider, "Librarian did not receive an outsider character"
+
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Librarian) knows that "\
+                        f"{two_player_list[0].user.name} ({two_player_list[0].role.true_self}) or "\
+                        f"{two_player_list[1].user.name} ({two_player_list[1].role.true_self}) is "\
+                        f"{registered_outsider_type}\n"
 
             # Get rid of the last element
             two_player_list.pop()
@@ -140,6 +149,10 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # No outsiders found
         else:
+
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Librarian) knows that "\
+                                                "there are no Outsiders\n"
 
             # Construct the message to send
             msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"

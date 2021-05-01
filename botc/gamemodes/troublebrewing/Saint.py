@@ -35,7 +35,7 @@ class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> NO  # default is to send nothing
+    override regular night instruction? -> NO  # default is to send nothing
     """
 
     def __init__(self):
@@ -73,7 +73,7 @@ class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):
         return msg
 
     async def on_being_executed(self, executed_player):
-        """Funtion that runs after the player has been nominated.
+        """Function that runs after the player has been nominated.
         If a healthy and sober saint is executed, then the game ends with evil win.
         """
         try:

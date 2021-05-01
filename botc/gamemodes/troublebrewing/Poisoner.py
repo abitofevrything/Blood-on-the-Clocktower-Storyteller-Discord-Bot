@@ -2,7 +2,6 @@
 
 import json
 
-import discord
 import toml
 
 import botutils
@@ -48,8 +47,8 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
 
     ----- Regular night
     START:
-    override regular night instruction -> YES  # default is to send nothing
-                                       => Send query for "poison" command
+    override regular night instruction? -> YES  # default is to send nothing
+                                        => Send query for "poison" command
     """
 
     def __init__(self):
@@ -95,7 +94,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         return embed_obj
 
     def has_finished_night_action(self, player):
-        """Return True if poisoner has submitted the protect action"""
+        """Return True if poisoner has submitted the poison action"""
 
         if player.is_alive():
             current_phase_id = globvars.master_state.game._chrono.phase_id
@@ -119,13 +118,21 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         await player.user.send(msg)
 
     async def exec_poison(self, poisoner_player, poisoned_player):
-        """Execute the poison actions (night interaction)"""
+        """Execute the poison action (night ability interaction)"""
+
+        success = "unsuccessfully "
+
         if not poisoner_player.is_droisoned() and poisoner_player.is_alive():
+            success = ""
             poisoned_player.add_status_effect(Poison(poisoner_player, poisoned_player))
+
+        # Add information to replay
+        globvars.master_state.game.replay += f"- {poisoner_player.user.name} (Poisoner) {success}"\
+                        f"poisons {poisoned_player.user.name} ({poisoned_player.role.true_self})\n"
 
     async def process_night_ability(self, player):
         """Process night actions for the poisoner character.
-        @player : the Butler player (Player object)
+        @player : the Poisoner player (Player object)
         """
 
         phase = globvars.master_state.game._chrono.phase_id
@@ -137,6 +144,6 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
             poisoned_player = targets[0]
             await self.exec_poison(player, poisoned_player)
         # The poisoner has not submitted an action. We will not randomize the action since
-        # the poison ability is a "priviledged" ability
+        # the poisoning ability is a "privileged" ability
         else:
             pass

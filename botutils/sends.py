@@ -14,6 +14,7 @@ with open("config.toml") as fd:
 
     SERVER_ID = config["ids"]["server_id"]
     LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
+    REPLAY_CHANNEL_ID = config["ids"]["replay_channel_id"]
     LOGGING_CHANNEL_ID = config["ids"]["logging_channel_id"]
     OWNER_ID = config["ids"]["owner_id"]
     MAX_MESSAGE_LEN = config["bot"]["max_message_len"]
@@ -58,6 +59,23 @@ async def send_pregame_stats(ctx, id_list):
     temp = create_code_block(temp)
     msg += temp
     await ctx.send(msg)
+
+
+async def send_replay(post, depth = 0):
+    """Send the replay and break it down if it goes over the Discord message limit"""
+    max_len = int(MAX_MESSAGE_LEN) - 50
+    replay_channel = globvars.client.get_channel(int(REPLAY_CHANNEL_ID))
+    if len(post) <= max_len:
+        if depth:
+            await replay_channel.send("[CONTINUED] ```asciidoc\n" + post)
+        else:
+            await replay_channel.send(post)
+    else:
+        if depth:
+            await replay_channel.send("[CONTINUED] ```asciidoc\n" + post[:max_len] + "\n```")
+        else:
+            await replay_channel.send(post[:max_len] + "\n```")
+        await send_replay(post[max_len:], depth + 1)
 
 
 async def __send_long_error(post, depth=0):
