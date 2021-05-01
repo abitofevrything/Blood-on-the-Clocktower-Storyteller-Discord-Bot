@@ -63,8 +63,12 @@ class Player:
             raise AlreadyDead("Player is already dead, you are trying to kill them again.")
         self._state_obj = PlayerState.dead
         self._apparent_state_obj = PlayerState.dead
-        await botutils.add_dead_role(self.user)
-        await botutils.remove_alive_role(self.user)
+        from botc import Phase
+        if not globvars.master_state.game._chrono.phase == Phase.night:
+            await botutils.add_dead_role(self.user)
+            await botutils.remove_alive_role(self.user)
+        elif self not in globvars.master_state.game.night_deaths:
+            globvars.master_state.game.night_deaths.append(self)
         if self.role.true_self.name == "Poisoner":
             for player in globvars.master_state.game.sitting_order:
                 for status in player.status_effects:
@@ -76,12 +80,17 @@ class Player:
         """Turn the player's apparent state into the death state, but the real state
         remains alive
         """
+        import globvars
         if self.is_apparently_dead():
             raise AlreadyDead("Player is already 'apparently' dead, you are trying to " \
                 "kill them again.")
         self._apparent_state_obj = PlayerState.dead
-        await botutils.add_dead_role(self.user)
-        await botutils.remove_alive_role(self.user)
+        from botc import Phase
+        if not globvars.master_state.game._chrono.phase == Phase.night:
+            await botutils.add_dead_role(self.user)
+            await botutils.remove_alive_role(self.user)
+        elif self not in globvars.master_state.game.night_deaths:
+            globvars.master_state.game.night_deaths.append(self)
 
     def has_status_effect(self, status_effect):
         """Check if a player has a status effect"""

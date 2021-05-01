@@ -27,6 +27,7 @@ import globvars  # isort: split
 
 import botc
 import botutils
+import cmd
 
 if __name__ == "__main__":
     try:
@@ -70,7 +71,7 @@ if __name__ == "__main__":
     with open('botutils/bot_text.json') as json_file:
         language = json.load(json_file)
 
-    help_command = commands.DefaultHelpCommand(
+    help_command = cmd.Help(
         verify_checks = False,
         show_hidden = False,
         dm_help = None,

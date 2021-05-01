@@ -648,6 +648,7 @@ class Game(GameMeta):
         Must be implemented.
         """
         self.working = True
+        botutils.tasks.update_status = True
         # If game is still starting after 60s, something went wrong
         asyncio.create_task(self.clear_working(60))
         # Cancel the timer
@@ -1102,10 +1103,6 @@ class Game(GameMeta):
         # Store the starting time
         self.dawn_start_time = datetime.datetime.now()
 
-        # Initialize the master switches at the start of a phase
-        import botc.switches
-        botc.switches.init_switches()
-
         # Move the chrono forward by one phase
         self._chrono.next()
 
@@ -1118,6 +1115,12 @@ class Game(GameMeta):
         embed.set_image(url = dawn_image)
         embed.timestamp = datetime.datetime.utcnow()
         await botutils.send_lobby(message = "", embed = embed)
+
+        # Initialize the master switches at the start of a phase
+        import botc.switches
+        if botc.switches.master_proceed_to_day:
+            return
+        botc.switches.init_switches()
 
     async def make_daybreak(self):
         """Transition the game into day phase"""
@@ -1142,6 +1145,10 @@ class Game(GameMeta):
 
         # Not night 1 end, we look at the death list
         else:
+
+            for player in self.night_deaths:
+                await botutils.add_dead_role(player.user)
+                await botutils.remove_alive_role(player.user)
 
             night_deaths_names = [player.game_nametag for player in self.night_deaths]
             night_deaths_names = list(set(night_deaths_names))

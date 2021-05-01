@@ -353,6 +353,20 @@
             "feedback" : "{} Successfully transitioned to the Night Phase."
         },
 
+        "fdawn" : {
+            "brief" : "change the game's phase to Dawn",
+            "help" : "This debugging command forcefully transitions the game from the Night phase to the Dawn phase.",
+            "description" : "[FDAWN] command - BOTC (debug)",
+            "feedback" : "{} Successfully transitioned to the Dawn Phase."
+        },
+
+        "fday" : {
+            "brief" : "change the game's phase to Day",
+            "help" : "This debugging command forcefully transitions the game from the Night phase or the Dawn phase to the Day phase.",
+            "description" : "[FDAY] command - BOTC (debug)",
+            "feedback" : "{} Successfully transitioned to the Day Phase."
+        },
+
         "fnomination" : {
             "brief" : "start the nominations if it's daytime",
             "help" : "This debugging command forcefully fast-forwards the game from the Daytime base phase to the nominations phase.",
@@ -436,6 +450,12 @@
             "brief" : "vote to stop the game",
             "help" : "Use votestop once to start a votestop.",
             "description" : "[VOTESTOP] command - BOTC"
+        },
+
+        "revealroles" : {
+            "brief" : "reveal all players' roles",
+            "help" : "reveal all players' roles",
+            "description" : "[REVEALROLES] command - BOTC"
         }
 
     }

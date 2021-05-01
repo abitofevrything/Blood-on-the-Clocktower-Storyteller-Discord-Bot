@@ -37,6 +37,7 @@ with open("config.toml") as fd:
 
     PREFIX = config["bot"]["prefix"]
     ADMIN_IDS = config["ids"]["admin_ids"]
+    OWNER_ID = config["ids"]["owner_id"]
     FORCE_VOTES = config["debug"].get("force_votes", False)
 
 with open("botc/game_text.json") as json_file:
@@ -184,13 +185,13 @@ async def nomination_loop(game, nominator, nominated):
                 - Must be one of the two voting emojis
                 - Must be on the same voting call message
                 """
-                return (user.id == player.user.id or (FORCE_VOTES and user.id in ADMIN_IDS)) and \
+                return (user.id == player.user.id or (FORCE_VOTES and (user.id in ADMIN_IDS or user.id == OWNER_ID))) and \
                     str(reaction.emoji) in (approved_emoji, denied_emoji) and \
                     reaction.message.id == message.id
 
             try:
                 reaction, user = await globvars.client.wait_for('reaction_add', timeout=VOTE_TIMEOUT, check=check)
-                assert user.id == player.user.id or (FORCE_VOTES and user.id in ADMIN_IDS), f"{user} reacted instead"
+                assert user.id == player.user.id or (FORCE_VOTES and (user.id in ADMIN_IDS or user.id == OWNER_ID)), f"{user} reacted instead"
 
             # The player did not vote. It counts as a "No" (hand down)
             except asyncio.TimeoutError:
@@ -341,6 +342,8 @@ async def night_loop(game):
         90 seconds max
         At intervals of 15 seconds when all actions are submitted (45, 60, 75)
     """
+    import botc.switches
+
     # Transition to night fall
     await game.make_nightfall()
     # Start night
@@ -348,12 +351,19 @@ async def night_loop(game):
         # Night 1 is alraedy handled by the opening dm
         await before_night(game)
     # Base night length
-    await asyncio.sleep(BASE_NIGHT)
+    for _ in range(BASE_NIGHT):
+        if botc.switches.master_proceed_to_dawn or botc.switches.master_proceed_to_day:
+            break
+        await asyncio.sleep(1)
     # Increment night by small blocks of time if not all players have finished actions
     for _ in range(NIGHT_MULTIPLER):
-        if game.has_received_all_expected_night_actions():
+        if game.has_received_all_expected_night_actions() or botc.switches.master_proceed_to_dawn or \
+            botc.switches.master_proceed_to_day:
             break
-        await asyncio.sleep(INCREMENT)
+        for __ in range(INCREMENT):
+            if botc.switches.master_proceed_to_dawn or botc.switches.master_proceed_to_day:
+                break
+            await asyncio.sleep(1)
     # End night 1
     if game._chrono.is_night_1():
         await after_night_1(game)
@@ -369,18 +379,26 @@ async def dawn_loop(game):
         30 seconds max
         At intervals of 15 seconds (15, 30)
     """
+    import botc.switches
+
     # Start dawn
     await game.make_dawn()
     # Query for dawn actions
     for player in game.sitting_order:
         await player.role.ego_self.send_regular_dawn_start_dm(player)
     # Base dawn length
-    await asyncio.sleep(BASE_DAWN)
+    for _ in range(BASE_DAWN):
+        if botc.switches.master_proceed_to_day:
+            break
+        await asyncio.sleep(1)
     # Increment (dawn)
     for _ in range(DAWN_MULTIPLIER):
-        if game.has_received_all_expected_dawn_actions():
+        if game.has_received_all_expected_dawn_actions() or botc.switches.master_proceed_to_day:
             break
-        await asyncio.sleep(INCREMENT)
+        for _ in range(INCREMENT):
+            if botc.switches.master_proceed_to_day:
+                break
+            await asyncio.sleep(1)
     await after_dawn(game)
 
 
@@ -417,12 +435,8 @@ async def day_loop(game):
     base_day_loop.start(base_day_length)
 
     for _ in range(base_day_length):
-        # The master switch has been turned on. Proceed to the next phase.
-        if botc.switches.master_proceed_to_night:
-            base_day_loop.cancel()
-            return
         # The master switch has been turned on. Go to nominations.
-        if botc.switches.master_proceed_to_nomination:
+        if botc.switches.master_proceed_to_nomination or botc.switches.master_proceed_to_night:
             base_day_loop.cancel()
             break
         await asyncio.sleep(1)
@@ -448,10 +462,6 @@ async def day_loop(game):
 
         while not nomination_loop.is_running():
 
-            # The master switch has been turned on. Proceed to the next phase.
-            if botc.switches.master_proceed_to_night:
-                return
-
             count += 1
             await asyncio.sleep(1)
 
@@ -462,7 +472,7 @@ async def day_loop(game):
                 await botutils.send_lobby(msg)
 
             # Time has run out
-            if count >= countdown:
+            if count >= countdown or botc.switches.master_proceed_to_night:
                 if game.chopping_block:
                     player_about_to_die = game.chopping_block.player_about_to_die
                     if player_about_to_die:
@@ -483,6 +493,20 @@ async def day_loop(game):
 
             # The master switch has been turned on. Proceed to the next phase.
             if botc.switches.master_proceed_to_night:
+                if game.chopping_block:
+                    player_about_to_die = game.chopping_block.player_about_to_die
+                    if player_about_to_die:
+                        await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
+                        msg = botutils.BotEmoji.guillotine + " " + execution.format(
+                            game.chopping_block.player_about_to_die.game_nametag,
+                            game.chopping_block.nb_votes
+                        )
+                    else:
+                        msg = botutils.BotEmoji.clocktower + " " + no_execution
+                    await botutils.send_lobby(msg)
+                else:
+                    msg = botutils.BotEmoji.clocktower + " " + no_execution
+                    await botutils.send_lobby(msg)
                 return
 
             await asyncio.sleep(1)

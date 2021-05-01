@@ -80,6 +80,8 @@ class ActionGrid:
 
     def register_an_action(self, action, phase_id):
         """Save an action within the grid based on a phase ID"""
+        import globvars
+        globvars.logging.info(f"{action.source_player} :  registering action {action.action_type.value} for phase {phase_id} with targets {action.target_player.target_list}")
         self.grid[phase_id] = action
 
     def retrieve_an_action(self, phase_id):

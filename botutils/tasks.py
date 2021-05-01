@@ -33,6 +33,7 @@ with open("botutils/bot_text.json") as json_file:
     not_enough_votes_to_start = language["system"]["not_enough_votes_to_start"]
     not_enough_votestop_votes = language["system"]["not_enough_votestop_votes"]
 
+VERSION = "v0.4.0-beta"
 
 @tasks.loop(seconds = TOKEN_RESET, count = None)
 async def rate_limit_commands():
@@ -40,7 +41,6 @@ async def rate_limit_commands():
     import globvars
     for user in globvars.ratelimit_dict:
         globvars.ratelimit_dict[user] = 0
-    globvars.logging.info("Cleared the rate limit dict")
 
 
 @tasks.loop(seconds = LOBBY_TIMEOUT, count = 2)
@@ -66,23 +66,59 @@ async def after_lobby_timeout():
     globvars.master_state.pregame.clear()
     botutils.update_state_machine()
 
-
+update_status = False
+current_status_index = 0
 @tasks.loop(count = None)
 async def cycling_bot_status():
     """A task to cycle bot status messages"""
 
-    messages = [
-        "Blood on the Clocktower",
-        "{p}help | {p}join".format(p = PREFIX),
-        "v0.4.0-beta"
-    ]
-
     import globvars
+    global current_status_index
+    global update_status
 
-    for message in messages:
-        activity = discord.Activity(name = message, type = discord.ActivityType.playing)
-        await globvars.client.change_presence(activity = activity)
-        await asyncio.sleep(STATUS_CYCLE)
+    update_status = False
+
+    if globvars.master_state.game:
+        ingame_messages = [
+            "Blood on the Clocktower",
+            "a{n} {count} player {gamemode} game".format(
+                                                            count = len(globvars.master_state.game.sitting_order),
+                                                            gamemode = globvars.master_state.game.gamemode.value,
+                                                            n = ("n" if len(globvars.master_state.game.sitting_order) in [8, 11] else "")    
+                                                        ),    
+        ]
+
+        message = ingame_messages[current_status_index % len(ingame_messages)]
+    elif globvars.master_state.session == botutils.BotState.pregame:
+        pregame_messages = [
+            "Blood on the Clocktower",
+            "{p}join | {count} player{s} in lobby".format(
+                                                            p = PREFIX,
+                                                            count = len(globvars.master_state.pregame),
+                                                            s = ("" if len(globvars.master_state.pregame) == 1 else "s")
+                                                        ),
+            VERSION
+        ]
+
+        message = pregame_messages[current_status_index % len(pregame_messages)]
+    else:
+        empty_messages = [
+            "Blood on the Clocktower",
+            "{p}help | {p}join".format(p = PREFIX),
+            VERSION
+        ]
+
+        message = empty_messages[current_status_index % len(empty_messages)]
+
+    activity = discord.Activity(name = message, type = discord.ActivityType.playing)
+    await globvars.client.change_presence(activity = activity)
+
+    current_status_index += 1
+
+    for _ in range(STATUS_CYCLE):
+        if update_status:
+            break
+        await asyncio.sleep(1)
 
 
 @tasks.loop(count = 1)
