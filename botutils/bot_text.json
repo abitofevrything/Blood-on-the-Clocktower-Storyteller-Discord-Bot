@@ -49,6 +49,17 @@
         "playerstats_evil_wins": "Wins (Evil)",
         "playerstats_evil_winrate": "Win rate (Evil)",
         "playerstats_footer": "Based on {} game{}",
+        "streak_title" : "Player streaks",
+        "streak_title_as" : "Player streaks as {}",
+        "good_games_streak" : "Best game streak (Good)",
+        "evil_games_streak" : "Best game streak (Evil)",
+        "good_wins_streak" : "Best win streak (Good)",
+        "evil_wins_streak" : "Best win streak (Evil)",
+        "good_loss_streak" : "Best loss streak (Good)",
+        "evil_loss_streak" : "Best loss streak (Evil)",
+        "game_streak" : "Best game streak",
+        "win_streak" : "Best win streak",
+        "loss_streak" : "Best loss streak",
         "top_games": "Top {} by games played",
         "top_evil_games": "Top {} by evil games played",
         "top_good_games": "Top {} by good games played",
@@ -390,7 +401,17 @@
             "help": "Sync the bot state. This will attempt to restore any softlocks. You might have to wait up to a minute after the bot state un-syncs for this command to work.",
             "description": "[SYNC] command"
 
-      }
+        },
+
+        
+        "streak" : {
+            "brief" : "check various streaks",
+            "help" : "See your best win streaks, loss streaks, good streaks or evil streaks",
+            "description" : "[STREAK] command",
+            "outputs" : [],
+            "weights" : []
+        }
+
 
     },
 

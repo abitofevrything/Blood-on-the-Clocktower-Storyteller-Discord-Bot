@@ -8,7 +8,7 @@ from .role import Role
 from .top import Top
 from .uptime import Uptime
 from .sync import Sync
-
+from .streak import Streak
 
 def setup(client):
     client.add_cog(Github(client))
@@ -21,3 +21,4 @@ def setup(client):
     client.add_cog(Playerstats(client))
     client.add_cog(Top(client))
     client.add_cog(Sync(client))
+    client.add_cog(Streak(client))
