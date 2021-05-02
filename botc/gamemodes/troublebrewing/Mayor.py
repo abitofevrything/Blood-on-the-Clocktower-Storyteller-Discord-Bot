@@ -108,6 +108,10 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                     if possibilities:
                         deflected_to = random.choice(possibilities)
                         if deflected_to.is_dead() or deflected_to.has_status_effect(StatusList.safety_from_demon):
+                            # Add information to replay
+                            globvars.master_state.game.replay += f"- {killed_player.user.name} "\
+                                                f"(Mayor) bounces kill to {deflected_to.user.name} "\
+                                                f"({deflected_to.role.true_self}) who does not die\n"
                             return
 
                         # Add information to replay
