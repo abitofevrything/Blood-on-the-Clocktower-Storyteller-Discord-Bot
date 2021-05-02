@@ -107,7 +107,7 @@ class Mayor(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
                     if possibilities:
                         deflected_to = random.choice(possibilities)
-                        if deflected_to.has_status_effect(StatusList.safety_from_demon):
+                        if deflected_to.is_dead() or deflected_to.has_status_effect(StatusList.safety_from_demon):
                             return
 
                         # Add information to replay
