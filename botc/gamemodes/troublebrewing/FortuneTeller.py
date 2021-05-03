@@ -159,6 +159,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
                 response = random.choice((True, False))
 
             reply = yes if response else no
+            is_ = 'is' if response else 'is not'
             link = evil_link if response else good_link
             recipient = fortune_teller_player.user
 
@@ -167,7 +168,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
             either = "either" if response else "neither"
             globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Fortune Teller) "\
                 f"learns that {either} {read_player_1.user.name} ({read_player_1.role.true_self}) "\
-                f"or {read_player_2.user.name} ({read_player_2.role.true_self}) is a Demon\n"
+                f"or {read_player_2.user.name} ({read_player_2.role.true_self}) {is_} a Demon\n"
 
             msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
             msg += "\n"
