@@ -165,9 +165,10 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
             # Add information to replay
             drunk = "Drunk " if fortune_teller_player.role.true_self.name == Drunk().name else ""
             either = "either" if response else "neither"
+            or_ = "or" if response else "nor"
             globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Fortune Teller) "\
                 f"learns that {either} {read_player_1.user.name} ({read_player_1.role.true_self}) "\
-                f"or {read_player_2.user.name} ({read_player_2.role.true_self}) is a Demon\n"
+                f"{or_} {read_player_2.user.name} ({read_player_2.role.true_self}) is a Demon\n"
 
             msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
             msg += "\n"
