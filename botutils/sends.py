@@ -9,20 +9,10 @@ import globvars
 
 from .helpers import make_ping
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import SERVER_ID, LOBBY_CHANNEL_ID, REPLAY_CHANNEL_ID, LOGGING_CHANNEL_ID, OWNER_ID, MAX_MESSAGE_LENGTH
+from botutils import bot_text
 
-    SERVER_ID = config["ids"]["server_id"]
-    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
-    REPLAY_CHANNEL_ID = config["ids"]["replay_channel_id"]
-    LOGGING_CHANNEL_ID = config["ids"]["logging_channel_id"]
-    OWNER_ID = config["ids"]["owner_id"]
-    MAX_MESSAGE_LEN = config["bot"]["max_message_len"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    stats_pregame_header = language["cmd"]["stats_pregame_header"]
+stats_pregame_header = bot_text["cmd"]["stats_pregame_header"]
 
 
 class Level(enum.Enum):
@@ -63,7 +53,7 @@ async def send_pregame_stats(ctx, id_list):
 
 async def send_replay(post, depth = 0):
     """Send the replay and break it down if it goes over the Discord message limit"""
-    max_len = int(MAX_MESSAGE_LEN) - 50
+    max_len = int(MAX_MESSAGE_LENGTH) - 50
     replay_channel = globvars.client.get_channel(int(REPLAY_CHANNEL_ID))
     if len(post) <= max_len:
         if depth:
@@ -80,7 +70,7 @@ async def send_replay(post, depth = 0):
 
 async def __send_long_error(post, depth=0):
     """Send a message and break it down if it goes over the Discord message limit"""
-    max = int(MAX_MESSAGE_LEN) - 50
+    max = int(MAX_MESSAGE_LENGTH) - 50
     if len(post) <= max:
         if depth:
             await __send_log("[CONTINUED] " + "```py\n" + post[:max])

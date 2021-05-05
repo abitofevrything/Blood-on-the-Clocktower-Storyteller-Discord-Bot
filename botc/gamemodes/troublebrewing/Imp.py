@@ -10,34 +10,20 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, Character, Demon, Outsider,
-                  RecurringAction, StatusList, Townsfolk)
+                  RecurringAction, StatusList, Townsfolk, game_text, emojis)
 from botc.BOTCUtils import BOTCUtils, GameLogic
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import DISABLE_DMS, DEMON_CARD_COLOR
 
-    DEMON_COLOR = preferences["colors"]["demon_color"]
+from . import character_texts
+character_text = character_texts[TBRole.imp.value.lower()]
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
-
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.imp.value.lower()]
-
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
-    demon_bluff_str = strings["gameplay"]["demonbluffs"]
-    action_assign = strings["gameplay"]["action_assign"]
-    role_change = strings["gameplay"]["role_change"]
-    copyrights_str = strings["misc"]["copyrights"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
+demon_bluff_str = game_text["gameplay"]["demonbluffs"]
+action_assign = game_text["gameplay"]["action_assign"]
+role_change = game_text["gameplay"]["role_change"]
+copyrights_str = game_text["misc"]["copyrights"]
 
 class Imp(Demon, TroubleBrewing, Character, RecurringAction):
     """Imp: Each night*, choose a player: they die. If you kill yourself this way,
@@ -319,7 +305,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
         msg += "\n"
         msg += self.emoji + " " + self.instruction
 
-        embed = discord.Embed(description = msg, color = DEMON_COLOR)
+        embed = discord.Embed(description = msg, color = DEMON_CARD_COLOR)
         embed.set_thumbnail(url = self.botc_logo_link)
         embed.set_image(url = self._art_link_cropped)
         embed.set_footer(text = copyrights_str)

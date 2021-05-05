@@ -7,30 +7,28 @@ import discord
 from discord.ext import commands
 
 from ._miscellaneous import Miscellaneous
+from botutils import bot_text
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-gamestats_title_str = language["cmd"]["gamestats_title"]
-gamestats_title_players_str = language["cmd"]["gamestats_title_players"]
-gamestats_total_games_str = language["cmd"]["gamestats_total_games"]
-gamestats_good_wins_str = language["cmd"]["gamestats_good_wins"]
-gamestats_evil_wins_str = language["cmd"]["gamestats_evil_wins"]
-error_title_str = language["errors"]["error_title"]
-gamestats_invalid_str = language["cmd"]["gamestats_invalid"]
-gamestats_no_games_str = language["cmd"]["gamestats_no_games"]
-gamestats_no_games_players_str = language["cmd"]["gamestats_no_games_players"]
+gamestats_title_str = bot_text["cmd"]["gamestats_title"]
+gamestats_title_players_str = bot_text["cmd"]["gamestats_title_players"]
+gamestats_total_games_str = bot_text["cmd"]["gamestats_total_games"]
+gamestats_good_wins_str = bot_text["cmd"]["gamestats_good_wins"]
+gamestats_evil_wins_str = bot_text["cmd"]["gamestats_evil_wins"]
+error_title_str = bot_text["errors"]["error_title"]
+gamestats_invalid_str = bot_text["cmd"]["gamestats_invalid"]
+gamestats_no_games_str = bot_text["cmd"]["gamestats_no_games"]
+gamestats_no_games_players_str = bot_text["cmd"]["gamestats_no_games_players"]
 
 
-class Gamestats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Gamestats(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Gamestats command cog"""
 
     @commands.command(
         pass_context = True,
         name = "gamestats",
-        brief = language["doc"]["gamestats"]["brief"],
-        help = language["doc"]["gamestats"]["help"],
-        description = language["doc"]["gamestats"]["description"]
+        brief = bot_text["doc"]["gamestats"]["brief"],
+        help = bot_text["doc"]["gamestats"]["help"],
+        description = bot_text["doc"]["gamestats"]["description"]
     )
     async def gamestats(self, ctx, players: str = None):
         """Gamestats command"""

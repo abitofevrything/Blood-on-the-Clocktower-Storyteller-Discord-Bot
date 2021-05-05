@@ -6,13 +6,7 @@ import toml
 import botutils
 import globvars
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
-    SPEC_CHANNEL_ID = config["ids"]["spec_channel_id"]
-    OWNER_ID = config["ids"]["owner_id"]
-    ADMIN_IDS = config["ids"]["admin_ids"]
+from config import LOBBY_CHANNEL_ID, SPEC_CHANNEL_ID, OWNER_ID, ADMIN_IDS
 
 
 def __is_lobby(ctx):

@@ -8,33 +8,27 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botutils import lobby_timeout
+from botutils import lobby_timeout, bot_text
 
 from ._gameplay import Gameplay
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import LOBBY_TIMEOUT
 
-    LOBBY_TIMEOUT = preferences["duration"]["lobby_timeout"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
-    lobby_timeout_str = language["system"]["lobby_timeout"]
-    time_pregame = language["cmd"]["time_pregame"]
+error_str = bot_text["system"]["error"]
+lobby_timeout_str = bot_text["system"]["lobby_timeout"]
+time_pregame = bot_text["cmd"]["time_pregame"]
 
 
-class Time(Gameplay, name = language["system"]["gameplay_cog"]):
+class Time(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Time command cog"""
 
     @commands.command(
         pass_context = True,
         name = "time",
         aliases = ["t"],
-        brief = language["doc"]["time"]["brief"],
-        help = language["doc"]["time"]["help"],
-        description = language["doc"]["time"]["description"]
+        brief = bot_text["doc"]["time"]["brief"],
+        help = bot_text["doc"]["time"]["help"],
+        description = bot_text["doc"]["time"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_spec_or_dm_or_admin)
     @commands.check(botutils.check_if_not_in_empty)

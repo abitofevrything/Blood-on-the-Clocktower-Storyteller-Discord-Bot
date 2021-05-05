@@ -8,15 +8,13 @@ from discord.ext import commands
 import botutils
 from botc import Phase
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    error_str = bot_text["system"]["error"]
+from botutils import bot_text
+error_str = bot_text["system"]["error"]
 
 
-class Fdawn(commands.Cog, name = documentation["misc"]["debug_cog"]):
+class Fdawn(commands.Cog, name = game_text["misc"]["debug_cog"]):
     """Fdawn command"""
 
     def __init__(self, client):
@@ -30,9 +28,9 @@ class Fdawn(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True,
         name = "fdawn",
         hidden = False,
-        brief = documentation["doc"]["fdawn"]["brief"],
-        help = documentation["doc"]["fdawn"]["help"],
-        description = documentation["doc"]["fdawn"]["description"]
+        brief = game_text["doc"]["fdawn"]["brief"],
+        help = game_text["doc"]["fdawn"]["help"],
+        description = game_text["doc"]["fdawn"]["description"]
     )
     async def fdawn(self, ctx):
         """Fnight command"""
@@ -42,7 +40,7 @@ class Fdawn(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
             import botc.switches
             botc.switches.master_proceed_to_dawn = True
-            msg = documentation["doc"]["fdawn"]["feedback"].format(botutils.BotEmoji.success)
+            msg = game_text["doc"]["fdawn"]["feedback"].format(botutils.BotEmoji.success)
 
             await ctx.send(msg)
 

@@ -13,48 +13,41 @@ from discord.ext import commands
 import botutils
 import globvars
 from botc.setups import setup
+from botc import game_text, emojis
+from botutils import bot_text
 
 from ._miscellaneous import Miscellaneous
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-playerstats_title_str = language["cmd"]["playerstats_title"]
-playerstats_title_role_str = language["cmd"]["playerstats_title_role"]
-playerstats_no_games_str = language["cmd"]["playerstats_no_games"]
-playerstats_no_games_role_str = language["cmd"]["playerstats_no_games_role"]
-playerstats_games_str = language["cmd"]["playerstats_games"]
-playerstats_wins_str = language["cmd"]["playerstats_wins"]
-playerstats_winrate_str = language["cmd"]["playerstats_winrate"]
-playerstats_good_games_str = language["cmd"]["playerstats_good_games"]
-playerstats_good_wins_str = language["cmd"]["playerstats_good_wins"]
-playerstats_good_winrate_str = language["cmd"]["playerstats_good_winrate"]
-playerstats_evil_games_str = language["cmd"]["playerstats_evil_games"]
-playerstats_evil_wins_str = language["cmd"]["playerstats_evil_wins"]
-playerstats_evil_winrate_str = language["cmd"]["playerstats_evil_winrate"]
-playerstats_footer_str = language["cmd"]["playerstats_footer"]
-user_not_found_str = language["errors"]["user_not_found"]
-role_not_found_str = documentation["cmd_warnings"]["role_not_found"]
-ambiguous_user_str = language["errors"]["ambiguous_user"]
-error_str = language["system"]["error"]
+playerstats_title_str = bot_text["cmd"]["playerstats_title"]
+playerstats_title_role_str = bot_text["cmd"]["playerstats_title_role"]
+playerstats_no_games_str = bot_text["cmd"]["playerstats_no_games"]
+playerstats_no_games_role_str = bot_text["cmd"]["playerstats_no_games_role"]
+playerstats_games_str = bot_text["cmd"]["playerstats_games"]
+playerstats_wins_str = bot_text["cmd"]["playerstats_wins"]
+playerstats_winrate_str = bot_text["cmd"]["playerstats_winrate"]
+playerstats_good_games_str = bot_text["cmd"]["playerstats_good_games"]
+playerstats_good_wins_str = bot_text["cmd"]["playerstats_good_wins"]
+playerstats_good_winrate_str = bot_text["cmd"]["playerstats_good_winrate"]
+playerstats_evil_games_str = bot_text["cmd"]["playerstats_evil_games"]
+playerstats_evil_wins_str = bot_text["cmd"]["playerstats_evil_wins"]
+playerstats_evil_winrate_str = bot_text["cmd"]["playerstats_evil_winrate"]
+playerstats_footer_str = bot_text["cmd"]["playerstats_footer"]
+user_not_found_str = bot_text["errors"]["user_not_found"]
+role_not_found_str = game_text["cmd_warnings"]["role_not_found"]
+ambiguous_user_str = bot_text["errors"]["ambiguous_user"]
+error_str = bot_text["system"]["error"]
 
 
-class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Playerstats(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Playerstats command cog"""
 
     @commands.command(
         pass_context = True,
         name = "playerstats",
         aliases = ["games", "wins"],
-        brief = language["doc"]["playerstats"]["brief"],
-        help = language["doc"]["playerstats"]["help"],
-        description = language["doc"]["playerstats"]["description"]
+        brief = bot_text["doc"]["playerstats"]["brief"],
+        help = bot_text["doc"]["playerstats"]["help"],
+        description = bot_text["doc"]["playerstats"]["description"]
     )
     async def playerstats(self, ctx, user_or_role: Union[discord.Member, discord.User, str] = None, role=""):
         """Playerstats command"""

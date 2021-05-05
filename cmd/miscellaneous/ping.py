@@ -8,22 +8,21 @@ import botutils
 
 from ._miscellaneous import Miscellaneous
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-ping_str = language["cmd"]["ping"]
+ping_str = bot_text["cmd"]["ping"]
 
 
-class Ping(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Ping(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Ping command"""
 
     @commands.command(
         pass_context = True,
         name = "ping",
         aliases = ["pong"],
-        brief = language["doc"]["ping"]["brief"],
-        help = language["doc"]["ping"]["help"],
-        description = language["doc"]["ping"]["description"]
+        brief = bot_text["doc"]["ping"]["brief"],
+        help = bot_text["doc"]["ping"]["help"],
+        description = bot_text["doc"]["ping"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def ping(self, ctx):

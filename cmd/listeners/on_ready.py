@@ -9,20 +9,12 @@ import toml
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import SERVER_ID, LOBBY_CHANNEL_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID
 
-    SERVER_ID = config["ids"]["server_id"]
-    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
-    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
-    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-restart_msg = language["system"]["restart"]
-restarted_notify_msg = language["system"]["restarted_notify"]
+restart_msg = bot_text["system"]["restart"]
+restarted_notify_msg = bot_text["system"]["restarted_notify"]
 
 
 class on_ready(commands.Cog):

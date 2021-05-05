@@ -9,30 +9,23 @@ from library import display_time
 
 import globvars
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import SERVER_ID, LOBBY_CHANNEL_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID
 
-    SERVER_ID = config["ids"]["server_id"]
-    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
-    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
-    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
+from botutils import bot_text
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+sync_succesful_string = bot_text["cmd"]["sync_success"]
+error_str = bot_text["system"]["error"]
+cooldown = bot_text["errors"]["cmd_cooldown"]
 
-    sync_succesful_string = language["cmd"]["sync_success"]
-    error_str = language["system"]["error"]
-    cooldown = language["errors"]["cmd_cooldown"]
-
-class Sync(commands.Cog, name = language["system"]["miscellaneous_cog"]):
+class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
     
     @commands.command(
         name = "sync",
         aliases = [],
         pass_context = True,
-        brief = language["doc"]["sync"]["brief"],
-        help = language["doc"]["sync"]["help"],
-        description = language["doc"]["sync"]["description"],
+        brief = bot_text["doc"]["sync"]["brief"],
+        help = bot_text["doc"]["sync"]["help"],
+        description = bot_text["doc"]["sync"]["description"],
     )
     @commands.cooldown(1, 60, commands.BucketType.channel)
     async def sync(self, ctx):

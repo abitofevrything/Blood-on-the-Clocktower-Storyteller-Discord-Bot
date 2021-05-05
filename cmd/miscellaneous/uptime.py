@@ -10,21 +10,20 @@ import botutils
 
 from ._miscellaneous import Miscellaneous
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-uptime_str = language["cmd"]["uptime"]
+uptime_str = bot_text["cmd"]["uptime"]
 
 
-class Uptime(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Uptime(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Uptime command"""
 
     @commands.command(
         pass_context = True,
         name = "uptime",
-        brief = language["doc"]["uptime"]["brief"],
-        help = language["doc"]["uptime"]["help"],
-        description = language["doc"]["uptime"]["description"]
+        brief = bot_text["doc"]["uptime"]["brief"],
+        help = bot_text["doc"]["uptime"]["help"],
+        description = bot_text["doc"]["uptime"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def uptime(self, ctx):

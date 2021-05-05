@@ -8,18 +8,11 @@ import toml
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import IGNORE_THRESHOLD, TOKENS_GIVEN, TOKEN_RESET
 
-    IGNORE_THRESHOLD = preferences["duration"]["ignore_threshold"]
-    TOKENS_GIVEN = preferences["duration"]["tokens_given"]
-    TOKEN_RESET = preferences["duration"]["token_reset"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    ignore = language["system"]["ignore"]
+ignore = bot_text["system"]["ignore"]
 
 
 class on_command(commands.Cog):

@@ -1,5 +1,16 @@
 """Blood on the Clocktower (BoTC) - Sects & Violets Edition Characters"""
 
+import sys
+import globvars
+import json
+
+try:
+    with open("botc/gamemodes/sectsandviolets/character_text.json") as character_texts_file:
+        character_texts = json.load(character_texts_file)
+except FileNotFoundError:
+    globvars.logging.error("Unable to load Sects and Violets character text file. Does the file botc/gamemodes/sectsandviolets/character_text.json exist?")
+    sys.exit(1)
+
 from .Artist import Artist
 from .Barber import Barber
 from .Cerenovus import Cerenovus

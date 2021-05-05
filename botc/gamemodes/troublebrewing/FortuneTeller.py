@@ -10,32 +10,23 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, Category, Character, RecurringAction,
-                  RedHerring, StatusList, Storyteller, Townsfolk)
+                  RedHerring, StatusList, Storyteller, Townsfolk, game_text, emojis)
 from botc.BOTCUtils import GameLogic
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.fortuneteller.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.fortuneteller.value.lower()]
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
+fortune_teller_nightly = game_text["gameplay"]["fortune_teller_nightly"]
+copyrights_str = game_text["misc"]["copyrights"]
+yes = game_text["gameplay"]["yes"]
+no = game_text["gameplay"]["no"]
+good_link = game_text["images"]["good"]
+evil_link = game_text["images"]["evil"]
 
-    fortune_teller_nightly = strings["gameplay"]["fortune_teller_nightly"]
-    copyrights_str = strings["misc"]["copyrights"]
-    yes = strings["gameplay"]["yes"]
-    no = strings["gameplay"]["no"]
-    good_link = strings["images"]["good"]
-    evil_link = strings["images"]["evil"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 
 class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):

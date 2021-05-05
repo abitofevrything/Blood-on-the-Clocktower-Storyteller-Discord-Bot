@@ -16,27 +16,13 @@ from .errors import AlreadyDead
 from .flag_inventory import Flags, Inventory
 from .Team import Team
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import DISABLE_DMS, PREFIX, TOWNSFOLK_CARD_COLOR, OUTSIDER_CARD_COLOR, MINION_CARD_COLOR, DEMON_CARD_COLOR
+from botc import game_text
 
-    TOWNSFOLK_COLOR = preferences["colors"]["townsfolk_color"]
-    OUTSIDER_COLOR = preferences["colors"]["outsider_color"]
-    MINION_COLOR = preferences["colors"]["minion_color"]
-    DEMON_COLOR = preferences["colors"]["demon_color"]
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
-    PREFIX = config["bot"]["prefix"]
-
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
-
-    copyrights_str = strings["misc"]["copyrights"]
-    role_dm = strings["gameplay"]["role_dm"]
-    welcome_dm = strings["gameplay"]["welcome_dm"]
-    blocked = strings["gameplay"]["blocked"]
+copyrights_str = game_text["misc"]["copyrights"]
+role_dm = game_text["gameplay"]["role_dm"]
+welcome_dm = game_text["gameplay"]["welcome_dm"]
+blocked = game_text["gameplay"]["blocked"]
 
 
 class Character:
@@ -231,13 +217,13 @@ class Character:
             return embed
 
         if self.category == Category.townsfolk:
-            color = TOWNSFOLK_COLOR
+            color = TOWNSFOLK_CARD_COLOR
         elif self.category == Category.outsider:
-            color = OUTSIDER_COLOR
+            color = OUTSIDER_CARD_COLOR
         elif self.category == Category.minion:
-            color = MINION_COLOR
+            color = MINION_CARD_COLOR
         elif self.category == Category.demon:
-            color = DEMON_COLOR
+            color = DEMON_CARD_COLOR
 
         gm_art_link = self.gm_art_link if self.gm_art_link else self.botc_logo_link
         pic_link = self.art_link if self.art_link else self.botc_demon_link
@@ -289,13 +275,13 @@ class Character:
             return
 
         if self.ego_self.category == Category.townsfolk:
-            color = TOWNSFOLK_COLOR
+            color = TOWNSFOLK_CARD_COLOR
         elif self.ego_self.category == Category.outsider:
-            color = OUTSIDER_COLOR
+            color = OUTSIDER_CARD_COLOR
         elif self.ego_self.category == Category.minion:
-            color = MINION_COLOR
+            color = MINION_CARD_COLOR
         else:
-            color = DEMON_COLOR
+            color = DEMON_CARD_COLOR
 
         opening_dm = role_dm.format(
             user = str(recipient),

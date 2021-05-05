@@ -37,22 +37,9 @@ from .PlayerState import PlayerState
 from .RoleGuide import RoleGuide
 from .Townsfolk import Townsfolk
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
-
-    CARD_NIGHT = preferences["colors"]["card_night"]
-    CARD_DAWN = preferences["colors"]["card_dawn"]
-    CARD_DAY = preferences["colors"]["card_day"]
-
-    TOWNSFOLK_COLOR = preferences["colors"]["townsfolk_color"]
-    DEMON_COLOR = preferences["colors"]["demon_color"]
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    SERVER_ID = config["ids"]["server_id"]
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import SERVER_ID, DISABLE_DMS, NIGHT_CARD_COLOR, DAWN_CARD_COLOR, DAY_CARD_COLOR, TOWNSFOLK_CARD_COLOR, DEMON_CARD_COLOR, \
+    TIMEZONE, DEBUG, NO_INVALIDATE
+from botc import game_text
 
 CONFLICTING_CMDS = [
    "cmd.gameplay"
@@ -60,33 +47,30 @@ CONFLICTING_CMDS = [
 
 random.seed(datetime.datetime.now())
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
-
-    nightfall = strings["gameplay"]["nightfall"]
-    daybreak = strings["gameplay"]["daybreak"]
-    dawn = strings["gameplay"]["dawn"]
-    lobby_game_start = strings["gameplay"]["lobby_game_start"]
-    lobby_game_closing = strings["gameplay"]["lobby_game_closing"]
-    evilteammates = strings["gameplay"]["evilteammates"]
-    copyrights_str = strings["misc"]["copyrights"]
-    tb_lore = strings["gameplay"]["tb_lore"]
-    bmr_lore = strings["gameplay"]["bmr_lore"] # TODO add bmr lore
-    snv_lore = strings["gameplay"]["snv_lore"] # TODO add snv lore
-    nightfall_image = strings["images"]["nightfall"]
-    dawn_image = strings["images"]["dawn"]
-    daybreak_image = strings["images"]["daybreak"]
-    dove = strings["images"]["dove"]
-    demon = strings["images"]["demon"]
-    no_one_wins = strings["gameplay"]["no_one_wins"]
-    good_wins = strings["gameplay"]["good_wins"]
-    evil_wins = strings["gameplay"]["evil_wins"]
-    role_reveal = strings["gameplay"]["role_reveal"]
-    role_reveal_herring = strings["gameplay"]["role_reveal_herring"]
-    storyteller_death = strings["lore"]["storyteller_death"]
-    ego_role_reveal = strings["gameplay"]["ego_role_reveal"]
-    ego_role_reveal_herring = strings["gameplay"]["ego_role_reveal_herring"]
-    changed_role_reveal = strings["gameplay"]["changed_role_reveal"]
+nightfall = game_text["gameplay"]["nightfall"]
+daybreak = game_text["gameplay"]["daybreak"]
+dawn = game_text["gameplay"]["dawn"]
+lobby_game_start = game_text["gameplay"]["lobby_game_start"]
+lobby_game_closing = game_text["gameplay"]["lobby_game_closing"]
+evilteammates = game_text["gameplay"]["evilteammates"]
+copyrights_str = game_text["misc"]["copyrights"]
+tb_lore = game_text["gameplay"]["tb_lore"]
+bmr_lore = game_text["gameplay"]["bmr_lore"]
+snv_lore = game_text["gameplay"]["snv_lore"]
+nightfall_image = game_text["images"]["nightfall"]
+dawn_image = game_text["images"]["dawn"]
+daybreak_image = game_text["images"]["daybreak"]
+dove = game_text["images"]["dove"]
+demon = game_text["images"]["demon"]
+no_one_wins = game_text["gameplay"]["no_one_wins"]
+good_wins = game_text["gameplay"]["good_wins"]
+evil_wins = game_text["gameplay"]["evil_wins"]
+role_reveal = game_text["gameplay"]["role_reveal"]
+role_reveal_herring = game_text["gameplay"]["role_reveal_herring"]
+storyteller_death = game_text["lore"]["storyteller_death"]
+ego_role_reveal = game_text["gameplay"]["ego_role_reveal"]
+ego_role_reveal_herring = game_text["gameplay"]["ego_role_reveal_herring"]
+changed_role_reveal = game_text["gameplay"]["changed_role_reveal"]
 
 
 class Setup:
@@ -164,8 +148,6 @@ class GameLog:
         ```
         """
 
-        TIMEZONE = preferences["location"]["timezone"]
-
         d = datetime.datetime.now()
         timezone = pytz.timezone(TIMEZONE)
         d_aware = timezone.localize(d)
@@ -209,7 +191,7 @@ class Game(GameMeta):
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
         self.replay = "```asciidoc\n"
 
-        if any(x for x in config['debug']) and not config['debug'].get('no_invalidate', False):
+        if any(x for x in DEBUG) and not NO_INVALIDATE:
             # Also don't count game in win rates if debug options are used
             # (DISABLE_PINGS, DISABLE_DMS, FORCE_VOTES), unless forced by
             # setting no_invalidate to true.
@@ -479,7 +461,7 @@ class Game(GameMeta):
                 embed = discord.Embed(
                    title = good_wins,
                    description = role_list_str,
-                   color = TOWNSFOLK_COLOR
+                   color = TOWNSFOLK_CARD_COLOR
                 )
                 embed.set_author(
                    name = "{} - 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)".format(gamemode),
@@ -568,7 +550,7 @@ class Game(GameMeta):
                 embed = discord.Embed(
                    title = evil_wins,
                    description = role_list_str,
-                   color = DEMON_COLOR
+                   color = DEMON_CARD_COLOR
                 )
                 embed.set_author(
                    name = "{} - 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 (𝕭𝖔𝕿𝕮)".format(gamemode),
@@ -677,7 +659,7 @@ class Game(GameMeta):
             await player.role.ego_self.send_opening_dm_embed(player.user)
         # Include the starting information for the replay
         d = datetime.datetime.now()
-        timezone = pytz.timezone(preferences["location"]["timezone"])
+        timezone = pytz.timezone(TIMEZONE)
         d_formatted = timezone.localize(d).strftime("%b %d, %Y | %I:%M:%S %p %Z")
         self.replay += f"Start: {d_formatted}\n"\
                         f"[BoTC: {self.gamemode.value}, {len(self.sitting_order)} players]\n"
@@ -1027,7 +1009,7 @@ class Game(GameMeta):
         elif self.winners == Team.evil:
             winning_team = "Evil"
         d = datetime.datetime.now()
-        timezone = pytz.timezone(preferences["location"]["timezone"])
+        timezone = pytz.timezone(TIMEZONE)
         d_formatted = timezone.localize(d).strftime("%b %d, %Y | %I:%M:%S %p %Z")
         self.replay += f"[{winning_team} wins]\nEnd: {d_formatted}\n```"
         await botutils.send_replay(self.replay)
@@ -1099,7 +1081,7 @@ class Game(GameMeta):
         # Prepare the phase announcement message
         embed = discord.Embed(
            description = botutils.BotEmoji.moon + " " + nightfall,
-           color = CARD_NIGHT
+           color = NIGHT_CARD_COLOR
         )
         embed.set_footer(text = copyrights_str)
         embed.set_image(url = nightfall_image)
@@ -1125,7 +1107,7 @@ class Game(GameMeta):
         # Prepare the phase announcement message
         embed = discord.Embed(
            description = botutils.BotEmoji.sunrise + " " + dawn,
-           color = CARD_DAWN
+           color = DAWN_CARD_COLOR
         )
         embed.set_footer(text = copyrights_str)
         embed.set_image(url = dawn_image)
@@ -1170,8 +1152,8 @@ class Game(GameMeta):
             night_deaths_names = list(set(night_deaths_names))
 
             if len(night_deaths_names) == 0:
-                death_messages = strings["lore"]["night_death"]["zero"]["outputs"]
-                death_weights = strings["lore"]["night_death"]["zero"]["weights"]
+                death_messages = game_text["lore"]["night_death"]["zero"]["outputs"]
+                death_weights = game_text["lore"]["night_death"]["zero"]["weights"]
                 death_msg = random.choices(
                       death_messages,
                       weights = death_weights
@@ -1179,8 +1161,8 @@ class Game(GameMeta):
                 final_death_message = death_msg[0]
 
             elif len(night_deaths_names) == 1:
-                death_messages = strings["lore"]["night_death"]["singular"]["outputs"]
-                death_weights = strings["lore"]["night_death"]["singular"]["weights"]
+                death_messages = game_text["lore"]["night_death"]["singular"]["outputs"]
+                death_weights = game_text["lore"]["night_death"]["singular"]["weights"]
                 death_msg = random.choices(
                       death_messages,
                       weights = death_weights
@@ -1192,8 +1174,8 @@ class Game(GameMeta):
                 )
 
             else:
-                death_messages = strings["lore"]["night_death"]["plural"]["outputs"]
-                death_weights = strings["lore"]["night_death"]["plural"]["weights"]
+                death_messages = game_text["lore"]["night_death"]["plural"]["outputs"]
+                death_weights = game_text["lore"]["night_death"]["plural"]["weights"]
                 death_msg = random.choices(
                       death_messages,
                       weights = death_weights
@@ -1206,7 +1188,7 @@ class Game(GameMeta):
 
         embed = discord.Embed(
            description = botutils.BotEmoji.sun + " " + daybreak + " " + final_death_message,
-           color = CARD_DAY
+           color = DAY_CARD_COLOR
         )
         embed.set_footer(text = copyrights_str)
         embed.set_image(url = daybreak_image)

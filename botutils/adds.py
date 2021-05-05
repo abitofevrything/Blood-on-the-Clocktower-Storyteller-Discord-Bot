@@ -9,22 +9,11 @@ import globvars
 
 from .sends import Level, log
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
-    SERVER_ID = config["ids"]["server_id"]
-    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
-    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
-    ADMINS_ROLE_ID = config["ids"]["admins_role_id"]
-
-    LOCK_CHANNEL_IDS = config["lock"].get("channel_ids", [])
-    LOCK_SPECIAL_CHANNEL_IDS = config["lock"].get("special_channel_ids", [])
-
+from config import LOBBY_CHANNEL_ID, SERVER_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID, ADMIN_ROLE_ID, LOCK_CHANNEL_IDS, SPECIAL_LOCK_CHANNEL_IDS
 
 async def add_admin_role(user):
     """Grant the admin role to a member"""
-    role = globvars.client.get_guild(SERVER_ID).get_role(ADMINS_ROLE_ID)
+    role = globvars.client.get_guild(SERVER_ID).get_role(ADMIN_ROLE_ID)
     member_obj = globvars.client.get_guild(SERVER_ID).get_member(user.id)
     if member_obj is not None:
         await member_obj.add_roles(role)
@@ -32,7 +21,7 @@ async def add_admin_role(user):
 
 async def remove_admin_role(user):
     """Remove the admin role from a member"""
-    role = globvars.client.get_guild(SERVER_ID).get_role(ADMINS_ROLE_ID)
+    role = globvars.client.get_guild(SERVER_ID).get_role(ADMIN_ROLE_ID)
     member_obj = globvars.client.get_guild(SERVER_ID).get_member(user.id)
     if member_obj is not None:
         await member_obj.remove_roles(role)
@@ -115,7 +104,7 @@ async def lock_lobby():
             await log(Level.warning, f'Unable to lock {channel.mention}')
             await log(Level.error, traceback.format_exc())
 
-    for channel_id in LOCK_SPECIAL_CHANNEL_IDS:
+    for channel_id in SPECIAL_LOCK_CHANNEL_IDS:
         channel = globvars.client.get_channel(int(channel_id))
         try:
             await channel.set_permissions(alive_role, send_messages=False, connect=False, speak=False)
@@ -141,7 +130,7 @@ async def unlock_lobby():
             await log(Level.warning, f'Unable to unlock {channel.mention}')
             await log(Level.error, traceback.format_exc())
 
-    for channel_id in LOCK_SPECIAL_CHANNEL_IDS:
+    for channel_id in SPECIAL_LOCK_CHANNEL_IDS:
         channel = globvars.client.get_channel(int(channel_id))
         try:
             await channel.set_permissions(alive_role, send_messages=None, connect=None, speak=None)

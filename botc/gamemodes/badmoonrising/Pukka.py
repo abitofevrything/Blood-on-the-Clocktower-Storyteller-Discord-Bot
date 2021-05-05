@@ -5,19 +5,16 @@ import random
 
 import botutils
 import globvars
-from botc import BOTCUtils, Character, Demon, Outsider, Townsfolk
+from botc import BOTCUtils, Character, Demon, Outsider, Townsfolk, game_text
 
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
-    character_text = json.load(json_file)[BMRRole.pukka.value.lower()]
+from . import character_texts
+character_text = character_texts[BMRRole.pukka.value.lower()]
 
-with open('botc/game_text.json') as json_file:
-    strings = json.load(json_file)
-    demon_bluff_str = strings["gameplay"]["demonbluffs"]
+demon_bluff_str = game_text["gameplay"]["demonbluffs"]
 
-with open('botc/emojis.json') as json_file:
-    emojis = json.load(json_file)
+from botc import emojis
 
 
 class Pukka(Demon, BadMoonRising, Character):

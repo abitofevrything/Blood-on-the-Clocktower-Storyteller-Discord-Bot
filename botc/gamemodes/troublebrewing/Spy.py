@@ -10,30 +10,17 @@ import toml
 import botutils
 import globvars
 from botc import (BOTCUtils, Character, Minion, NonRecurringAction, Outsider,
-                  Townsfolk)
+                  Townsfolk, emojis, game_text)
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import DISABLE_DMS, GRIMOIRE_SHOW_TIME
 
-    GRIMOIRE_SHOW_TIME = preferences["botc"]["grimoire_show_time"]
+from . import character_texts
+character_text = character_texts[TBRole.spy.value.lower()]
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
-
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.spy.value.lower()]
-
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
-    copyrights_str = strings["misc"]["copyrights"]
-    spy_nightly = strings["gameplay"]["spy_nightly"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
+copyrights_str = game_text["misc"]["copyrights"]
+spy_nightly = game_text["gameplay"]["spy_nightly"]
 
 
 class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):

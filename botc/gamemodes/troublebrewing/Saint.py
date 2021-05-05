@@ -7,11 +7,10 @@ from botc import AlreadyDead, Character, NonRecurringAction, Outsider, Team
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
-    character_text = json.load(json_file)[TBRole.saint.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.saint.value.lower()]
 
-with open('botc/emojis.json') as json_file:
-    emojis = json.load(json_file)
+from botc import emojis
 
 
 class Saint(Outsider, TroubleBrewing, Character, NonRecurringAction):

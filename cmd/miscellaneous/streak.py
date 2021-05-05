@@ -14,57 +14,48 @@ from discord.ext import commands
 
 import botutils
 from botc.setups import setup
+from botc import game_text, emojis
+from botutils import bot_text
 
 from ._miscellaneous import Miscellaneous
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import STREAK_COOLDOWN
+    
+user_not_found_str = bot_text["errors"]["user_not_found"]
+role_not_found_str = game_text["cmd_warnings"]["role_not_found"]
+ambiguous_user_str = bot_text["errors"]["ambiguous_user"]
+error_str = bot_text["system"]["error"]
 
-    STREAK_COOLDOWN = preferences["duration"]["streak_cooldown"]
+playerstats_footer_str = bot_text["cmd"]["playerstats_footer"]
+playerstats_no_games_str = bot_text["cmd"]["playerstats_no_games"]
+playerstats_no_games_role_str = bot_text["cmd"]["playerstats_no_games_role"]
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
+streak_title = bot_text["cmd"]["streak_title"]
+streak_title_as = bot_text["cmd"]["streak_title_as"]
 
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-    user_not_found_str = language["errors"]["user_not_found"]
-    role_not_found_str = documentation["cmd_warnings"]["role_not_found"]
-    ambiguous_user_str = language["errors"]["ambiguous_user"]
-    error_str = language["system"]["error"]
+good_games_streak_str = bot_text["cmd"]["good_games_streak"]
+evil_games_streak_str = bot_text["cmd"]["evil_games_streak"]
+good_wins_streak_str = bot_text["cmd"]["good_wins_streak"]
+evil_wins_streak_str = bot_text["cmd"]["evil_wins_streak"]
+good_loss_streak_str = bot_text["cmd"]["good_loss_streak"]
+evil_loss_streak_str = bot_text["cmd"]["evil_loss_streak"]
 
-    playerstats_footer_str = language["cmd"]["playerstats_footer"]
-    playerstats_no_games_str = language["cmd"]["playerstats_no_games"]
-    playerstats_no_games_role_str = language["cmd"]["playerstats_no_games_role"]
+game_streak_str = bot_text["cmd"]["game_streak"]
+win_streak_str = bot_text["cmd"]["win_streak"]
+loss_streak_str = bot_text["cmd"]["loss_streak"]
 
-    streak_title = language["cmd"]["streak_title"]
-    streak_title_as = language["cmd"]["streak_title_as"]
+cooldown = bot_text["errors"]["cmd_cooldown"]
 
-    good_games_streak_str = language["cmd"]["good_games_streak"]
-    evil_games_streak_str = language["cmd"]["evil_games_streak"]
-    good_wins_streak_str = language["cmd"]["good_wins_streak"]
-    evil_wins_streak_str = language["cmd"]["evil_wins_streak"]
-    good_loss_streak_str = language["cmd"]["good_loss_streak"]
-    evil_loss_streak_str = language["cmd"]["evil_loss_streak"]
-
-    game_streak_str = language["cmd"]["game_streak"]
-    win_streak_str = language["cmd"]["win_streak"]
-    loss_streak_str = language["cmd"]["loss_streak"]
-
-    cooldown = language["errors"]["cmd_cooldown"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-class Streak(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Streak command cog"""
 
     @commands.command(
         pass_context = True,
         name = "streak",
         aliases = ["streaks", "winstreak"],
-        brief = language["doc"]["streak"]["brief"],
-        help = language["doc"]["streak"]["help"],
-        description = language["doc"]["streak"]["description"]
+        brief = bot_text["doc"]["streak"]["brief"],
+        help = bot_text["doc"]["streak"]["help"],
+        description = bot_text["doc"]["streak"]["description"]
     )
     @commands.cooldown(1, STREAK_COOLDOWN, commands.BucketType.member)
     async def streak(self, ctx, user_or_role: Union[discord.Member, discord.User, str] = None, role=""):

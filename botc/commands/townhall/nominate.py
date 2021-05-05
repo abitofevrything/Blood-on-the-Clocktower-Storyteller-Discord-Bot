@@ -11,20 +11,18 @@ from botc import (AliveOnlyCommand, BOTCUtils, NotAPlayer, NotDay,
                   check_if_is_player, check_if_lobby,
                   check_if_player_apparently_alive)
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
-    nomination_ongoing = documentation["cmd_warnings"]["nomination_ongoing"]
-    nominations_not_open = documentation["cmd_warnings"]["nominations_not_open"]
-    cannot_be_nominated_again = documentation["cmd_warnings"]["cannot_be_nominated_again"]
-    cannot_nominate_again = documentation["cmd_warnings"]["cannot_nominate_again"]
+from botc import game_text
+nomination_ongoing = game_text["cmd_warnings"]["nomination_ongoing"]
+nominations_not_open = game_text["cmd_warnings"]["nominations_not_open"]
+cannot_be_nominated_again = game_text["cmd_warnings"]["cannot_be_nominated_again"]
+cannot_nominate_again = game_text["cmd_warnings"]["cannot_nominate_again"]
 
 
-class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
+class Nominate(commands.Cog, name = game_text["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Nominate command - used for execution
     """
@@ -44,9 +42,9 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         name = "nominate",
         hidden = False,
         aliases = ["nom"],
-        brief = documentation["doc"]["nominate"]["brief"],
-        help = documentation["doc"]["nominate"]["help"],
-        description = documentation["doc"]["nominate"]["description"]
+        brief = game_text["doc"]["nominate"]["brief"],
+        help = game_text["doc"]["nominate"]["help"],
+        description = game_text["doc"]["nominate"]["description"]
     )
     @commands.check(check_if_lobby)  # Correct channel -> NotLobbyChannel
     @commands.check(check_if_is_day)  # Correct phase -> NotDay
@@ -108,19 +106,19 @@ class Nominate(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             return
         # Incorrect argument -> commands.BadArgument
         elif isinstance(error, commands.BadArgument):
-            await ctx.send(documentation["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
         # Incorrect channel -> NotLobbyChannel
         elif isinstance(error, NotLobbyChannel):
-            await ctx.send(documentation["cmd_warnings"]["lobby_only"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["lobby_only"].format(ctx.author.mention, emoji))
         # Player not alive -> AliveOnlyCommand
         elif isinstance(error, AliveOnlyCommand):
-            await ctx.send(documentation["cmd_warnings"]["alive_only"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["alive_only"].format(ctx.author.mention, emoji))
         # Incorrect phase -> NotDay
         elif isinstance(error, NotDay):
-            await ctx.send(documentation["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
         # Missing argument -> commands.MissingRequiredArgument
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(documentation["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
         else:
             try:
                 raise error

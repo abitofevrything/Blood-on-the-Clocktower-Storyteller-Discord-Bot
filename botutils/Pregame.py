@@ -4,10 +4,7 @@ import toml
 
 import globvars
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    SERVER_ID = config["ids"]["server_id"]
+from config import SERVER_ID
 
 
 class Pregame:

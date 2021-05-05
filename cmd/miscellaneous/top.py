@@ -12,40 +12,34 @@ import globvars
 
 from ._miscellaneous import Miscellaneous
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import TOP_LIMIT, TOP_WINRATE_MIN_GAMES
+from botutils import bot_text
 
-    limit = config["commands"]["top"]["limit"]
-    min_games = config["commands"]["top"]["winrate"]["min_games"]
+top_games_str = bot_text["cmd"]["top_games"]
+top_evil_games_str = bot_text["cmd"]["top_evil_games"]
+top_good_games_str = bot_text["cmd"]["top_good_games"]
+top_wins_str = bot_text["cmd"]["top_wins"]
+top_evil_wins_str = bot_text["cmd"]["top_evil_wins"]
+top_good_wins_str = bot_text["cmd"]["top_good_wins"]
+top_winrate_str = bot_text["cmd"]["top_winrate"]
+top_evil_winrate_str = bot_text["cmd"]["top_evil_winrate"]
+top_good_winrate_str = bot_text["cmd"]["top_good_winrate"]
+top_footer_str = bot_text["cmd"]["top_footer"]
+top_footer_winrate_str = bot_text["cmd"]["top_footer_winrate"]
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    top_games_str = language["cmd"]["top_games"]
-    top_evil_games_str = language["cmd"]["top_evil_games"]
-    top_good_games_str = language["cmd"]["top_good_games"]
-    top_wins_str = language["cmd"]["top_wins"]
-    top_evil_wins_str = language["cmd"]["top_evil_wins"]
-    top_good_wins_str = language["cmd"]["top_good_wins"]
-    top_winrate_str = language["cmd"]["top_winrate"]
-    top_evil_winrate_str = language["cmd"]["top_evil_winrate"]
-    top_good_winrate_str = language["cmd"]["top_good_winrate"]
-    top_footer_str = language["cmd"]["top_footer"]
-    top_footer_winrate_str = language["cmd"]["top_footer_winrate"]
-
-    top_usage_str = language["cmd"]["top_usage"]
+top_usage_str = bot_text["cmd"]["top_usage"]
 
 
-class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Top(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Top command cog"""
 
     @commands.group(
         pass_context = True,
         name = "top",
         aliases = [],
-        brief = language["doc"]["top"]["brief"],
-        help = language["doc"]["top"]["help"],
-        description = language["doc"]["top"]["description"]
+        brief = bot_text["doc"]["top"]["brief"],
+        help = bot_text["doc"]["top"]["help"],
+        description = bot_text["doc"]["top"]["description"]
     )
     async def top(self, ctx):
         """Top command"""
@@ -59,9 +53,9 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
             c.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
-            footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, min_games), "" if total_games == 1 else "s")
+            footer = top_footer_str.format(total_games, "" if total_games == 1 else "s") + " · " + top_footer_winrate_str.format(min(total_games, TOP_WINRATE_MIN_GAMES), "" if total_games == 1 else "s")
 
-            actual_min_games = min(total_games, min_games)
+            actual_min_games = min(total_games, TOP_WINRATE_MIN_GAMES)
 
             leaderboard = list()
             c.execute("""
@@ -136,7 +130,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                         precision += 1
 
                 count += 1
-                if count >= limit:
+                if count >= TOP_LIMIT:
                     break
 
             msg = ""
@@ -145,12 +139,12 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 msg += f"{i}. **{discord.utils.escape_markdown(user.name)}** - {winrate * 100:.{precision}f}%\n"
 
             if alignment == "good":
-                title = top_good_winrate_str.format(min(limit, len(leaderboard)))
+                title = top_good_winrate_str.format(min(TOP_LIMIT, len(leaderboard)))
             elif alignment == "evil":
-                title = top_evil_winrate_str.format(min(limit, len(leaderboard)))
+                title = top_evil_winrate_str.format(min(TOP_LIMIT, len(leaderboard)))
             else:
                 assert alignment is None
-                title = top_winrate_str.format(min(limit, len(leaderboard)))
+                title = top_winrate_str.format(min(TOP_LIMIT, len(leaderboard)))
 
             embed = discord.Embed(color=discord.Color.orange(), title=title, description=msg)
             embed.set_footer(text=footer)
@@ -233,7 +227,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 leaderboard.append((count + 1, user, games))
 
                 count += 1
-                if count >= limit:
+                if count >= TOP_LIMIT:
                     break
 
             msg = ""
@@ -242,12 +236,12 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 msg += f"{i}. **{discord.utils.escape_markdown(user.name)}** - {games}\n"
 
             if alignment == "good":
-                title = top_good_games_str.format(min(limit, len(leaderboard)))
+                title = top_good_games_str.format(min(TOP_LIMIT, len(leaderboard)))
             elif alignment == "evil":
-                title = top_evil_games_str.format(min(limit, len(leaderboard)))
+                title = top_evil_games_str.format(min(TOP_LIMIT, len(leaderboard)))
             else:
                 assert alignment is None
-                title = top_games_str.format(min(limit, len(leaderboard)))
+                title = top_games_str.format(min(TOP_LIMIT, len(leaderboard)))
 
             embed = discord.Embed(color=discord.Color.orange(), title=title, description=msg)
             embed.set_footer(text=footer)
@@ -330,7 +324,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 leaderboard.append((count + 1, user, wins))
 
                 count += 1
-                if count >= limit:
+                if count >= TOP_LIMIT:
                     break
 
             msg = ""
@@ -339,12 +333,12 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 msg += f"{i}. **{discord.utils.escape_markdown(user.name)}** - {wins}\n"
 
             if alignment == "good":
-                title = top_good_wins_str.format(min(limit, len(leaderboard)))
+                title = top_good_wins_str.format(min(TOP_LIMIT, len(leaderboard)))
             elif alignment == "evil":
-                title = top_evil_wins_str.format(min(limit, len(leaderboard)))
+                title = top_evil_wins_str.format(min(TOP_LIMIT, len(leaderboard)))
             else:
                 assert alignment is None
-                title = top_wins_str.format(min(limit, len(leaderboard)))
+                title = top_wins_str.format(min(TOP_LIMIT, len(leaderboard)))
 
             embed = discord.Embed(color=discord.Color.orange(), title=title, description=msg)
             embed.set_footer(text=footer)

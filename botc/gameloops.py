@@ -13,67 +13,40 @@ import toml
 from discord.ext import tasks
 
 import botutils
-from botc import ChoppingBlock
+from botc import ChoppingBlock, game_text
+from botutils import bot_text
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import BASE_NIGHT, NIGHT_MULTIPLER, BASE_DAWN, DAWN_MULTIPLIER, VOTE_TIMEOUT, DELETE_VOTE_AFTER, \
+    DEBATE_TIME, INCREMENT, PREFIX, ADMIN_IDS, OWNER_ID, FORCE_VOTES, LYNCH_CARD_COLOR, NO_LYNCH_CARD_COLOR
 
-    # Lengths
-    BASE_NIGHT = preferences["botc"]["base_night"]
-    NIGHT_MULTIPLER = preferences["botc"]["night_multipler"]
-    BASE_DAWN = preferences["botc"]["base_dawn"]
-    DAWN_MULTIPLIER = preferences["botc"]["dawn_multiplier"]
-    VOTE_TIMEOUT = preferences["botc"]["vote_timeout"]
-    DELETE_VOTE_AFTER = preferences["botc"]["delete_vote_after"]
-    DEBATE_TIME = preferences["botc"]["debate_time"]
-    INCREMENT = preferences["botc"]["increment"]
+approved_seal = game_text["images"]["approved_seal"]
+denied_seal = game_text["images"]["denied_seal"]
+ghost_vote_url = game_text["images"]["ghost_vote"]
+blank_token_url = game_text["images"]["blank_token"]
+alive_lynch = game_text["images"]["alive_lynch"]
+alive_no_lynch = game_text["images"]["alive_no_lynch"]
+dead_lynch = game_text["images"]["dead_lynch"]
+dead_no_lynch = game_text["images"]["dead_no_lynch"]
+call_for_vote = game_text["gameplay"]["call_for_vote"]
+votes_stats = game_text["gameplay"]["votes_stats"]
+votes_to_exe = game_text["gameplay"]["votes_to_exe"]
+votes_to_tie = game_text["gameplay"]["votes_to_tie"]
+votes_current = game_text["gameplay"]["votes_current"]
+voted_yes = game_text["gameplay"]["voted_yes"]
+voted_no = game_text["gameplay"]["voted_no"]
+verdict_chopping = game_text["gameplay"]["verdict_chopping"]
+verdict_safe = game_text["gameplay"]["verdict_safe"]
+nomination_intro = game_text["gameplay"]["nomination_intro"]
+vote_summary = game_text["gameplay"]["vote_summary"]
+nomination_short = game_text["gameplay"]["nomination_short"]
+nominations_open = game_text["gameplay"]["nominations_open"]
+nomination_countdown = game_text["gameplay"]["nomination_countdown"]
+day_over_soon = game_text["gameplay"]["day_over_soon"]
+no_execution = game_text["gameplay"]["no_execution"]
+execution = game_text["gameplay"]["execution"]
+copyrights_str = game_text["misc"]["copyrights"]
 
-    # Colors
-    CARD_LYNCH = preferences["colors"]["card_lynch"]
-    CARD_NO_LYNCH = preferences["colors"]["card_no_lynch"]
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    PREFIX = config["bot"]["prefix"]
-    ADMIN_IDS = config["ids"]["admin_ids"]
-    OWNER_ID = config["ids"]["owner_id"]
-    FORCE_VOTES = config["debug"].get("force_votes", False)
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-    approved_seal = documentation["images"]["approved_seal"]
-    denied_seal = documentation["images"]["denied_seal"]
-    ghost_vote_url = documentation["images"]["ghost_vote"]
-    blank_token_url = documentation["images"]["blank_token"]
-    alive_lynch = documentation["images"]["alive_lynch"]
-    alive_no_lynch = documentation["images"]["alive_no_lynch"]
-    dead_lynch = documentation["images"]["dead_lynch"]
-    dead_no_lynch = documentation["images"]["dead_no_lynch"]
-    call_for_vote = documentation["gameplay"]["call_for_vote"]
-    votes_stats = documentation["gameplay"]["votes_stats"]
-    votes_to_exe = documentation["gameplay"]["votes_to_exe"]
-    votes_to_tie = documentation["gameplay"]["votes_to_tie"]
-    votes_current = documentation["gameplay"]["votes_current"]
-    voted_yes = documentation["gameplay"]["voted_yes"]
-    voted_no = documentation["gameplay"]["voted_no"]
-    verdict_chopping = documentation["gameplay"]["verdict_chopping"]
-    verdict_safe = documentation["gameplay"]["verdict_safe"]
-    nomination_intro = documentation["gameplay"]["nomination_intro"]
-    vote_summary = documentation["gameplay"]["vote_summary"]
-    nomination_short = documentation["gameplay"]["nomination_short"]
-    nominations_open = documentation["gameplay"]["nominations_open"]
-    nomination_countdown = documentation["gameplay"]["nomination_countdown"]
-    day_over_soon = documentation["gameplay"]["day_over_soon"]
-    no_execution = documentation["gameplay"]["no_execution"]
-    execution = documentation["gameplay"]["execution"]
-    copyrights_str = documentation["misc"]["copyrights"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
 global botc_game_obj
 
@@ -202,7 +175,7 @@ async def nomination_loop(game, nominator, nominated):
                 )
                 new_embed = discord.Embed(
                     description = msg,
-                    color = CARD_NO_LYNCH
+                    color = NO_LYNCH_CARD_COLOR
                 )
                 new_embed.set_author(name = author_str, icon_url=player.user.avatar_url)
                 if player.is_apparently_alive():
@@ -227,7 +200,7 @@ async def nomination_loop(game, nominator, nominated):
                     player.spend_vote()
                     new_embed = discord.Embed(
                         description = msg,
-                        color = CARD_LYNCH
+                        color = LYNCH_CARD_COLOR
                     )
                     new_embed.set_author(name = author_str, icon_url=player.user.avatar_url)
                     if player.is_apparently_alive():
@@ -244,7 +217,7 @@ async def nomination_loop(game, nominator, nominated):
                     )
                     new_embed = discord.Embed(
                         description = msg,
-                        color = CARD_NO_LYNCH
+                        color = NO_LYNCH_CARD_COLOR
                     )
                     new_embed.set_author(name = author_str, icon_url=player.user.avatar_url)
                     if player.is_apparently_alive():

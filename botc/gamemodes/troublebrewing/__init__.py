@@ -1,5 +1,16 @@
 """Blood on the Clocktower (BoTC) - Trouble Brewing Edition Characters"""
 
+import json
+import sys
+import globvars
+
+try:
+    with open("botc/gamemodes/troublebrewing/character_text.json") as character_texts_file:
+        character_texts = json.load(character_texts_file)
+except FileNotFoundError:
+    globvars.logging.error("Unable to load trouble brewing character text file. Does the file botc/gamemodes/troublebrewing/character_text.json exist?")
+    sys.exit(1)
+
 from .Baron import Baron
 from .Butler import Butler
 from .Chef import Chef

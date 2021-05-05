@@ -8,15 +8,13 @@ from discord.ext import commands
 import botutils
 from botc import Phase
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    error_str = bot_text["system"]["error"]
+from botutils import bot_text
+error_str = bot_text["system"]["error"]
 
 
-class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
+class Fnomination(commands.Cog, name = game_text["misc"]["debug_cog"]):
     """Fnomination command"""
 
     def __init__(self, client):
@@ -30,9 +28,9 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True,
         name = "fnomination",
         hidden = False,
-        brief = documentation["doc"]["fnomination"]["brief"],
-        help = documentation["doc"]["fnomination"]["help"],
-        description = documentation["doc"]["fnomination"]["description"]
+        brief = game_text["doc"]["fnomination"]["brief"],
+        help = game_text["doc"]["fnomination"]["help"],
+        description = game_text["doc"]["fnomination"]["description"]
     )
     async def fnomination(self, ctx):
         """fnomination command"""
@@ -44,7 +42,7 @@ class Fnomination(commands.Cog, name = documentation["misc"]["debug_cog"]):
                 base_day_loop.cancel()
                 import botc.switches
                 botc.switches.master_proceed_to_nomination = True
-                msg = documentation["doc"]["fnomination"]["feedback"].format(botutils.BotEmoji.success)
+                msg = game_text["doc"]["fnomination"]["feedback"].format(botutils.BotEmoji.success)
                 await ctx.send(msg)
 
     @fnomination.error

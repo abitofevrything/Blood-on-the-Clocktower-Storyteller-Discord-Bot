@@ -1,5 +1,16 @@
 """Blood on the Clocktower (BoTC) - Bad Moon Rising Edition Characters"""
 
+import sys
+import json
+import globvars
+
+try:
+    with open("botc/gamemodes/badmoonrising/character_text.json") as character_texts_file:
+        character_texts = json.load(character_texts_file)
+except FileNotFoundError:
+    globvars.logging.error("Unable to load Bad Moon Rising character text file. Does the file botc/gamemodes/badmoonrising/character_text.json exist?")
+    sys.exit(1)
+
 from .Assassin import Assassin
 from .Chambermaid import Chambermaid
 from .Courtier import Courtier

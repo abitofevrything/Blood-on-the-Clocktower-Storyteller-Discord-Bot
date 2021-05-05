@@ -9,29 +9,13 @@ import toml
 from discord.ext import tasks
 
 import botutils
+from botutils import bot_text
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import ALIVE_ROLE_ID, PREFIX, LOBBY_TIMEOUT, TOKEN_RESET, STATUS_CYCLE, START_CLEAR, BACKUP_INTERVAL_MIN, VOTESTOP_CLEAR
 
-    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
-    PREFIX = config["bot"]["prefix"]
-
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
-
-    LOBBY_TIMEOUT = preferences["duration"]["lobby_timeout"]
-    TOKEN_RESET = preferences["duration"]["token_reset"]
-    STATUS_CYCLE = preferences["duration"]["status_cycle"]
-    START_CLEAR = preferences["duration"]["start_clear"]
-    BACKUP_INTERVAL_MIN = preferences["duration"]["backup_interval_min"]
-    VOTESTOP_CLEAR = preferences["duration"]["votestop_clear"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    lobby_timeout_str = language["system"]["lobby_timeout"]
-    not_enough_votes_to_start = language["system"]["not_enough_votes_to_start"]
-    not_enough_votestop_votes = language["system"]["not_enough_votestop_votes"]
+lobby_timeout_str = bot_text["system"]["lobby_timeout"]
+not_enough_votes_to_start = bot_text["system"]["not_enough_votes_to_start"]
+not_enough_votestop_votes = bot_text["system"]["not_enough_votestop_votes"]
 
 VERSION = "v0.4.0-beta"
 

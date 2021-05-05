@@ -8,39 +8,25 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botc import Phase, check_if_is_player
+from botc import Phase, check_if_is_player, game_text
 from botc.gameloops import (base_day_loop, calculate_base_day_duration,
                             debate_timer, nomination_loop)
 from library import display_time
+from botutils import bot_text
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import BASE_NIGHT, NIGHT_MULTIPLER, BASE_DAWN, DAWN_MULTIPLIER, DEBATE_TIME, INCREMENT
 
-    # Lengths
-    BASE_NIGHT = preferences["botc"]["base_night"]
-    NIGHT_MULTIPLER = preferences["botc"]["night_multipler"]
-    BASE_DAWN = preferences["botc"]["base_dawn"]
-    DAWN_MULTIPLIER = preferences["botc"]["dawn_multiplier"]
-    DEBATE_TIME = preferences["botc"]["debate_time"]
-    INCREMENT = preferences["botc"]["increment"]
+error_str = bot_text["system"]["error"]
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-    time_night = documentation["gameplay"]["time_night"]
-    time_dawn = documentation["gameplay"]["time_dawn"]
-    time_day_base = documentation["gameplay"]["time_day_base"]
-    time_voting = documentation["gameplay"]["time_voting"]
-    time_debate = documentation["gameplay"]["time_debate"]
-    time_nomination = documentation["gameplay"]["time_nomination"]
+time_night = game_text["gameplay"]["time_night"]
+time_dawn = game_text["gameplay"]["time_dawn"]
+time_day_base = game_text["gameplay"]["time_day_base"]
+time_voting = game_text["gameplay"]["time_voting"]
+time_debate = game_text["gameplay"]["time_debate"]
+time_nomination = game_text["gameplay"]["time_nomination"]
 
 
-class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
+class Time(commands.Cog, name = game_text["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Time command - used for viewing the time left for each different phase or
     stage of the game
@@ -64,9 +50,9 @@ class Time(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         name = "time",
         aliases = ["t"],
         hidden = False,
-        brief = documentation["doc"]["time"]["brief"],
-        help = documentation["doc"]["time"]["help"],
-        description = documentation["doc"]["time"]["description"]
+        brief = game_text["doc"]["time"]["brief"],
+        help = game_text["doc"]["time"]["help"],
+        description = game_text["doc"]["time"]["description"]
     )
     async def time(self, ctx):
         """Time command

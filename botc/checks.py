@@ -6,10 +6,7 @@ from botc import (AliveOnlyCommand, BOTCUtils, DeadOnlyCommand, NotAPlayer,
                   NotDawn, NotDay, NotDMChannel, NotLobbyChannel, NotNight,
                   RoleCannotUseCommand)
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    LOBBY_CHANNEL_ID = config["ids"]["lobby_channel_id"]
+from config import LOBBY_CHANNEL_ID
 
 
 def check_if_is_player(ctx):

@@ -9,27 +9,18 @@ import toml
 
 import botutils
 import globvars
-from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk
+from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk, game_text, emojis
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.empath.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.empath.value.lower()]
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
+empath_nightly = game_text["gameplay"]["empath_nightly"]
+copyrights_str = game_text["misc"]["copyrights"]
 
-    empath_nightly = strings["gameplay"]["empath_nightly"]
-    copyrights_str = strings["misc"]["copyrights"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 
 class Empath(Townsfolk, TroubleBrewing, Character, NonRecurringAction):

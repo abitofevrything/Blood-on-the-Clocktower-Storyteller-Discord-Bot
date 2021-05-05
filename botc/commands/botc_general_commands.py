@@ -8,24 +8,19 @@ from discord.ext import commands
 
 import botutils
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import NORMAL_CARD_COLOR
+from botc import game_text
 
-    CARD_NORMAL = preferences["colors"]["card_normal"]
-
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
-
-    copyrights_str = strings["misc"]["copyrights"]
-    res_title = strings["misc"]["res_title"]
-    res_desc = strings["misc"]["res_desc"]
-    thumnail = strings["misc"]["thumnail"]
-    wiki = strings["misc"]["wiki"]
-    rulebooks = strings["misc"]["rulebooks"]
-    scripts = strings["misc"]["scripts"]
-    social_medias = strings["misc"]["social_medias"].format(
-        botutils.BotEmoji.facebook, botutils.BotEmoji.youtube, botutils.BotEmoji.twitter, botutils.BotEmoji.reddit
-    )
+copyrights_str = game_text["misc"]["copyrights"]
+res_title = game_text["misc"]["res_title"]
+res_desc = game_text["misc"]["res_desc"]
+thumnail = game_text["misc"]["thumnail"]
+wiki = game_text["misc"]["wiki"]
+rulebooks = game_text["misc"]["rulebooks"]
+scripts = game_text["misc"]["scripts"]
+social_medias = game_text["misc"]["social_medias"].format(
+    botutils.BotEmoji.facebook, botutils.BotEmoji.youtube, botutils.BotEmoji.twitter, botutils.BotEmoji.reddit
+)
 
 
 class BOTCGeneralCommands(commands.Cog, name="BoTC Commands"):
@@ -53,7 +48,7 @@ class BOTCGeneralCommands(commands.Cog, name="BoTC Commands"):
         aliases = ["resources", "res"]
     )
     async def resource(self, ctx):
-        embed=discord.Embed(title = res_title, description = res_desc, color = CARD_NORMAL)
+        embed=discord.Embed(title = res_title, description = res_desc, color = NORMAL_CARD_COLOR)
         embed.set_thumbnail(url = thumnail)
         embed.add_field(name = "Wiki", value = wiki, inline = False)
         embed.add_field(name = "Rulebooks", value = rulebooks, inline = False)

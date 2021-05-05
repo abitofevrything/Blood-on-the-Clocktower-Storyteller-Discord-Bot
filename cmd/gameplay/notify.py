@@ -11,39 +11,29 @@ from discord.ext import commands
 
 import botutils
 from library import display_time
+from botutils import bot_text
 
 from ._gameplay import Gameplay
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import SERVER_ID, NOTIFY_COOLDOWN
 
-    SERVER_ID = config["ids"]["server_id"]
-
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
-
-    NOTIFY_COOLDOWN = preferences["duration"]["notify_cooldown"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
-    cooldown_str = language["errors"]["cmd_cooldown"]
-    already_in_notify = language["errors"]["already_in_notify"]
-    already_not_notify = language["errors"]["already_not_notify"]
-    add_notify = language["cmd"]["add_notify"]
-    remove_notify = language["cmd"]["remove_notify"]
+error_str = bot_text["system"]["error"]
+cooldown_str = bot_text["errors"]["cmd_cooldown"]
+already_in_notify = bot_text["errors"]["already_in_notify"]
+already_not_notify = bot_text["errors"]["already_not_notify"]
+add_notify = bot_text["cmd"]["add_notify"]
+remove_notify = bot_text["cmd"]["remove_notify"]
 
 
-class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
+class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Notify command cog"""
 
     @commands.group(
         pass_context = True,
         name = "notify",
-        brief = language["doc"]["notify"]["notify"]["brief"],
-        help = language["doc"]["notify"]["notify"]["help"],
-        description = language["doc"]["notify"]["notify"]["description"]
+        brief = bot_text["doc"]["notify"]["notify"]["brief"],
+        help = bot_text["doc"]["notify"]["notify"]["help"],
+        description = bot_text["doc"]["notify"]["notify"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     @commands.check(botutils.check_if_not_in_game)
@@ -97,9 +87,9 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
         pass_context = True,
         name = "add",
         aliases = ["+", "true"],
-        brief = language["doc"]["notify"]["add"]["brief"],
-        help = language["doc"]["notify"]["add"]["help"],
-        description = language["doc"]["notify"]["add"]["description"]
+        brief = bot_text["doc"]["notify"]["add"]["brief"],
+        help = bot_text["doc"]["notify"]["add"]["help"],
+        description = bot_text["doc"]["notify"]["add"]["description"]
     )
     async def add(self, ctx):
         """Add the user to the notify list"""
@@ -119,9 +109,9 @@ class Notify(Gameplay, name = language["system"]["gameplay_cog"]):
         pass_context = True,
         name = "remove",
         aliases = ["-", "false"],
-        brief = language["doc"]["notify"]["remove"]["brief"],
-        help = language["doc"]["notify"]["remove"]["help"],
-        description = language["doc"]["notify"]["remove"]["description"]
+        brief = bot_text["doc"]["notify"]["remove"]["brief"],
+        help = bot_text["doc"]["notify"]["remove"]["help"],
+        description = bot_text["doc"]["notify"]["remove"]["description"]
     )
     async def remove(self, ctx):
         """Remove the user from the notify list"""

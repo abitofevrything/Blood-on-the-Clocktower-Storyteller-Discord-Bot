@@ -5,19 +5,13 @@ import math
 
 from discord.ext import commands
 
-from botc import check_if_is_player
-from botutils import check_if_lobby, votestop_votes_timer, send_lobby
+from botc import check_if_is_player, game_text
+from botutils import check_if_lobby, votestop_votes_timer, send_lobby, bot_text
 
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-with open("botutils/bot_text.json") as json_file:
-    bot_text = json.load(json_file)
-
-    votestop_vote = bot_text["cmd"]["votestop_vote"]
+votestop_vote = bot_text["cmd"]["votestop_vote"]
 
 
-class Votestop(commands.Cog, name = documentation["misc"]["townhall_cog"]):
+class Votestop(commands.Cog, name = game_text["misc"]["townhall_cog"]):
 
     def __init__(self, client):
         self.client = client
@@ -34,9 +28,9 @@ class Votestop(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         name = "votestop",
         aliases = ["vs"],
         hidden = False,
-        brief = documentation["doc"]["votestop"]["brief"],
-        help = documentation["doc"]["votestop"]["help"],
-        description = documentation["doc"]["votestop"]["description"]
+        brief = game_text["doc"]["votestop"]["brief"],
+        help = game_text["doc"]["votestop"]["help"],
+        description = game_text["doc"]["votestop"]["description"]
     )
     @commands.check(check_if_lobby)
     async def votestop(self, ctx):

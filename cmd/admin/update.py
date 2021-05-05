@@ -9,14 +9,11 @@ import traceback
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
+error_str = bot_text["system"]["error"]
 
-    error_str = language["system"]["error"]
-
-
-class Update(commands.Cog, name = language["system"]["admin_cog"]):
+class Update(commands.Cog, name = bot_text["system"]["admin_cog"]):
     """Update command"""
 
     def __init__(self, client):
@@ -30,9 +27,9 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
         pass_context = True,
         name = "update",
         hidden = False,
-        brief = language["doc"]["update"]["brief"],
-        help = language["doc"]["update"]["help"],
-        description = language["doc"]["update"]["description"]
+        brief = bot_text["doc"]["update"]["brief"],
+        help = bot_text["doc"]["update"]["help"],
+        description = bot_text["doc"]["update"]["description"]
     )
     async def update(self, ctx):
         """Update command"""
@@ -50,7 +47,7 @@ class Update(commands.Cog, name = language["system"]["admin_cog"]):
             await ctx.send(f"```{output}```")
 
         if p.returncode != 0:
-            await ctx.send(language["cmd"]["update_exitcode"].format(p.returncode))
+            await ctx.send(bot_text["cmd"]["update_exitcode"].format(p.returncode))
             return
 
         if b"Already up to date" in p.stdout:

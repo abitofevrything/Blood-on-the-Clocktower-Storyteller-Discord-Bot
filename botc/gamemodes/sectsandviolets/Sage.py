@@ -6,8 +6,8 @@ from botc import Character, Townsfolk
 
 from ._utils import SectsAndViolets, SnVRole
 
-with open('botc/gamemodes/sectsandviolets/character_text.json') as json_file:
-    character_text = json.load(json_file)[SnVRole.sage.value.lower()]
+from . import character_texts
+character_text = character_texts[SnVRole.sage.value.lower()]
 
 
 class Sage(Townsfolk, SectsAndViolets, Character):

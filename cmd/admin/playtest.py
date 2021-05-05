@@ -6,12 +6,7 @@ from discord.ext import commands
 import botutils
 
 from ._admin import Admin
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    PLAYTESTERS = config["commands"]["playtest"].get("playtesters", [])
-
+from config import PLAYTESTERS
 
 class Playtest(Admin):
     """Playtest command"""

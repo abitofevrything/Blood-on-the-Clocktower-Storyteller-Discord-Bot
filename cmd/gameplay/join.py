@@ -12,12 +12,11 @@ from botutils import lobby_timeout
 
 from ._gameplay import Gameplay
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-    joined_str = language["cmd"]["joined"]
-    joined_alt_str = language["cmd"]["joined_alt"]
-    error_str = language["system"]["error"]
+joined_str = bot_text["cmd"]["joined"]
+joined_alt_str = bot_text["cmd"]["joined_alt"]
+error_str = bot_text["system"]["error"]
 
 emojis = [
     botutils.BotEmoji.char1,
@@ -37,16 +36,16 @@ emojis = [
 ]
 
 
-class Join(Gameplay, name = language["system"]["gameplay_cog"]):
+class Join(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Join command cog"""
 
     @commands.command(
         pass_context = True,
         name = "join",
         aliases = ["j"],
-        brief = language["doc"]["join"]["brief"],
-        help = language["doc"]["join"]["help"],
-        description = language["doc"]["join"]["description"]
+        brief = bot_text["doc"]["join"]["brief"],
+        help = bot_text["doc"]["join"]["help"],
+        description = bot_text["doc"]["join"]["description"]
     )
     @commands.check(botutils.check_if_lobby)
     @commands.check(botutils.check_if_not_in_game)
@@ -98,8 +97,8 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
 
             globvars.master_state.pregame.safe_add_player(ctx.author.id)
             botutils.update_state_machine()
-            join_replies = language["doc"]["join"]["outputs"]
-            join_weights = language["doc"]["join"]["weights"]
+            join_replies = bot_text["doc"]["join"]["outputs"]
+            join_weights = bot_text["doc"]["join"]["weights"]
 
             if join_weights:
                 join_reply = random.choices(

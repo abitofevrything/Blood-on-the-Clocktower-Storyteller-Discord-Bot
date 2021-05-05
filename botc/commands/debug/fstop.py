@@ -7,15 +7,13 @@ from discord.ext import commands
 
 import botutils
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    error_str = bot_text["system"]["error"]
+from botutils import bot_text
+error_str = bot_text["system"]["error"]
 
 
-class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
+class Fstop(commands.Cog, name = game_text["misc"]["debug_cog"]):
     """Fstop command"""
 
     def __init__(self, client):
@@ -29,9 +27,9 @@ class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True,
         name = "fstop",
         hidden = False,
-        brief = documentation["doc"]["fstop"]["brief"],
-        help = documentation["doc"]["fstop"]["help"],
-        description = documentation["doc"]["fstop"]["description"]
+        brief = game_text["doc"]["fstop"]["brief"],
+        help = game_text["doc"]["fstop"]["help"],
+        description = game_text["doc"]["fstop"]["description"]
     )
     async def fstop(self, ctx):
         """Fstop command"""
@@ -54,10 +52,10 @@ class Fstop(commands.Cog, name = documentation["misc"]["debug_cog"]):
         import globvars
         if globvars.master_state.game.gameloop.is_running():
             globvars.master_state.game.gameloop.cancel()
-            feedback = documentation["doc"]["fstop"]["feedback"]
+            feedback = game_text["doc"]["fstop"]["feedback"]
             await ctx.send(feedback.format(botutils.BotEmoji.check))
         else:
-            feedback = documentation["cmd_warnings"]["no_game_running"]
+            feedback = game_text["cmd_warnings"]["no_game_running"]
             await ctx.send(feedback.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
     @fstop.error

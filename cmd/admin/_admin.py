@@ -7,15 +7,14 @@ from discord.ext import commands
 
 import botutils
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-user_not_found_str = language["errors"]["user_not_found"]
-missing_user_str = language["errors"]["missing_user"]
-error_str = language["system"]["error"]
+user_not_found_str = bot_text["errors"]["user_not_found"]
+missing_user_str = bot_text["errors"]["missing_user"]
+error_str = bot_text["system"]["error"]
 
 
-class Admin(commands.Cog, name = language["system"]["admin_cog"]):
+class Admin(commands.Cog, name = bot_text["system"]["admin_cog"]):
     """Admins only commands cog"""
 
     def __init__(self, client):

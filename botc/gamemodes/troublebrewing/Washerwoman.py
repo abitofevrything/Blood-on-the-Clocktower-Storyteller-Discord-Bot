@@ -9,27 +9,18 @@ import toml
 
 import botutils
 import globvars
-from botc import BOTCUtils, Category, Character, NonRecurringAction, Townsfolk
+from botc import BOTCUtils, Category, Character, NonRecurringAction, Townsfolk, emojis, game_text
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.washerwoman.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.washerwoman.value.lower()]
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
+washerwoman_init = game_text["gameplay"]["washerwoman_init"]
+copyrights_str = game_text["misc"]["copyrights"]
 
-    washerwoman_init = strings["gameplay"]["washerwoman_init"]
-    copyrights_str = strings["misc"]["copyrights"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 
 class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):

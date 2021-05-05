@@ -8,39 +8,33 @@ import toml
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
 from ._admin import Admin
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import PREFIX, SERVER_ID
 
-    PREFIX = config["bot"]["prefix"]
-    SERVER_ID = config["ids"]["server_id"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    add_ignore = language["cmd"]["add_ignore"]
-    remove_ignore = language["cmd"]["remove_ignore"]
-    already_ignored = language["cmd"]["already_ignored"]
-    not_ignored = language["cmd"]["not_ignored"]
-    ignore_list_empty = language["cmd"]["ignore_list_empty"]
-    people_total = language["cmd"]["people_total"]
-    clear_ignore = language["cmd"]["clear_ignore"]
-    force_clear = language["cmd"]["force_clear"]
-    ignore_sync = language["cmd"]["ignore_sync"]
+add_ignore = bot_text["cmd"]["add_ignore"]
+remove_ignore = bot_text["cmd"]["remove_ignore"]
+already_ignored = bot_text["cmd"]["already_ignored"]
+not_ignored = bot_text["cmd"]["not_ignored"]
+ignore_list_empty = bot_text["cmd"]["ignore_list_empty"]
+people_total = bot_text["cmd"]["people_total"]
+clear_ignore = bot_text["cmd"]["clear_ignore"]
+force_clear = bot_text["cmd"]["force_clear"]
+ignore_sync = bot_text["cmd"]["ignore_sync"]
 
 
-class Ignore(Admin, name = language["system"]["admin_cog"]):
+class Ignore(Admin, name = bot_text["system"]["admin_cog"]):
     """Ignore command"""
 
     @commands.group(
         pass_context = True,
         name = "ignore",
         aliases = ["fignore"],
-        brief = language["doc"]["ignore"]["ignore"]["brief"],
-        help = language["doc"]["ignore"]["ignore"]["help"],
-        description = language["doc"]["ignore"]["ignore"]["description"]
+        brief = bot_text["doc"]["ignore"]["ignore"]["brief"],
+        help = bot_text["doc"]["ignore"]["ignore"]["help"],
+        description = bot_text["doc"]["ignore"]["ignore"]["description"]
     )
     async def ignore(self, ctx):
         """If no subcommand is invoked, display the list of ignored users"""
@@ -76,9 +70,9 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
         pass_context = True,
         name = "add",
         aliases = ["+"],
-        brief = language["doc"]["ignore"]["add"]["brief"],
-        help = language["doc"]["ignore"]["add"]["help"],
-        description = language["doc"]["ignore"]["add"]["description"]
+        brief = bot_text["doc"]["ignore"]["add"]["brief"],
+        help = bot_text["doc"]["ignore"]["add"]["help"],
+        description = bot_text["doc"]["ignore"]["add"]["description"]
     )
     async def add(self, ctx, *, member: discord.Member):
         """Add a user into the ignore list"""
@@ -107,9 +101,9 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
         pass_context = True,
         name = "remove",
         aliases = ["-"],
-        brief = language["doc"]["ignore"]["remove"]["brief"],
-        help = language["doc"]["ignore"]["remove"]["help"],
-        description = language["doc"]["ignore"]["remove"]["description"]
+        brief = bot_text["doc"]["ignore"]["remove"]["brief"],
+        help = bot_text["doc"]["ignore"]["remove"]["help"],
+        description = bot_text["doc"]["ignore"]["remove"]["description"]
     )
     async def remove(self, ctx, *, member: discord.Member):
         """Remove a user from the ignore list"""
@@ -137,9 +131,9 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     @ignore.command(
         pass_context = True,
         name = "sync",
-        brief = language["doc"]["ignore"]["sync"]["brief"],
-        help = language["doc"]["ignore"]["sync"]["help"],
-        description = language["doc"]["ignore"]["sync"]["description"]
+        brief = bot_text["doc"]["ignore"]["sync"]["brief"],
+        help = bot_text["doc"]["ignore"]["sync"]["help"],
+        description = bot_text["doc"]["ignore"]["sync"]["description"]
     )
     async def sync(self, ctx):
         """Remove users that are not in the server"""
@@ -165,9 +159,9 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     @ignore.group(
         pass_context = True,
         name = "clear",
-        brief = language["doc"]["ignore"]["clear"]["brief"],
-        help = language["doc"]["ignore"]["clear"]["help"],
-        description = language["doc"]["ignore"]["clear"]["description"]
+        brief = bot_text["doc"]["ignore"]["clear"]["brief"],
+        help = bot_text["doc"]["ignore"]["clear"]["help"],
+        description = bot_text["doc"]["ignore"]["clear"]["description"]
     )
     async def clear(self, ctx):
         """Clear the ignore list"""
@@ -188,9 +182,9 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
     @clear.command(
         pass_context = True,
         name = "--force",
-        brief = language["doc"]["ignore"]["--force"]["brief"],
-        help = language["doc"]["ignore"]["--force"]["help"],
-        description = language["doc"]["ignore"]["--force"]["description"]
+        brief = bot_text["doc"]["ignore"]["--force"]["brief"],
+        help = bot_text["doc"]["ignore"]["--force"]["help"],
+        description = bot_text["doc"]["ignore"]["--force"]["description"]
     )
     async def force(self, ctx):
         """Force flag for the clear subcommand"""

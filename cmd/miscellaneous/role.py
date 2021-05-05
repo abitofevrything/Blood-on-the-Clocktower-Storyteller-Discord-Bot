@@ -9,22 +9,20 @@ import botutils
 
 from ._miscellaneous import Miscellaneous
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
-
-class Role(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Role(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Role command cog"""
 
     @commands.command(
         pass_context = True,
         name = "role",
         aliases = ["roles", "character", "characters", "char"],
-        brief = language["doc"]["role"]["brief"],
-        help = language["doc"]["role"]["help"],
-        description = language["doc"]["role"]["description"]
+        brief = bot_text["doc"]["role"]["brief"],
+        help = bot_text["doc"]["role"]["help"],
+        description = bot_text["doc"]["role"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_spec_or_dm_or_admin)
     async def role(self, ctx, *, role_name):
@@ -32,7 +30,6 @@ class Role(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
         import globvars
         found = botutils.find_role_in_all(role_name)
-
         # We did not find the role, send them the whole list
         if found is None:
             await ctx.send(globvars.master_state.game_packs["botc"]["formatter"].create_complete_roles_list())

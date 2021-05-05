@@ -1,5 +1,23 @@
 """Blood on the Clocktower (BoTC) game specific mechanics"""
 
+import json
+import globvars
+import sys
+
+try:
+    with open("botc/game_text.json") as game_text_file:
+        game_text = json.load(game_text_file)
+except FileNotFoundError:
+    globvars.logging.error("Game text file not found. Does the file botc/game_text.json exist?")
+    sys.exit(1)
+
+try:
+    with open("botc/emojis.json") as emojis_file:
+        emojis = json.load(emojis_file)
+except FileNotFoundError:
+    globvars.logging.error("Game text file not found. Does the file botc/game_text.json exist?")
+    sys.exit(1)
+
 from .abilities import Action, ActionGrid, ActionTypes
 from .BOTCUtils import (AbilityForbidden, AliveOnlyCommand, BOTCUtils,
                         DeadOnlyCommand, GameLogic, LorePicker, NotAPlayer,

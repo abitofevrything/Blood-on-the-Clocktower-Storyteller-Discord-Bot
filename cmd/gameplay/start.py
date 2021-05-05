@@ -10,23 +10,22 @@ from botutils import start_votes_timer
 
 from ._gameplay import Gameplay
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
-fstart_min = language["errors"]["fstart_min"]
-fstart_max = language["errors"]["fstart_max"]
-start_str = language["cmd"]["start"]
+error_str = bot_text["system"]["error"]
+fstart_min = bot_text["errors"]["fstart_min"]
+fstart_max = bot_text["errors"]["fstart_max"]
+start_str = bot_text["cmd"]["start"]
 
-class Start(Gameplay, name = language["system"]["gameplay_cog"]):
+class Start(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Start command cog"""
 
     @commands.command(
         pass_context = True,
         name = "start",
-        brief = language["doc"]["start"]["brief"],
-        help = language["doc"]["start"]["help"],
-        description = language["doc"]["start"]["description"]
+        brief = bot_text["doc"]["start"]["brief"],
+        help = bot_text["doc"]["start"]["help"],
+        description = bot_text["doc"]["start"]["description"]
     )
     @commands.check(botutils.check_if_lobby)
     @commands.check(botutils.check_if_is_pregame_player)

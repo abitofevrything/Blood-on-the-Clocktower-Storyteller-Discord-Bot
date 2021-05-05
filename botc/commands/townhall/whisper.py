@@ -12,32 +12,23 @@ import botutils
 import globvars
 from botc import (BOTCUtils, NotAPlayer, NotDay, NotDMChannel, PlayerConverter,
                   WhisperConverter, WhisperTooLong, check_if_dm,
-                  check_if_is_day, check_if_is_player)
+                  check_if_is_day, check_if_is_player, game_text)
 from library import display_time
+from botutils import bot_text
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import WHISPER_COOLDOWN, WHISPER_SHOW_TIME
 
-    WHISPER_COOLDOWN = preferences["botc"]["whisper_cooldown"]
-    WHISPER_SHOW_TIME = preferences["botc"]["whisper_show_time"]
+error_str = bot_text["system"]["error"]
+cooldown = bot_text["errors"]["cmd_cooldown"]
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
-    cooldown = language["errors"]["cmd_cooldown"]
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-    recipient_blocked = documentation["cmd_warnings"]["recipient_blocked"]
-    whisper_announcement = documentation["gameplay"]["whisper_announcement"]
-    from_str = documentation["gameplay"]["from"]
-    to_str = documentation["gameplay"]["to"]
-    whisper_self = documentation["cmd_warnings"]["whisper_self"]
+recipient_blocked = game_text["cmd_warnings"]["recipient_blocked"]
+whisper_announcement = game_text["gameplay"]["whisper_announcement"]
+from_str = game_text["gameplay"]["from"]
+to_str = game_text["gameplay"]["to"]
+whisper_self = game_text["cmd_warnings"]["whisper_self"]
 
 
-class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
+class Whisper(commands.Cog, name = game_text["misc"]["townhall_cog"]):
     """Whisper command"""
 
     def __init__(self, client):
@@ -56,9 +47,9 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         aliases = ["w"],
         hidden = False,
         cooldown_after_parsing = True,
-        brief = documentation["doc"]["whisper"]["brief"],
-        help = documentation["doc"]["whisper"]["help"],
-        description = documentation["doc"]["whisper"]["description"]
+        brief = game_text["doc"]["whisper"]["brief"],
+        help = game_text["doc"]["whisper"]["help"],
+        description = game_text["doc"]["whisper"]["description"]
     )
     @commands.cooldown(1, WHISPER_COOLDOWN, commands.BucketType.channel)
     @commands.check(check_if_is_day)  # Correct phase -> NotDay
@@ -66,7 +57,7 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
     async def whisper(self, ctx, recipient: PlayerConverter(), *, content: WhisperConverter()):
         """Whisper command"""
         if globvars.master_state.game.nomination_iteration_date:
-            await ctx.author.send(documentation["cmd_warnings"]["whisper_not_allowed_during_noms"].format(botutils.BotEmoji.x_emoji, ctx.author.mention))
+            await ctx.author.send(game_text["cmd_warnings"]["whisper_not_allowed_during_noms"].format(botutils.BotEmoji.x_emoji, ctx.author.mention))
             return
 
         player = BOTCUtils.get_player_from_id(ctx.author.id)
@@ -119,16 +110,16 @@ class Whisper(commands.Cog, name = documentation["misc"]["townhall_cog"]):
             await ctx.send(cooldown.format(ctx.author.mention, emoji, display_time(int(ctx.command.get_cooldown_retry_after(ctx)))))
         # Incorrect argument -> commands.BadArgument
         elif isinstance(error, commands.BadArgument):
-            await ctx.send(documentation["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["player_not_found"].format(ctx.author.mention, emoji))
         # Incorrect phase -> NotDay
         elif isinstance(error, NotDay):
-            await ctx.send(documentation["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
         # Missing argument -> commands.MissingRequiredArgument
         elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.send(documentation["cmd_warnings"]["whisper_missing_args"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["whisper_missing_args"].format(ctx.author.mention, emoji))
         # Whisper too long -> WhisperTooLong
         elif isinstance(error, WhisperTooLong):
-            await ctx.send(documentation["cmd_warnings"]["whisper_too_long"].format(ctx.author.mention, emoji))
+            await ctx.send(game_text["cmd_warnings"]["whisper_too_long"].format(ctx.author.mention, emoji))
         else:
             try:
                 raise error

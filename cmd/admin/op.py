@@ -8,20 +8,19 @@ import botutils
 
 from ._admin import Admin
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
 
-class Op(Admin, name = language["system"]["admin_cog"]):
+class Op(Admin, name = bot_text["system"]["admin_cog"]):
     """Op command"""
 
     @commands.command(
         pass_context = True,
         name = "op",
         aliases = ["fop"],
-        brief = language["doc"]["op"]["brief"],
-        help = language["doc"]["op"]["help"],
-        description = language["doc"]["op"]["description"]
+        brief = bot_text["doc"]["op"]["brief"],
+        help = bot_text["doc"]["op"]["help"],
+        description = bot_text["doc"]["op"]["description"]
     )
     async def op(self, ctx):
         """Give the admin role to the user"""

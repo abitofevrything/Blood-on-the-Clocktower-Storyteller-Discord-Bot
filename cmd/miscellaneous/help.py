@@ -2,10 +2,9 @@
 
 from discord.ext import commands
 import json
+from botutils import bot_text
 
-with open("botutils/bot_text.json") as json_file:
-    strings = json.load(json_file)
-    help_str = strings["cmd"]["help"]
+help_str = bot_text["cmd"]["help"]
 
 class Help(commands.DefaultHelpCommand):
 

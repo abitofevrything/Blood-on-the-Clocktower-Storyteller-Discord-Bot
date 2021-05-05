@@ -8,22 +8,21 @@ import botutils
 
 from ._admin import Admin
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-fstart_min = language["errors"]["fstart_min"]
-fstart_max = language["errors"]["fstart_max"]
+fstart_min = bot_text["errors"]["fstart_min"]
+fstart_max = bot_text["errors"]["fstart_max"]
 
 
-class Fstart(Admin, name = language["system"]["admin_cog"]):
+class Fstart(Admin, name = bot_text["system"]["admin_cog"]):
     """Fstart command"""
 
     @commands.command(
         pass_context = True,
         name = "fstart",
-        brief = language["doc"]["fstart"]["brief"],
-        help = language["doc"]["fstart"]["help"],
-        description = language["doc"]["fstart"]["description"]
+        brief = bot_text["doc"]["fstart"]["brief"],
+        help = bot_text["doc"]["fstart"]["help"],
+        description = bot_text["doc"]["fstart"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def fstart(self, ctx):

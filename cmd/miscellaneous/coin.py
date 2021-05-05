@@ -9,26 +9,25 @@ import botutils
 
 from ._miscellaneous import Miscellaneous
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
 
-class Coin(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Coin(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Coin command"""
 
     @commands.command(
         pass_context = True,
         name = "coin",
-        brief = language["doc"]["coin"]["brief"],
-        help = language["doc"]["coin"]["help"],
-        description = language["doc"]["coin"]["description"]
+        brief = bot_text["doc"]["coin"]["brief"],
+        help = bot_text["doc"]["coin"]["help"],
+        description = bot_text["doc"]["coin"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def coin(self, ctx):
         """Flip a coin."""
 
-        coin_replies = language["doc"]["coin"]["outputs"]
-        coin_weights = language["doc"]["coin"]["weights"]
+        coin_replies = bot_text["doc"]["coin"]["outputs"]
+        coin_weights = bot_text["doc"]["coin"]["weights"]
         coin_reply = random.choices(
             coin_replies,
             weights=coin_weights

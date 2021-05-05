@@ -28,6 +28,8 @@ import globvars  # isort: split
 import botc
 import botutils
 import cmd
+from config import TOKEN, OWNER_ID, PREFIX, DISABLE_PINGS
+from botutils import bot_text
 
 if __name__ == "__main__":
     try:
@@ -51,13 +53,6 @@ if __name__ == "__main__":
 
     atexit.register(remove_pidfile)
 
-    with open("config.toml") as fd:
-        config = toml.load(fd)
-
-        TOKEN = config["bot"]["token"]
-        OWNER_ID = config["ids"]["owner_id"]
-        PREFIX = config["bot"]["prefix"]
-
     globvars.init_client()
     globvars.init_master_state()
 
@@ -68,19 +63,16 @@ if __name__ == "__main__":
             return PREFIX
 
     # The help command
-    with open('botutils/bot_text.json') as json_file:
-        language = json.load(json_file)
-
     help_command = cmd.Help(
         verify_checks = False,
         show_hidden = False,
         dm_help = None,
         dm_help_threshold = 700,
-        no_category = language["system"]["others_cog"],
+        no_category = bot_text["system"]["others_cog"],
         command_attrs = {
-            "brief" : language["doc"]["help"]["brief"],
-            "help" : language["doc"]["help"]["help"],
-            "description" : language["doc"]["help"]["description"]
+            "brief" : bot_text["doc"]["help"]["brief"],
+            "help" : bot_text["doc"]["help"]["help"],
+            "description" : bot_text["doc"]["help"]["description"]
         }
     )
 
@@ -88,7 +80,7 @@ if __name__ == "__main__":
     intents.members = True
     intents.presences = True
 
-    if config["debug"].get("disable_pings", False):
+    if DISABLE_PINGS:
         allowed_mentions = discord.AllowedMentions.none()
     else:
         allowed_mentions = discord.AllowedMentions(everyone=False)

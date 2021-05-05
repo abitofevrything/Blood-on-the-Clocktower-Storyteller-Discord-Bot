@@ -12,14 +12,12 @@ from botutils import BotEmoji
 
 from discord.ext import commands
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
-    error_str = language["system"]["error"]
+from botutils import bot_text
+error_str = bot_text["system"]["error"]
 
-class RevealRole(commands.Cog, name = documentation["misc"]["debug_cog"]):
+class RevealRole(commands.Cog, name = game_text["misc"]["debug_cog"]):
 
     def __init__(self, client):
         self.client = client
@@ -31,9 +29,9 @@ class RevealRole(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True,
         name = "revealrole",
         aliases = ["rr", "revealroles"],
-        brief = documentation["doc"]["modkill"]["brief"],
-        help = documentation["doc"]["modkill"]["help"],
-        description = documentation["doc"]["modkill"]["description"]
+        brief = game_text["doc"]["modkill"]["brief"],
+        help = game_text["doc"]["modkill"]["help"],
+        description = game_text["doc"]["modkill"]["description"]
     )
     async def reveal_roles(self, ctx, target: str):
         if target == 'all':

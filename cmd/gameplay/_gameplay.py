@@ -6,11 +6,10 @@ from discord.ext import commands
 
 import botutils
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
 
-class Gameplay(commands.Cog, name = language["system"]["gameplay_cog"]):
+class Gameplay(commands.Cog, name = bot_text["system"]["gameplay_cog"]):
     """Gameplay commands cog"""
 
     def __init__(self, client):

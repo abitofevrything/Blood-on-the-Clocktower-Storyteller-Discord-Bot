@@ -8,27 +8,18 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botc import Townsquare as TownsquareImage
+from botc import Townsquare as TownsquareImage, game_text
 from library import display_time
+from botutils import bot_text
 
-with open("preferences.toml") as fd:
-    preferences = toml.load(fd)
+from config import TOWNSQUARE_COOLDOWN
 
-    TOWNSQUARE_COOLDOWN = preferences["botc"]["townsquare_cooldown"]
+error_str = bot_text["system"]["error"]
+cooldown = bot_text["errors"]["cmd_cooldown"]
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
+townsquare_loading = game_text["cmd_warnings"]["townsquare_loading"]
 
-    error_str = language["system"]["error"]
-    cooldown = language["errors"]["cmd_cooldown"]
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-    townsquare_loading = documentation["cmd_warnings"]["townsquare_loading"]
-
-
-class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):
+class Townsquare(commands.Cog, name = game_text["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Townsquare command - used for viewing the townsquare image
     """
@@ -52,9 +43,9 @@ class Townsquare(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         name = "townsquare",
         aliases = ["ts"],
         hidden = False,
-        brief = documentation["doc"]["townsquare"]["brief"],
-        help = documentation["doc"]["townsquare"]["help"],
-        description = documentation["doc"]["townsquare"]["description"]
+        brief = game_text["doc"]["townsquare"]["brief"],
+        help = game_text["doc"]["townsquare"]["help"],
+        description = game_text["doc"]["townsquare"]["description"]
     )
     @commands.cooldown(1, TOWNSQUARE_COOLDOWN, commands.BucketType.channel)
     async def townsquare(self, ctx):

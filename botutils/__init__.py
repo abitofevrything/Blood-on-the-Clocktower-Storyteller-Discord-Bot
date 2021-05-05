@@ -1,5 +1,16 @@
 """Bot utility functions"""
 
+import json
+import globvars
+import sys
+
+try:
+    with open("botutils/bot_text.json") as bot_text_file:
+        bot_text = json.load(bot_text_file)
+except FileNotFoundError:
+    globvars.logging.error("Bot text file not found. Does the file botutils/bot_text.json exist?")
+    sys.exit(1)
+
 from .adds import (add_admin_role, add_alive_role, add_dead_role, lock_lobby,
                    remove_admin_role, remove_alive_role,
                    remove_all_alive_dead_roles_after_game,

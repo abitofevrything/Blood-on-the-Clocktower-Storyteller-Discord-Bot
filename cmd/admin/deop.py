@@ -8,20 +8,19 @@ import botutils
 
 from ._admin import Admin
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
 
-class Deop(Admin, name = language["system"]["admin_cog"]):
+class Deop(Admin, name = bot_text["system"]["admin_cog"]):
     """Deop command"""
 
     @commands.command(
         pass_context = True,
         name = "deop",
         aliases = ["fdeop"],
-        brief = language["doc"]["deop"]["brief"],
-        help = language["doc"]["deop"]["help"],
-        description = language["doc"]["deop"]["description"]
+        brief = bot_text["doc"]["deop"]["brief"],
+        help = bot_text["doc"]["deop"]["help"],
+        description = bot_text["doc"]["deop"]["description"]
     )
     async def deop(self, ctx):
         """Remove the admin role from the user"""

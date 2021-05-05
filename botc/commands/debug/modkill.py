@@ -10,28 +10,20 @@ from discord.ext import commands
 
 import botutils
 import globvars
-from botc import AlreadyDead, Category, PlayerConverter, PlayerNotFound
+from botc import AlreadyDead, Category, PlayerConverter, PlayerNotFound, game_text
 from botc.BOTCUtils import BOTCUtils
 from botc.gamemodes.troublebrewing import Imp
+from botutils import bot_text
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import DISABLE_DMS, NO_INVALIDATE
 
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-with open("botutils/bot_text.json") as json_file:
-    bot_text = json.load(json_file)
-
-    error_str = bot_text["system"]["error"]
+error_str = bot_text["system"]["error"]
 
 x_emoji = botutils.BotEmoji.x_emoji
 check_emoji = botutils.BotEmoji.check
 
 
-class Modkill(commands.Cog, name = documentation["misc"]["debug_cog"]):
+class Modkill(commands.Cog, name = game_text["misc"]["debug_cog"]):
     """Modkill command"""
 
     def __init__(self, client):
@@ -45,9 +37,9 @@ class Modkill(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True,
         name = "modkill",
         hidden = False,
-        brief = documentation["doc"]["modkill"]["brief"],
-        help = documentation["doc"]["modkill"]["help"],
-        description = documentation["doc"]["modkill"]["description"]
+        brief = game_text["doc"]["modkill"]["brief"],
+        help = game_text["doc"]["modkill"]["help"],
+        description = game_text["doc"]["modkill"]["description"]
     )
     async def modkill(self, ctx, *, player: PlayerConverter):
         """Modkill command"""
@@ -79,22 +71,22 @@ class Modkill(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
         await player.exec_real_death()
         player.ghost_vote = 0
-        if not config["debug"].get("no_invalidate", False):
+        if not NO_INVALIDATE:
             globvars.master_state.game.invalidated = True
-        feedback = documentation["doc"]["modkill"]["feedback"]
+        feedback = game_text["doc"]["modkill"]["feedback"]
         await ctx.send(feedback.format(check_emoji, player.game_nametag))
 
     @modkill.error
     async def modkill_error(self, ctx, error):
         """Modkill command error handling"""
         if isinstance(error, commands.MissingRequiredArgument):
-            msg = documentation["cmd_warnings"]["missing_arguments"]
+            msg = game_text["cmd_warnings"]["missing_arguments"]
             await ctx.send(msg.format(ctx.author.mention, x_emoji))
         elif isinstance(error, PlayerNotFound):
-            msg = documentation["cmd_warnings"]["player_not_found"]
+            msg = game_text["cmd_warnings"]["player_not_found"]
             await ctx.send(msg.format(ctx.author.mention, x_emoji))
         elif isinstance(error, AlreadyDead):
-            msg = documentation["cmd_warnings"]["already_dead"]
+            msg = game_text["cmd_warnings"]["already_dead"]
             await ctx.send(msg.format(ctx.author.mention, x_emoji))
         elif isinstance(error, commands.CheckFailure):
             return

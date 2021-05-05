@@ -9,26 +9,25 @@ import botutils
 
 from ._miscellaneous import Miscellaneous
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
 
-class Dog(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Dog(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
     """Dog command"""
 
     @commands.command(
         pass_context = True,
         name = "dog",
-        brief = language["doc"]["dog"]["brief"],
-        help = language["doc"]["dog"]["help"],
-        description = language["doc"]["dog"]["description"]
+        brief = bot_text["doc"]["dog"]["brief"],
+        help = bot_text["doc"]["dog"]["help"],
+        description = bot_text["doc"]["dog"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def dog(self, ctx):
         """Flip a dog."""
 
-        dog_replies = language["doc"]["dog"]["outputs"]
-        dog_weights = language["doc"]["dog"]["weights"]
+        dog_replies = bot_text["doc"]["dog"]["outputs"]
+        dog_weights = bot_text["doc"]["dog"]["weights"]
         dog_reply = random.choices(
             dog_replies,
             weights=dog_weights

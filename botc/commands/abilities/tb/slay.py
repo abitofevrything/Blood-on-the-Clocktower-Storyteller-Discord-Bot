@@ -13,16 +13,14 @@ from botc import (AbilityForbidden, AliveOnlyCommand, BOTCUtils, NotAPlayer,
                   check_if_lobby, check_if_player_really_alive)
 from botutils import BotEmoji
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
 
-class Slay(commands.Cog, name = documentation["misc"]["abilities_cog"]):
+class Slay(commands.Cog, name = game_text["misc"]["abilities_cog"]):
     """BoTC in-game commands cog
     Slay command - used by slayer
     """
@@ -41,9 +39,9 @@ class Slay(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         pass_context = True,
         name = "slay",
         hidden = False,
-        brief = documentation["doc"]["slay"]["brief"],
-        help = documentation["doc"]["slay"]["help"],
-        description = documentation["doc"]["slay"]["description"]
+        brief = game_text["doc"]["slay"]["brief"],
+        help = game_text["doc"]["slay"]["help"],
+        description = game_text["doc"]["slay"]["description"]
     )
     @commands.check(check_if_lobby)  # Correct channel -> NotLobbyChannel
     @commands.check(check_if_is_day)  # Correct phase -> NotDay
@@ -76,19 +74,19 @@ class Slay(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         # Incorrect channel -> NotLobbyChannel
         elif isinstance(error, NotLobbyChannel):
             try:
-                await ctx.author.send(documentation["cmd_warnings"]["lobby_only"].format(ctx.author.mention, emoji))
+                await ctx.author.send(game_text["cmd_warnings"]["lobby_only"].format(ctx.author.mention, emoji))
             except discord.Forbidden:
                 pass
         # Incorrect phase -> NotDay
         elif isinstance(error, NotDay):
             try:
-                await ctx.author.send(documentation["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
+                await ctx.author.send(game_text["cmd_warnings"]["day_only"].format(ctx.author.mention, emoji))
             except discord.Forbidden:
                 pass
         # Player not alive -> AliveOnlyCommand
         elif isinstance(error, AliveOnlyCommand):
             try:
-                await ctx.author.send(documentation["cmd_warnings"]["alive_only"].format(ctx.author.mention, emoji))
+                await ctx.author.send(game_text["cmd_warnings"]["alive_only"].format(ctx.author.mention, emoji))
             except discord.Forbidden:
                 pass
         # Missing argument -> commands.MissingRequiredArgument

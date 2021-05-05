@@ -7,21 +7,15 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, Character, Minion, Poison,
-                  RecurringAction)
+                  RecurringAction, emojis)
 from botc.BOTCUtils import GameLogic
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.poisoner.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.poisoner.value.lower()]
 
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
     """Poisoner: Each night, choose a player, their ability malfunctions tonight and tomorrow day.

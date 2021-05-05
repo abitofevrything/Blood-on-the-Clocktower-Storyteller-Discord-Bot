@@ -11,24 +11,23 @@ from botutils import lobby_timeout
 
 from ._admin import Admin
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-fjoin_str = language["cmd"]["fjoin"]
-fjoined_str = language["cmd"]["fjoined"]
-fjoin_max = language["errors"]["fjoin_max"]
-cant_fjoin_bot = language["errors"]["cant_fjoin_bot"]
+fjoin_str = bot_text["cmd"]["fjoin"]
+fjoined_str = bot_text["cmd"]["fjoined"]
+fjoin_max = bot_text["errors"]["fjoin_max"]
+cant_fjoin_bot = bot_text["errors"]["cant_fjoin_bot"]
 
 
-class Fjoin(Admin, name = language["system"]["admin_cog"]):
+class Fjoin(Admin, name = bot_text["system"]["admin_cog"]):
     """Fjoin command"""
 
     @commands.command(
         pass_context = True,
         name = "fjoin",
-        brief = language["doc"]["fjoin"]["brief"],
-        help = language["doc"]["fjoin"]["help"],
-        description = language["doc"]["fjoin"]["description"]
+        brief = bot_text["doc"]["fjoin"]["brief"],
+        help = bot_text["doc"]["fjoin"]["help"],
+        description = bot_text["doc"]["fjoin"]["description"]
     )
     async def fjoin(self, ctx, *members: Union[discord.Member, discord.User, str]):
         """Force join command"""

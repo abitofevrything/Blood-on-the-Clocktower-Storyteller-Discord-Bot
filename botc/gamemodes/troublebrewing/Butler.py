@@ -8,26 +8,17 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, BOTCUtils, ButlerService, Character,
-                  Outsider, RecurringAction)
+                  Outsider, RecurringAction, game_text, emojis)
 from botc.BOTCUtils import GameLogic
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.butler.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.butler.value.lower()]
 
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
+action_assign = game_text["gameplay"]["action_assign"]
 
-    action_assign = documentation["gameplay"]["action_assign"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 
 class Butler(Outsider, TroubleBrewing, Character, RecurringAction):

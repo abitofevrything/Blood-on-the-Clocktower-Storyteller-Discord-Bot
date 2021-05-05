@@ -10,26 +10,24 @@ import botutils
 from botc import Phase, RoleGuide
 from library import fancy
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
-    current_phase = documentation["gameplay"]["current_phase"]
-    stats_tied = documentation["gameplay"]["stats_tied"]
-    stats_no_one = documentation["gameplay"]["stats_no_one"]
-    stats_chopping = documentation["gameplay"]["stats_chopping"]
-    stats_header = documentation["gameplay"]["stats_header"]
-    votes_stats = documentation["gameplay"]["votes_stats"]
-    stats_1 = documentation["gameplay"]["stats_1"]
-    stats_2 = documentation["gameplay"]["stats_2"]
-    stats_3 = documentation["gameplay"]["stats_3"]
-    setup_info = documentation["gameplay"]["setup_info"]
+from botc import game_text
+current_phase = game_text["gameplay"]["current_phase"]
+stats_tied = game_text["gameplay"]["stats_tied"]
+stats_no_one = game_text["gameplay"]["stats_no_one"]
+stats_chopping = game_text["gameplay"]["stats_chopping"]
+stats_header = game_text["gameplay"]["stats_header"]
+votes_stats = game_text["gameplay"]["votes_stats"]
+stats_1 = game_text["gameplay"]["stats_1"]
+stats_2 = game_text["gameplay"]["stats_2"]
+stats_3 = game_text["gameplay"]["stats_3"]
+setup_info = game_text["gameplay"]["setup_info"]
 
 
-class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
+class Stats(commands.Cog, name = game_text["misc"]["townhall_cog"]):
     """BoTC in-game commands cog
     Stats command - used for viewing the game's player statistics
     """
@@ -52,9 +50,9 @@ class Stats(commands.Cog, name = documentation["misc"]["townhall_cog"]):
         pass_context = True,
         name = "stats",
         hidden = False,
-        brief = documentation["doc"]["stats"]["brief"],
-        help = documentation["doc"]["stats"]["help"],
-        description = documentation["doc"]["stats"]["description"]
+        brief = game_text["doc"]["stats"]["brief"],
+        help = game_text["doc"]["stats"]["help"],
+        description = game_text["doc"]["stats"]["description"]
     )
     async def stats(self, ctx):
         """Stats command

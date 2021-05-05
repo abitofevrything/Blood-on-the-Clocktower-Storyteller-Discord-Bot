@@ -8,10 +8,9 @@ from discord.ext import commands
 
 import botutils
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
 
 class on_command_error(commands.Cog):

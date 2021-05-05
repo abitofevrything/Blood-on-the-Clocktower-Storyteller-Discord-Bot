@@ -11,19 +11,11 @@ import toml
 
 import botutils
 import globvars
+from botutils import bot_text
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import SERVER_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID
 
-    SERVER_ID = config["ids"]["server_id"]
-    ALIVE_ROLE_ID = config["ids"]["alive_role_id"]
-    DEAD_ROLE_ID = config["ids"]["dead_role_id"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
-
+error_str = bot_text["system"]["error"]
 
 class AmbiguousUserError(Exception):
     pass
@@ -166,10 +158,10 @@ def get_member_from_string(string):
 
 async def restart_bot(ctx, notify=True, force=False):
     if globvars.master_state.game and not force:
-        return await ctx.send(language["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.x_emoji))
+        return await ctx.send(bot_text["cmd"]["frestart_confirm"].format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
     if notify:
-        await ctx.send(language["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))
+        await ctx.send(bot_text["cmd"]["frestart"].format(ctx.author.mention, botutils.BotEmoji.success))
 
     try:
         os.unlink("botc.pid")

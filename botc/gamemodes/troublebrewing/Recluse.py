@@ -9,11 +9,10 @@ from botc import Character, Demon, Minion, NonRecurringAction, Outsider
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
-    character_text = json.load(json_file)[TBRole.recluse.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.recluse.value.lower()]
 
-with open('botc/emojis.json') as json_file:
-    emojis = json.load(json_file)
+from botc import emojis
 
 
 class Recluse(Outsider, TroubleBrewing, Character, NonRecurringAction):

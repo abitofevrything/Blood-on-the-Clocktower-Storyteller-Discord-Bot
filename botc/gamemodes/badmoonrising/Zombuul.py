@@ -8,20 +8,17 @@ import discord
 import botutils
 import globvars
 from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, GameLogic,
-                  Outsider, RecurringAction, StatusList, Townsfolk)
+                  Outsider, RecurringAction, StatusList, Townsfolk, game_text)
 
 from ._utils import BadMoonRising, BMRRole
 
-with open('botc/gamemodes/badmoonrising/character_text.json') as json_file:
-    character_text = json.load(json_file)[BMRRole.zombuul.value.lower()]
+from . import character_texts
+character_text = character_texts[BMRRole.zombuul.value.lower()]
 
-with open('botc/game_text.json') as json_file:
-    strings = json.load(json_file)
-    demon_bluff_str = strings["gameplay"]["demonbluffs"]
-    action_assign = strings["gameplay"]["action_assign"]
+demon_bluff_str = game_text["gameplay"]["demonbluffs"]
+action_assign = game_text["gameplay"]["action_assign"]
 
-with open('botc/emojis.json') as json_file:
-    emojis = json.load(json_file)
+from botc import emojis
 
 
 class Zombuul(Demon, BadMoonRising, Character, RecurringAction):

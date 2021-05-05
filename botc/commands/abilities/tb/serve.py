@@ -13,16 +13,14 @@ from botc import (AbilityForbidden, AliveOnlyCommand, BOTCUtils, NotAPlayer,
                   check_if_is_player, check_if_player_really_alive)
 from botutils import BotEmoji
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
 
-class Serve(commands.Cog, name = documentation["misc"]["abilities_cog"]):
+class Serve(commands.Cog, name = game_text["misc"]["abilities_cog"]):
     """BoTC in-game commands cog
     Serve command - used by butler
     """
@@ -41,9 +39,9 @@ class Serve(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         pass_context = True,
         name = "serve",
         hidden = False,
-        brief = documentation["doc"]["serve"]["brief"],
-        help = documentation["doc"]["serve"]["help"],
-        description = documentation["doc"]["serve"]["description"]
+        brief = game_text["doc"]["serve"]["brief"],
+        help = game_text["doc"]["serve"]["help"],
+        description = game_text["doc"]["serve"]["description"]
     )
     @commands.check(check_if_is_night)  # Correct phase -> NotNight
     @commands.check(check_if_dm)  # Correct channel -> NotDMChannel
@@ -79,13 +77,13 @@ class Serve(commands.Cog, name = documentation["misc"]["abilities_cog"]):
         # Incorrect phase -> NotNight
         elif isinstance(error, NotNight):
             try:
-                await ctx.author.send(documentation["cmd_warnings"]["night_only"].format(ctx.author.mention, emoji))
+                await ctx.author.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, emoji))
             except discord.Forbidden:
                 pass
         # Player not alive -> AliveOnlyCommand
         elif isinstance(error, AliveOnlyCommand):
             try:
-                await ctx.author.send(documentation["cmd_warnings"]["alive_only"].format(ctx.author.mention, emoji))
+                await ctx.author.send(game_text["cmd_warnings"]["alive_only"].format(ctx.author.mention, emoji))
             except discord.Forbidden:
                 pass
         # Missing argument -> commands.MissingRequiredArgument

@@ -8,15 +8,13 @@ from botc import (Category, Character, Flags, Inventory, NonRecurringAction,
 
 from ._utils import TBRole, TroubleBrewing
 
-with open('botc/gamemodes/troublebrewing/character_text.json') as json_file:
-    character_text = json.load(json_file)[TBRole.virgin.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.virgin.value.lower()]
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
-    immediately_executed = documentation["gameplay"]["immediately_executed"]
+from botc import game_text
+immediately_executed = game_text["gameplay"]["immediately_executed"]
 
-with open('botc/emojis.json') as json_file:
-    emojis = json.load(json_file)
+from botc import emojis
 
 
 class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):

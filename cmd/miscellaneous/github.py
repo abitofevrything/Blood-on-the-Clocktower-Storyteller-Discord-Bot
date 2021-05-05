@@ -8,21 +8,20 @@ import botutils
 
 from ._miscellaneous import Miscellaneous
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-github_str = language["cmd"]["github"]
+github_str = bot_text["cmd"]["github"]
 
 
-class Github(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
+class Github(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
 
     @commands.command(
         pass_context = True,
         name = "github",
         aliases = ["git"],
-        brief = language["doc"]["github"]["brief"],
-        help = language["doc"]["github"]["help"],
-        description = language["doc"]["github"]["description"]
+        brief = bot_text["doc"]["github"]["brief"],
+        help = bot_text["doc"]["github"]["help"],
+        description = bot_text["doc"]["github"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
     async def github(self, ctx):

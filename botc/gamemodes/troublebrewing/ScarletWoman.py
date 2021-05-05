@@ -7,20 +7,14 @@ import toml
 
 import botutils
 import globvars
-from botc import (Character, Minion, NonRecurringAction)
+from botc import (Character, Minion, NonRecurringAction, emojis)
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.scarletwoman.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.scarletwoman.value.lower()]
 
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 
 class ScarletWoman(Minion, TroubleBrewing, Character, NonRecurringAction):

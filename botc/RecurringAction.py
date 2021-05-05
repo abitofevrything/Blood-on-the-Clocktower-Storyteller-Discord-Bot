@@ -1,25 +1,18 @@
 """Contains the Recurring Action class"""
 
 import datetime
-import json
 
 import discord
 import toml
 
 import botutils
-from botc import BOTCUtils
+from botc import BOTCUtils, game_text
+
+from config import DISABLE_DMS
 
 butterfly = botutils.BotEmoji.butterfly
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
-
-    copyrights_str = strings["misc"]["copyrights"]
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+copyrights_str = game_text["misc"]["copyrights"]
 
 
 # ------- For Night -------

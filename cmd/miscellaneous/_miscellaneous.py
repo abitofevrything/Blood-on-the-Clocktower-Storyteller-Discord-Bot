@@ -7,13 +7,12 @@ from discord.ext import commands
 
 import botutils
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
 
-class Miscellaneous(commands.Cog, name = language["system"]["miscellaneous_cog"]):
+class Miscellaneous(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
     """Miscellaneous commands cog"""
 
     def __init__(self, client):

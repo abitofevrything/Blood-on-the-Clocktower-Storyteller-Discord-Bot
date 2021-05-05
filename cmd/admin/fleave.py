@@ -12,26 +12,22 @@ from botutils import lobby_timeout, start_votes_timer
 
 from ._admin import Admin
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-fleave_str = language["cmd"]["fleave"]
-fleaved_str = language["cmd"]["fleaved"]
+fleave_str = bot_text["cmd"]["fleave"]
+fleaved_str = bot_text["cmd"]["fleaved"]
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import SERVER_ID
 
-    SERVER_ID = config["ids"]["server_id"]
-
-class Fleave(Admin, name = language["system"]["admin_cog"]):
+class Fleave(Admin, name = bot_text["system"]["admin_cog"]):
     """Fleave command"""
 
     @commands.command(
         pass_context = True,
         name = "fleave",
-        brief = language["doc"]["fleave"]["brief"],
-        help = language["doc"]["fleave"]["help"],
-        description = language["doc"]["fleave"]["description"]
+        brief = bot_text["doc"]["fleave"]["brief"],
+        help = bot_text["doc"]["fleave"]["help"],
+        description = bot_text["doc"]["fleave"]["description"]
     )
     async def fleave(self, ctx, *, member: Union[discord.Member, str]):
         """Force leave command"""

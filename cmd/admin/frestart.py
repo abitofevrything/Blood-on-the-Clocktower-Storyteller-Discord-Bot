@@ -9,14 +9,12 @@ from discord.ext import commands
 
 import botutils
 import globvars
+from botutils import bot_text
 
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
+error_str = bot_text["system"]["error"]
 
 
-class Frestart(commands.Cog, name = language["system"]["admin_cog"]):
+class Frestart(commands.Cog, name = bot_text["system"]["admin_cog"]):
     """Frestart command"""
 
     def __init__(self, client):
@@ -30,9 +28,9 @@ class Frestart(commands.Cog, name = language["system"]["admin_cog"]):
         pass_context = True,
         name = "frestart",
         hidden = False,
-        brief = language["doc"]["frestart"]["frestart"]["brief"],
-        help = language["doc"]["frestart"]["frestart"]["help"],
-        description = language["doc"]["frestart"]["frestart"]["description"]
+        brief = bot_text["doc"]["frestart"]["frestart"]["brief"],
+        help = bot_text["doc"]["frestart"]["frestart"]["help"],
+        description = bot_text["doc"]["frestart"]["frestart"]["description"]
     )
     async def frestart(self, ctx, arg=None):
         """Frestart command"""

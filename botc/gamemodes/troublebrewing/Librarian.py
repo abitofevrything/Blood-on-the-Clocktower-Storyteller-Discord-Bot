@@ -10,29 +10,22 @@ import toml
 import botutils
 import globvars
 from botc import (BOTCUtils, Category, Character, NonRecurringAction, Outsider,
-                  Townsfolk)
+                  Townsfolk, game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.librarian.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.librarian.value.lower()]
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
+librarian_init = game_text["gameplay"]["librarian_init"]
+librarian_init_zero = game_text["gameplay"]["librarian_init_zero"]
+copyrights_str = game_text["misc"]["copyrights"]
+blank_token = game_text["images"]["blank_token"]
 
-    librarian_init = strings["gameplay"]["librarian_init"]
-    librarian_init_zero = strings["gameplay"]["librarian_init_zero"]
-    copyrights_str = strings["misc"]["copyrights"]
-    blank_token = strings["images"]["blank_token"]
+from botc import emojis
 
-with open('botc/emojis.json') as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Librarian: You start knowing that 1 of 2 players is a particular Outsider.

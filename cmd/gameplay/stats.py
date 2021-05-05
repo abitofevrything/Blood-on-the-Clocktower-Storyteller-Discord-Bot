@@ -7,32 +7,26 @@ import toml
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
 from ._gameplay import Gameplay
 
+from config import PREFIX
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    PREFIX = config["bot"]["prefix"]
-
-with open("botutils/bot_text.json") as json_file:
-    language = json.load(json_file)
-
-    error_str = language["system"]["error"]
-    no_game = language["cmd"]["no_game"]
+error_str = bot_text["system"]["error"]
+no_game = bot_text["cmd"]["no_game"]
 
 
-class Stats(Gameplay, name = language["system"]["gameplay_cog"]):
+class Stats(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Stats command cog"""
 
     @commands.command(
         pass_context = True,
         name = "stats",
         aliases = ["statistics"],
-        brief = language["doc"]["stats"]["brief"],
-        help = language["doc"]["stats"]["help"],
-        description = language["doc"]["stats"]["description"]
+        brief = bot_text["doc"]["stats"]["brief"],
+        help = bot_text["doc"]["stats"]["help"],
+        description = bot_text["doc"]["stats"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_spec_or_dm_or_admin)
     async def stats(self, ctx):

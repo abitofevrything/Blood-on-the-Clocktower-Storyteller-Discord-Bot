@@ -10,24 +10,23 @@ from botutils import lobby_timeout, start_votes_timer
 
 from ._gameplay import Gameplay
 
-with open('botutils/bot_text.json') as json_file:
-    language = json.load(json_file)
+from botutils import bot_text
 
-quit_str = language["cmd"]["quit"]
-quitted_str = language["cmd"]["quitted"]
-error_str = language["system"]["error"]
+quit_str = bot_text["cmd"]["quit"]
+quitted_str = bot_text["cmd"]["quitted"]
+error_str = bot_text["system"]["error"]
 
 
-class Quit(Gameplay, name = language["system"]["gameplay_cog"]):
+class Quit(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Quit command cog"""
 
     @commands.command(
         pass_context = True,
         name = "quit",
         aliases = ["q", "leave"],
-        brief = language["doc"]["quit"]["brief"],
-        help = language["doc"]["quit"]["help"],
-        description = language["doc"]["quit"]["description"]
+        brief = bot_text["doc"]["quit"]["brief"],
+        help = bot_text["doc"]["quit"]["help"],
+        description = bot_text["doc"]["quit"]["description"]
     )
     @commands.check(botutils.check_if_lobby)
     async def quit(self, ctx):

@@ -11,28 +11,19 @@ import botutils
 import globvars
 from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, Minion,
                   NonRecurringAction, Outsider, RavenkeeperActivated,
-                  StatusList, Townsfolk)
+                  StatusList, Townsfolk, game_text, emojis)
 from botc.BOTCUtils import GameLogic
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from ._utils import TBRole, TroubleBrewing
 
-with open("botc/gamemodes/troublebrewing/character_text.json") as json_file:
-    character_text = json.load(json_file)[TBRole.ravenkeeper.value.lower()]
+from . import character_texts
+character_text = character_texts[TBRole.ravenkeeper.value.lower()]
 
-with open("botc/game_text.json") as json_file:
-    strings = json.load(json_file)
+copyrights_str = game_text["misc"]["copyrights"]
+ravenkeeper_reply = game_text["gameplay"]["ravenkeeper_reply"]
 
-    copyrights_str = strings["misc"]["copyrights"]
-    ravenkeeper_reply = strings["gameplay"]["ravenkeeper_reply"]
-
-with open("botc/emojis.json") as json_file:
-    emojis = json.load(json_file)
-
-with open("config.toml") as fd:
-    config = toml.load(fd)
-
-    DISABLE_DMS = config["debug"].get("disable_dms", False)
+from config import DISABLE_DMS
 
 
 class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):

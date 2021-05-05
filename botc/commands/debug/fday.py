@@ -8,15 +8,13 @@ from discord.ext import commands
 import botutils
 from botc import Phase
 
-with open('botc/game_text.json') as json_file:
-    documentation = json.load(json_file)
+from botc import game_text
 
-with open('botutils/bot_text.json') as json_file:
-    bot_text = json.load(json_file)
-    error_str = bot_text["system"]["error"]
+from botutils import bot_text
+error_str = bot_text["system"]["error"]
 
 
-class Fday(commands.Cog, name = documentation["misc"]["debug_cog"]):
+class Fday(commands.Cog, name = game_text["misc"]["debug_cog"]):
     """Fday command"""
 
     def __init__(self, client):
@@ -30,9 +28,9 @@ class Fday(commands.Cog, name = documentation["misc"]["debug_cog"]):
         pass_context = True,
         name = "fday",
         hidden = False,
-        brief = documentation["doc"]["fday"]["brief"],
-        help = documentation["doc"]["fday"]["help"],
-        description = documentation["doc"]["fday"]["description"]
+        brief = game_text["doc"]["fday"]["brief"],
+        help = game_text["doc"]["fday"]["help"],
+        description = game_text["doc"]["fday"]["description"]
     )
     async def fday(self, ctx):
         """Fnight command"""
@@ -42,7 +40,7 @@ class Fday(commands.Cog, name = documentation["misc"]["debug_cog"]):
 
             import botc.switches
             botc.switches.master_proceed_to_day = True
-            msg = documentation["doc"]["fday"]["feedback"].format(botutils.BotEmoji.success)
+            msg = game_text["doc"]["fday"]["feedback"].format(botutils.BotEmoji.success)
 
             await ctx.send(msg)
 

@@ -1,7 +1,6 @@
 """Contains some BoTC game related utility functions"""
 
 import asyncio
-import json
 import random
 
 import toml
@@ -11,24 +10,19 @@ from botutils import BotEmoji
 
 from .Category import Category
 
-with open("config.toml") as fd:
-    config = toml.load(fd)
+from config import MAX_MESSAGE_LENGTH
+from botc import game_text
 
-    MAX_MESSAGE_LEN = config["bot"]["max_message_len"]
-
-with open("botc/game_text.json") as json_file:
-    documentation = json.load(json_file)
-
-    player_not_found = documentation["cmd_warnings"]["player_not_found"]
-    no_self_targetting_str = documentation["cmd_warnings"]["no_self_targetting_str"]
-    except_first_night_str = documentation["cmd_warnings"]["except_first_night_str"]
-    requires_one_target_str = documentation["cmd_warnings"]["requires_one_target_str"]
-    requires_two_targets_str = documentation["cmd_warnings"]["requires_two_targets_str"]
-    requires_different_targets_str = documentation["cmd_warnings"]["requires_different_targets_str"]
-    changes_not_allowed = documentation["cmd_warnings"]["changes_not_allowed"]
-    unique_ability_used = documentation["cmd_warnings"]["unique_ability_used"]
-    not_under_status = documentation["cmd_warnings"]["not_under_status"]
-    lore = documentation["lore"]
+player_not_found = game_text["cmd_warnings"]["player_not_found"]
+no_self_targetting_str = game_text["cmd_warnings"]["no_self_targetting_str"]
+except_first_night_str = game_text["cmd_warnings"]["except_first_night_str"]
+requires_one_target_str = game_text["cmd_warnings"]["requires_one_target_str"]
+requires_two_targets_str = game_text["cmd_warnings"]["requires_two_targets_str"]
+requires_different_targets_str = game_text["cmd_warnings"]["requires_different_targets_str"]
+changes_not_allowed = game_text["cmd_warnings"]["changes_not_allowed"]
+unique_ability_used = game_text["cmd_warnings"]["unique_ability_used"]
+not_under_status = game_text["cmd_warnings"]["not_under_status"]
+lore = game_text["lore"]
 
 x_emoji = BotEmoji.x_emoji
 
@@ -56,7 +50,7 @@ class Targets(list):
 def get_number_image(nb):
     """Get a random bloodied number image corresponding to the input integer"""
     assert nb in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0], "Number received is not a digit"
-    numbers = documentation["numbers"]
+    numbers = game_text["numbers"]
     possibilities = numbers[str(nb)]
     chosen = random.choice(possibilities)
     return chosen
@@ -417,7 +411,7 @@ class WhisperConverter(commands.Converter):
 
     async def convert(self, ctx, argument):
         """Convert to a string while also checking for the maximum length"""
-        if len(argument) > max(MAX_MESSAGE_LEN - 120, 0):
+        if len(argument) > max(MAX_MESSAGE_LENGTH - 120, 0):
             raise WhisperTooLong("Whisper is too long")
         return argument
 
