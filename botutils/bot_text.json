@@ -6,6 +6,7 @@
         "uptime" : "{} The current uptime is **{}**.",
         "join" : "**{}** joined the game and raised the number of players to **{}**.",
         "joined" : "{} You are already in the game!",
+        "joined_alt" : "{} You have already joined the game as **{}**.",
         "quit" : "**{}** left the game. There are **{}** players remaining.",
         "quitted" : "{} You are already not in the game!",
         "fjoin" : "**{}** was forced to join the game and raised the number of players to **{}**.",

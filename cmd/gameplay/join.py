@@ -2,6 +2,7 @@
 
 import json
 import random
+import sqlite3
 import traceback
 
 from discord.ext import commands
@@ -11,11 +12,12 @@ from botutils import lobby_timeout
 
 from ._gameplay import Gameplay
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     language = json.load(json_file)
 
-joined_str = language["cmd"]["joined"]
-error_str = language["system"]["error"]
+    joined_str = language["cmd"]["joined"]
+    joined_alt_str = language["cmd"]["joined_alt"]
+    error_str = language["system"]["error"]
 
 emojis = [
     botutils.BotEmoji.char1,
@@ -64,6 +66,36 @@ class Join(Gameplay, name = language["system"]["gameplay_cog"]):
 
         # The command user has not joined yet; make them join
         else:
+            user_ids = set()
+
+            with sqlite3.connect("data.sqlite3") as conn:
+                c = conn.cursor()
+
+                c.execute("""
+                SELECT
+                    primary_user_id,
+                    secondary_user_id
+                FROM
+                    player_map
+                WHERE
+                    primary_user_id = :user_id
+                    OR secondary_user_id = :user_id
+                """, {
+                    "user_id": ctx.author.id,
+                })
+
+                for row in c.fetchall():
+                    primary, secondary = row
+
+                    user_ids.add(primary)
+                    user_ids.add(secondary)
+
+            for user_id in globvars.master_state.pregame:
+                if user_id in user_ids:
+                    user = globvars.client.get_user(user_id)
+                    await ctx.send(joined_alt_str.format(ctx.author.mention, str(user)))
+                    return
+
             globvars.master_state.pregame.safe_add_player(ctx.author.id)
             botutils.update_state_machine()
             join_replies = language["doc"]["join"]["outputs"]
