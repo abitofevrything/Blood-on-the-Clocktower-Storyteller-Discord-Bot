@@ -57,7 +57,10 @@ class Ignore(Admin, name = language["system"]["admin_cog"]):
 
                     for row in rows:
                         userid = row[0]
+
                         user = globvars.client.get_user(userid)
+                        if not user:
+                            continue
 
                         msg += f"**{user.name}**#**{user.discriminator}** `({userid})`"
                         msg += ", "
