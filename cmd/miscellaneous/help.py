@@ -13,4 +13,4 @@ class Help(commands.DefaultHelpCommand):
 
     async def prepare_help_command(self, ctx, command):
         await ctx.send(help_str.format(ctx.author.mention))
-        super().prepare_help_command(ctx, command)
+        await super().prepare_help_command(ctx, command)
