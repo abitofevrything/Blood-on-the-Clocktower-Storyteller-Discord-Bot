@@ -30,8 +30,12 @@ limit = 15
 [commands.top.winrate]
 min_games = 15
 
-[debug]
 # Do not enable these for real games. Only enable them for testing.
+[debug]
 disable_pings = false
 disable_dms = false
-force_votes = false  # Allow admins to vote on behalf of others
+# Allow admins to vote on behalf of others
+force_votes = false
+# By default, enabling any debug options will invalidate the game.
+# You can use this to force the games to count anyway.
+no_invalidate = false

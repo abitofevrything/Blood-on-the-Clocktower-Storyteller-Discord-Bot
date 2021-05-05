@@ -4,15 +4,19 @@ import json
 import traceback
 
 import discord
+import toml
 from discord.ext import commands
 
 import botutils
 from botc import PlayerConverter, PlayerNotFound, RoleConverter, RoleNotFound
 
-with open('botc/game_text.json') as json_file:
+with open("config.toml") as fd:
+    config = toml.load(fd)
+
+with open("botc/game_text.json") as json_file:
     documentation = json.load(json_file)
 
-with open('botutils/bot_text.json') as json_file:
+with open("botutils/bot_text.json") as json_file:
     bot_text = json.load(json_file)
     error_str = bot_text["system"]["error"]
 
@@ -44,7 +48,8 @@ class Frole(commands.Cog, name = documentation["misc"]["debug_cog"]):
         old_role = player.role.true_self
         await player.exec_change_role(role)
         player.role.exec_init_role(globvars.master_state.game.setup)
-        globvars.master_state.game.invalidated = True
+        if not config["debug"].get("no_invalidate", False):
+            globvars.master_state.game.invalidated = True
         try:
             await player.role.ego_self.send_opening_dm_embed(player.user)
         except discord.Forbidden:

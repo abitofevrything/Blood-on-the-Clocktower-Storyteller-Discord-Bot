@@ -209,11 +209,10 @@ class Game(GameMeta):
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
         self.replay = "```asciidoc\n"
 
-        if DISABLE_DMS:
-            # Also don't count game in win rates if dms are disabled.
-            # This shouldn't be a problem considering DISABLE_DMS is a testing flag,
-            # but it would be unfair to count the game if the players do not know what
-            # character they are or when to act.
+        if any(x for x in config['debug']) and not config['debug'].get('no_invalidate', False):
+            # Also don't count game in win rates if debug options are used
+            # (DISABLE_PINGS, DISABLE_DMS, FORCE_VOTES), unless forced by
+            # setting no_invalidate to true.
             self.invalidated = True
 
         # Temporary day data
