@@ -11,6 +11,7 @@ import discord
 from discord.ext import commands
 
 import botutils
+import globvars
 from botc.setups import setup
 
 from ._miscellaneous import Miscellaneous
@@ -93,92 +94,117 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
         if user is None:
             return await ctx.send(user_not_found_str.format(ctx.author.mention))
 
-        with sqlite3.connect("data.sqlite3") as db:
-            c = db.execute("SELECT COUNT(*) FROM game")
+        with sqlite3.connect("data.sqlite3") as conn:
+            c = conn.cursor()
+
+            c.execute("SELECT COUNT(*) FROM game")
             total_games = c.fetchone()[0]
 
-            c = db.execute("""
+            primary_user_id = user.id
+            user_ids = {primary_user_id}
+
+            # Check if the current user is an alt first
+            c.execute("""
+                SELECT
+                    primary_user_id
+                FROM
+                    player_map
+                WHERE
+                    secondary_user_id = :user_id
+            """, {
+                "user_id": user.id,
+            })
+            row = c.fetchone()
+            if row:
+                primary_user_id = row[0]
+                user_ids.add(primary_user_id)
+
+            primary_user = globvars.client.get_user(primary_user_id)
+
+            # Check for alts associated with the current user
+            c.execute("""
+                SELECT
+                    secondary_user_id
+                FROM
+                    player_map
+                WHERE
+                    primary_user_id = :user_id
+            """, {
+                "user_id": user.id,
+            })
+            for row in c.fetchall():
+                user_ids.add(row[0])
+
+            query = ', '.join(['?'] * len(user_ids))
+
+            c.execute(f"""
             SELECT
                 COUNT(*)
             FROM
                 game_player
             WHERE
-                user_id = :user_id
-                AND role LIKE :role
-            """, {
-                "user_id": user.id,
-                "role": role or "%",
-            })
+                user_id IN ({query})
+                AND role LIKE ?
+            """, [*user_ids, role or "%"])
             games = c.fetchone()[0]
 
-            c = db.execute("""
+            c.execute(f"""
             SELECT
                 COUNT(*)
             FROM
                 game_player
             WHERE
-                user_id = :user_id
-                AND role LIKE :role
+                user_id IN ({query})
+                AND role LIKE ?
                 AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
-            """, {
-                "user_id": user.id,
-                "role": role or "%",
-            })
+            """, [*user_ids, role or "%"])
             wins = c.fetchone()[0]
 
             if not role:
-                c = db.execute("""
+                c.execute(f"""
                 SELECT
                     COUNT(*)
                 FROM
                     game_player
                 WHERE
-                    user_id = :user_id
+                    user_id IN ({query})
                     AND alignment = 'good'
-                """, {
-                    "user_id": user.id,
-                })
+                """, list(user_ids))
                 good_games = c.fetchone()[0]
 
-                c = db.execute("""
+                c.execute(f"""
                 SELECT
                     COUNT(*)
                 FROM
                     game_player
                 WHERE
-                    user_id = :user_id
+                    user_id IN ({query})
                     AND alignment = 'good'
                     AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
-                """, {
-                    "user_id": user.id,
-                })
+                """, list(user_ids))
                 good_wins = c.fetchone()[0]
 
-                c = db.execute("""
+                c.execute(f"""
                 SELECT
                     COUNT(*)
                 FROM
                     game_player
                 WHERE
-                    user_id = :user_id
+                    user_id IN ({query})
                     AND alignment = 'evil'
-                """, {
-                    "user_id": user.id,
-                })
+                """, list(user_ids))
                 evil_games = c.fetchone()[0]
 
-                c = db.execute("""
+                c.execute(f"""
                 SELECT
                     COUNT(*)
                 FROM
                     game_player
                 WHERE
-                    user_id = :user_id
+                    user_id IN ({query})
                     AND alignment = 'evil'
                     AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
-                """, {
-                    "user_id": user.id,
-                })
+                """, list(user_ids))
                 evil_wins = c.fetchone()[0]
 
             if role:
@@ -188,7 +214,7 @@ class Playerstats(Miscellaneous, name = language["system"]["miscellaneous_cog"])
                     embed.set_thumbnail(url=emoji.url)
             else:
                 embed = discord.Embed(color=discord.Color.green(), title=playerstats_title_str)
-            embed.set_author(name=str(user), icon_url=user.avatar_url)
+            embed.set_author(name=str(primary_user), icon_url=primary_user.avatar_url)
             embed.set_footer(text=playerstats_footer_str.format(total_games, "" if total_games == 1 else "s"))
 
             if games > 0:

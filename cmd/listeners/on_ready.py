@@ -59,6 +59,12 @@ class on_ready(commands.Cog):
             )
             """)
             c.execute("""
+            CREATE TABLE IF NOT EXISTS player_map (
+                primary_user_id INTEGER NOT NULL,
+                secondary_user_id INTEGER PRIMARY KEY NOT NULL
+            )
+            """)
+            c.execute("""
             CREATE TABLE IF NOT EXISTS ignore (
                 user_id INTEGER PRIMARY KEY NOT NULL
             )
@@ -68,7 +74,7 @@ class on_ready(commands.Cog):
                 user_id INTEGER PRIMARY KEY NOT NULL
             )
             """)
-            c.execute("PRAGMA user_version = 4")
+            c.execute("PRAGMA user_version = 5")
 
             # Migrate old ignore data
             try:
