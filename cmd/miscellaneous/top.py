@@ -110,6 +110,9 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
             precision = 1
 
             for (user_id, stats) in tmp.items():
+                tmp[user_id]["winrate"] = stats["wins"] / stats["games"]
+
+            for (user_id, stats) in sorted(tmp.items(), key=lambda x: -x[1]["winrate"]):
                 # Check if user is still in the guild
                 user = globvars.client.get_user(user_id)
                 if not user:
@@ -117,7 +120,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
 
                 games = stats["games"]
                 wins = stats["wins"]
-                winrate = wins / games
+                winrate = stats["winrate"]
 
                 if games < actual_min_games:
                     continue
