@@ -290,8 +290,6 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
                 AND alignment = (SELECT winner FROM game WHERE game.game_id = game_player.game_id)
             GROUP BY
                 user_id
-            ORDER BY
-                wins DESC
             """, {
                 "alignment": alignment or "%",
             })
@@ -321,7 +319,7 @@ class Top(Miscellaneous, name = language["system"]["miscellaneous_cog"]):
             leaderboard = list()
             count = 0
 
-            for (user_id, wins) in tmp.items():
+            for (user_id, wins) in sorted(tmp.items(), key=lambda x: -x[1]):
                 user = globvars.client.get_user(user_id)
                 if not user:
                     continue
