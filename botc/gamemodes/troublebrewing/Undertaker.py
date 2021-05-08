@@ -133,11 +133,11 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         if not player.is_alive():
             return
 
-        # Poisoned info
+        executed_player = globvars.master_state.game.today_executed_player
         if player.is_droisoned():
+            # Poisoned info
             character_of_executed = self.__create_droisoned_info()
         else:
-            executed_player = globvars.master_state.game.today_executed_player
             if executed_player:
                 executed_player.role.set_new_social_self(executed_player)
                 character_of_executed = executed_player.role.social_self
@@ -150,7 +150,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # Add information to replay
         drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
         globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Undertaker) learns that "\
-                                        f"{executed_player.user.name} is {character_of_executed}\n"
+                                             f"{executed_player.user.name} is {character_of_executed}\n"
 
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
