@@ -457,6 +457,8 @@ class Game(GameMeta):
                             "role": role.true_self.name,
                         })
 
+                conn.commit()
+
                 # The embed
                 embed = discord.Embed(
                    title = good_wins,
@@ -545,6 +547,8 @@ class Game(GameMeta):
                             "alignment": "good" if role.true_self.is_good() else "evil",
                             "role": role.true_self.name,
                         })
+
+                conn.commit()
 
                 # The embed
                 embed = discord.Embed(
