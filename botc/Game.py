@@ -191,7 +191,7 @@ class Game(GameMeta):
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
         self.replay = "```asciidoc\n"
 
-        if any(x for x in DEBUG) and not NO_INVALIDATE:
+        if any(x for x in DEBUG.values()) and not NO_INVALIDATE:
             # Also don't count game in win rates if debug options are used
             # (DISABLE_PINGS, DISABLE_DMS, FORCE_VOTES), unless forced by
             # setting no_invalidate to true.
