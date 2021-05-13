@@ -132,7 +132,7 @@ class GameLog:
         self.sitting_order = game_obj.sitting_order
         self.gamemode = game_obj.gamemode.value
 
-    def create_game_obj_log_str(self):
+    def create_game_obj_log_str(self, roles_only=False):
         """Create the game log string. The string looks like this:
 
         Game Start:
@@ -152,16 +152,20 @@ class GameLog:
         timezone = pytz.timezone(TIMEZONE)
         d_aware = timezone.localize(d)
 
-        msg = "Game Start:```asciidoc\n"
-        msg += f"BoTC game started at {d_aware.isoformat()}, with {len(self.sitting_order)} players, using the {self.gamemode} edition.\n"
-        msg += "--------------------\n"
+        msg = ""
+
+        if not roles_only:
+            msg += "Game Start:```asciidoc\n"
+            msg += f"BoTC game started at {d_aware.isoformat()}, with {len(self.sitting_order)} players, using the {self.gamemode} edition.\n"
+            msg += "--------------------\n"
 
         msg += f"DEMON :: {str(self.setup.demon)}\n"
         msg += f"MINION :: {str(self.setup.minions)}\n"
         msg += f"TOWNSFOLK :: {str(self.setup.townsfolks)}\n"
         msg += f"OUTSIDER :: {str(self.setup.outsiders)}\n"
 
-        msg += "```"
+        if not roles_only:
+            msg += "```"
 
         return msg
 
@@ -667,6 +671,7 @@ class Game(GameMeta):
         d_formatted = timezone.localize(d).strftime("%b %d, %Y | %I:%M:%S %p %Z")
         self.replay += f"Start: {d_formatted}\n"\
                         f"[BoTC: {self.gamemode.value}, {len(self.sitting_order)} players]\n"
+        self.replay += GameLog(self).create_game_obj_log_str(roles_only=True)
         # Log the game data
         await GameLog(self).send_game_obj_log_str()
         # Unload conflicting commands
