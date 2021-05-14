@@ -1024,8 +1024,6 @@ class Game(GameMeta):
         await botutils.send_replay(self.replay)
         # Send the lobby game conclusion message
         await self.send_lobby_closing_message()
-        # Remove roles
-        await botutils.remove_all_alive_dead_roles_after_game()
         # Unload extensions
         if self.gamemode == Gamemode.trouble_brewing:
             globvars.client.unload_extension("botc.commands.abilities.tb")
@@ -1058,6 +1056,8 @@ class Game(GameMeta):
         globvars.master_state.game = None
         # Unlock the lobby channel
         await botutils.unlock_lobby()
+        # Remove roles
+        await botutils.remove_all_alive_dead_roles_after_game()
         # Update the global state
         botutils.update_state_machine()
 
