@@ -69,11 +69,10 @@ class Player:
             await botutils.remove_alive_role(self.user)
         elif self not in globvars.master_state.game.night_deaths:
             globvars.master_state.game.night_deaths.append(self)
-        if self.role.true_self.name == "Poisoner":
-            for player in globvars.master_state.game.sitting_order:
-                for status in player.status_effects:
-                    if status.effect == StatusList.poison:
-                        status.manually_disable()
+        for player in globvars.master_state.game.sitting_order:
+            for status in player.status_effects:
+                if status.source_player == player:
+                    status.manually_disable()
         await globvars.master_state.game.check_winning_conditions()
 
     async def exec_apparent_death(self):
