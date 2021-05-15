@@ -39,6 +39,8 @@ class Fjoin(Admin, name = bot_text["system"]["admin_cog"]):
         for member in members:
             if isinstance(member, str):
                 member = botutils.get_member_from_string(member)
+                if member is None:
+                    continue
 
             # The player is a bot
             if member.bot:

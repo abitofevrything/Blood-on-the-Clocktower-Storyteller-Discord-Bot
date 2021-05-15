@@ -1051,13 +1051,13 @@ class Game(GameMeta):
         # Stop the debate timer loop if it is running
         if debate_timer.is_running():
             debate_timer.cancel()
-        # Clear the game object
-        self.__init__(self._gamemode)
-        globvars.master_state.game = None
         # Unlock the lobby channel
         await botutils.unlock_lobby()
         # Remove roles
         await botutils.remove_all_alive_dead_roles_after_game()
+        # Clear the game object
+        self.__init__(self._gamemode)
+        globvars.master_state.game = None
         # Update the global state
         botutils.update_state_machine()
 
