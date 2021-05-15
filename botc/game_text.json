@@ -456,6 +456,13 @@
             "brief" : "reveal all players' roles",
             "help" : "reveal all players' roles",
             "description" : "[REVEALROLES] command - BOTC"
+        },
+
+        "getrole" : {
+            "brief" : "get your role card",
+            "help" : "get your role card",
+            "description" : "[GETROLE] command - BOTC",
+            "feedback": "{} {} Sent you your role card!"
         }
 
     }

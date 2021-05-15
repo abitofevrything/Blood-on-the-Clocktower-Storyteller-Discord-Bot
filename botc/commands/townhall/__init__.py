@@ -4,6 +4,7 @@ from .time import Time
 from .townsquare import Townsquare
 from .whisper import Whisper
 from .votestop import Votestop
+from .getrole import GetRole
 
 
 def setup(client):
@@ -13,3 +14,4 @@ def setup(client):
     client.add_cog(Whisper(client))
     client.add_cog(Time(client))
     client.add_cog(Votestop(client))
+    client.add_cog(GetRole(client))
