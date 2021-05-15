@@ -1,5 +1,6 @@
 """Townsquare command"""
 
+import asyncio
 import json
 import traceback
 
@@ -56,7 +57,8 @@ class Townsquare(commands.Cog, name = game_text["misc"]["townhall_cog"]):
         loading_msg = await ctx.send(townsquare_loading.format(botutils.BotEmoji.loading))
         async with ctx.channel.typing():
             import globvars
-            TownsquareImage().create(globvars.master_state.game)
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(None, lambda: TownsquareImage().create(globvars.master_state.game))
             await ctx.send(file=discord.File('botc/assets/townsquare.png'))
         await loading_msg.delete()
 
