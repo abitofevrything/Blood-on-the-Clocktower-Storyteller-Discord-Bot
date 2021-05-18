@@ -1,6 +1,7 @@
 """Global variables, for access by all modules"""
 
 import logging
+from collections import defaultdict
 
 from botutils import MasterState
 
@@ -30,3 +31,5 @@ start_votes = []
 votestop_votes = []
 
 last_notify = 0
+
+last_whisper = defaultdict(lambda: defaultdict(int))

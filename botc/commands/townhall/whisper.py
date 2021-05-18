@@ -1,11 +1,9 @@
 """Whisper command cog"""
 
-import asyncio
-import json
+import time
 import traceback
 
 import discord
-import toml
 from discord.ext import commands
 
 import botutils
@@ -51,10 +49,9 @@ class Whisper(commands.Cog, name = game_text["misc"]["townhall_cog"]):
         help = game_text["doc"]["whisper"]["help"],
         description = game_text["doc"]["whisper"]["description"]
     )
-    @commands.cooldown(1, WHISPER_COOLDOWN, commands.BucketType.channel)
     @commands.check(check_if_is_day)  # Correct phase -> NotDay
     @commands.check(check_if_dm)  # Correct channel -> NotDMChannel
-    async def whisper(self, ctx, recipient: PlayerConverter(), *, content: WhisperConverter()):
+    async def whisper(self, ctx, recipient: PlayerConverter, *, content: WhisperConverter):
         """Whisper command"""
         if globvars.master_state.game.nomination_iteration_date:
             await ctx.author.send(game_text["cmd_warnings"]["whisper_not_allowed_during_noms"].format(botutils.BotEmoji.x_emoji, ctx.author.mention))
@@ -72,6 +69,12 @@ class Whisper(commands.Cog, name = game_text["misc"]["townhall_cog"]):
             except discord.Forbidden:
                 pass
             return
+
+        delta = int(time.time()) - globvars.last_whisper[ctx.author.id][recipient.user.id]
+        if delta < WHISPER_COOLDOWN:
+            await ctx.send(cooldown.format(ctx.author.mention, botutils.BotEmoji.x_emoji, display_time(int(WHISPER_COOLDOWN - delta))))
+            return
+
         try:
             msg = from_str.format(
                 botutils.BotEmoji.unread_message,
@@ -95,6 +98,8 @@ class Whisper(commands.Cog, name = game_text["misc"]["townhall_cog"]):
                 recipient.game_nametag,
             )
             await botutils.send_lobby(announcement_msg, delete_after = WHISPER_SHOW_TIME)
+
+            globvars.last_whisper[ctx.author.id][recipient.user.id] = int(time.time())
 
     @whisper.error
     async def whisper_error(self, ctx, error):
