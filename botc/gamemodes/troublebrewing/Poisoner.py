@@ -119,6 +119,7 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         if not poisoner_player.is_droisoned() and poisoner_player.is_alive():
             success = ""
             poisoned_player.add_status_effect(Poison(poisoner_player, poisoned_player))
+            poisoned_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/poisoned.png')
 
         # Add information to replay
         globvars.master_state.game.replay += f"- {poisoner_player.user.name} (Poisoner) {success}"\

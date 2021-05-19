@@ -89,12 +89,14 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         assert virgin_player.role.true_self.name == self.name, \
             f"The nominated player's role is {virgin_player.role.true_self.name} instead of Virgin"
+            
+        if virgin_player.role.true_self.inventory.has_item_in_inventory(Flags.virgin_first_nomination):
+            # Remove the unique use ability from the player's inventory
+            virgin_player.role.true_self.inventory.remove_item_from_inventory(Flags.virgin_first_nomination)
+            virgin_player.add_persistent_reminder_token('botc/assets/tb_reminder_tokens_cropped/virgin_used.png')
 
-        # Virgin ability is active
-        if virgin_player.is_alive() and not virgin_player.is_droisoned():
-            if virgin_player.role.true_self.inventory.has_item_in_inventory(Flags.virgin_first_nomination):
-                # Remove the unique use ability from the player's inventory
-                virgin_player.role.true_self.inventory.remove_item_from_inventory(Flags.virgin_first_nomination)
+            # Virgin ability is active
+            if virgin_player.is_alive() and not virgin_player.is_droisoned():
                 # The nominator player registers as a new social self
                 nominator_player.role.set_new_social_self(nominator_player)
                 # Add information to replay

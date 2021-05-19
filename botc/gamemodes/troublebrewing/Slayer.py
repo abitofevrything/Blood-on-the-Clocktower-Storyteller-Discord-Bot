@@ -103,6 +103,7 @@ class Slayer(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # Remove the unique use ability from the player's inventory
         slayer_player.role.ego_self.inventory.remove_item_from_inventory(Flags.slayer_unique_attempt)
+        slayer_player.add_persistent_reminder_token('botc/assets/tb_reminder_tokens_cropped/slayer_used.png')
 
         # The ability succeeds when the slayer is not droisoned and the slain player is registering
         # as a demon with their social self

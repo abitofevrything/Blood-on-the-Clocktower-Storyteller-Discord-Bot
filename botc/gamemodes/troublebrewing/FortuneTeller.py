@@ -105,6 +105,7 @@ class FortuneTeller(Townsfolk, TroubleBrewing, Character, RecurringAction):
         chosen = random.choice(possibilities)
         chosen.add_status_effect(RedHerring(Storyteller(), chosen))
         globvars.logging.info(f">>> Fortune Teller [exec_init_role] Set red herring to {str(chosen)}")
+        chosen.add_persistent_reminder_token('botc/assets/tb_reminder_tokens_cropped/ft_herring.png')
 
     def has_finished_night_action(self, player):
         """Return True if fortune teller has submitted the read action"""

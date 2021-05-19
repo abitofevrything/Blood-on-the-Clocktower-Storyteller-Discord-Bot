@@ -129,6 +129,8 @@ class Butler(Outsider, TroubleBrewing, Character, RecurringAction):
         globvars.master_state.game.replay += f"- {butler_player.user.name} (Butler) {success}"\
                             f"serves {master_player.user.name} ({master_player.role.true_self})\n"
 
+        master_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/butler_master.png')
+
     async def process_night_ability(self, player):
         """Process night actions for the butler character.
         @player : the Butler player (Player object)

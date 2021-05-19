@@ -73,6 +73,9 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._role_enum = TBRole.librarian
         self._emoji = emojis["troublebrewing"]["librarian"]
 
+        self.two_player_list = []
+        self.registered_outsider_type = None
+
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
 
@@ -99,40 +102,20 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         if not player.is_alive():
             return
 
-        # Poisoned info
-        if player.is_droisoned():
-            two_player_list = self.__create_droisoned_info(player)
-        # Good info
-        else:
-            two_player_list = self.get_two_possible_outsiders(recipient)
-
-        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
-
         # If there are outsiders found:
-        if two_player_list:
+        if self.two_player_list is not None and len(self.two_player_list) > 0:
 
-            registered_outsider_type = two_player_list[2]
-            link = registered_outsider_type.art_link
-            assert registered_outsider_type.category == Category.outsider, "Librarian did not receive an outsider character"
-
-            # Add information to replay
-            globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Librarian) knows that "\
-                        f"{two_player_list[0].user.name} ({two_player_list[0].role.true_self}) or "\
-                        f"{two_player_list[1].user.name} ({two_player_list[1].role.true_self}) is "\
-                        f"{registered_outsider_type}\n"
-
-            # Get rid of the last element
-            two_player_list.pop()
+            link = self.registered_outsider_type.art_link
 
             # Construct the message to send
             msg = f"***{recipient.name}{recipient.discriminator}***, the **{self.name}**:"
             msg += "\n"
             msg += self.emoji + " " + self.instruction
             msg += "\n"
-            msg += librarian_init.format(registered_outsider_type.name)
+            msg += librarian_init.format(self.registered_outsider_type.name)
             msg += "```basic\n"
-            msg += f"{two_player_list[0].user.display_name} ({two_player_list[0].user.id})\n"
-            msg += f"{two_player_list[1].user.display_name} ({two_player_list[1].user.id})\n"
+            msg += f"{self.two_player_list[0].user.display_name} ({self.two_player_list[0].user.id})\n"
+            msg += f"{self.two_player_list[1].user.display_name} ({self.two_player_list[1].user.id})\n"
             msg += "```"
 
             embed = discord.Embed(description = msg)
@@ -142,10 +125,6 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         # No outsiders found
         else:
-
-            # Add information to replay
-            globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Librarian) knows that "\
-                                                "there are no Outsiders\n"
 
             # Construct the message to send
             msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
@@ -209,7 +188,6 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             other = random.choice(other_possibilities)
 
             two_player_list = [outsider, other]
-            random.shuffle(two_player_list)
             two_player_list.append(registered_outsider_type)
 
             globvars.logging.info(f">>> Librarian: Sent {outsider} and {other} as {registered_outsider_type}")
@@ -219,3 +197,32 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         else:
             globvars.logging.info(f">>> Librarian: Sent 0 outsider")
             return None
+
+    async def process_night_ability(self, player):
+        # Poisoned info
+        if player.is_droisoned():
+            self.two_player_list = self.__create_droisoned_info(player)
+        # Good info
+        else:
+            self.two_player_list = self.get_two_possible_outsiders(player.user)
+        
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        if self.two_player_list is not None and len(self.two_player_list) > 0:
+            self.two_player_list[0].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/librarian_outsider.png')
+            self.two_player_list[1].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/librarian_wrong.png')
+
+            # Get rid of the last element (the minion type)
+            self.registered_outsider_type = self.two_player_list.pop()
+            random.shuffle(self.two_player_list)
+            
+            assert self.registered_outsider_type.category == Category.outsider, f"Librarian received {self.registered_outsider_type}" 
+
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {player.user.name} ({drunk}Librarian) knows that "\
+                            f"{self.two_player_list[0].user.name} ({self.two_player_list[0].role.true_self}) or "\
+                            f"{self.two_player_list[1].user.name} ({self.two_player_list[1].role.true_self}) is "\
+                            f"{self.registered_outsider_type}\n"
+        else:
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {player.user.name} ({drunk}Librarian) knows that "\
+                                                "there are no Outsiders\n"

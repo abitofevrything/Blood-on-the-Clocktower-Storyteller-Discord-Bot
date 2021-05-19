@@ -151,6 +151,7 @@ class Undertaker(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
         globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Undertaker) learns that "\
                                              f"{executed_player.user.name} is {character_of_executed}\n"
+        executed_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/undertaker_dead.png')
 
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"

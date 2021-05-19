@@ -113,6 +113,7 @@ class Monk(Townsfolk, TroubleBrewing, Character, RecurringAction):
 
         if not monk_player.is_droisoned() and monk_player.is_alive():
             protected_player.add_status_effect(SafetyFromDemon(monk_player, protected_player))
+            protected_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/monk_safe.png')
 
         # Add information to replay
         drunk = "Drunk " if monk_player.role.true_self.name == Drunk().name else ""

@@ -174,6 +174,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
                 not killed_player.has_status_effect(StatusList.safety_from_demon):
             success = ""
             await killed_player.role.ego_self.on_being_demon_killed(killed_player)
+            killed_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/imp_dead.png')
 
         # Add information to replay
         globvars.master_state.game.replay += f"- {demon_player.user.name} (Imp) {success}kills "\
@@ -209,6 +210,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
                     promoted._old_role_obj = promoted._role_obj
                     await promoted.exec_change_role(Imp())
+                    promoted.add_persistent_reminder_token('botc/assets/tb_reminder_tokens_cropped/sw_demon.png')
 
                     if DISABLE_DMS:
                         return
@@ -236,6 +238,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
                 promoted._old_role_obj = promoted._role_obj
                 await promoted.exec_change_role(Imp())
+                promoted.add_persistent_reminder_token('botc/assets/tb_reminder_tokens_cropped/sw_demon.png')
 
                 if DISABLE_DMS:
                     return
@@ -283,6 +286,7 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
 
                         promoted._old_role_obj = promoted._role_obj
                         await promoted.exec_change_role(Imp())
+                        promoted.add_persistent_reminder_token('botc/assets/tb_reminder_tokens_cropped/sw_demon.png')
 
                         if not DISABLE_DMS:
                             embed = self._make_demonhood_promo_embed(promoted)

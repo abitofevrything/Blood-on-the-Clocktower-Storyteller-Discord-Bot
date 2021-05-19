@@ -1135,6 +1135,9 @@ class Game(GameMeta):
         # Initialize the temporary day data set
         self.init_temporary_day_data()
 
+        for player in self.sitting_order:
+            player.clear_reminder_tokens()
+
         # Store the starting time
         self.day_start_time = datetime.datetime.now()
 

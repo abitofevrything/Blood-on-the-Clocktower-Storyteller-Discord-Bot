@@ -28,6 +28,8 @@ class Player:
         self.ghost_vote = 1
         self.has_nominated = False
         self.was_nominated = False
+        self._reminder_tokens = []
+        self._persistent_reminder_tokens = []
 
     def toggle_has_nominated(self):
         """The player has nominated a person."""
@@ -153,6 +155,19 @@ class Player:
         # A dead player has only one ghost vote
         else:
             return self.ghost_vote
+
+    def add_reminder_token(self, token):
+        self._reminder_tokens.append(token)
+
+    def add_persistent_reminder_token(self, token):
+        self._persistent_reminder_tokens.append(token)
+
+    def clear_reminder_tokens(self):
+        self._reminder_tokens = []
+
+    @property
+    def reminder_tokens(self):
+        return self._persistent_reminder_tokens + self._reminder_tokens
 
     @property
     def game_nametag(self):

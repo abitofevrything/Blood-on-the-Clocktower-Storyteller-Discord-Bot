@@ -68,6 +68,9 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         self._role_enum = TBRole.washerwoman
         self._emoji = emojis["troublebrewing"]["washerwoman"]
 
+        self.two_player_list = []
+        self.registered_townsfolk_type = None
+
     def create_n1_instr_str(self):
         """Create the instruction field on the opening dm card"""
 
@@ -88,42 +91,17 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         if DISABLE_DMS:
             return
 
-        player = BOTCUtils.get_player_from_id(recipient.id)
-
-        # Dead players do not receive anything
-        if not player.is_alive():
-            return
-
-        # Poisoned info
-        if player.is_droisoned():
-            two_player_list = self.__create_droisoned_info(player)
-        # Good info
-        else:
-            two_player_list = self.get_two_possible_townsfolks(recipient)
-
-        registered_townsfolk_type = two_player_list[2]
-        link = registered_townsfolk_type.art_link
-        assert registered_townsfolk_type.category == Category.townsfolk, "Washerwoman did not receive a townsfolk character"
-
-        # Add information to replay
-        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
-        globvars.master_state.game.replay += f"- {recipient.name} ({drunk}Washerwoman) knows that "\
-                        f"{two_player_list[0].user.name} ({two_player_list[0].role.true_self}) or "\
-                        f"{two_player_list[1].user.name} ({two_player_list[1].role.true_self}) is "\
-                        f"{registered_townsfolk_type}\n"
-
-        # Get rid of the last element
-        two_player_list.pop()
+        link = self.registered_townsfolk_type.art_link
 
         # Construct the message to send
         msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
         msg += "\n"
         msg += self.emoji + " " + self.instruction
         msg += "\n"
-        msg += washerwoman_init.format(registered_townsfolk_type.name)
+        msg += washerwoman_init.format(self.registered_townsfolk_type.name)
         msg += "```basic\n"
-        msg += f"{two_player_list[0].user.display_name} ({two_player_list[0].user.id})\n"
-        msg += f"{two_player_list[1].user.display_name} ({two_player_list[1].user.id})\n"
+        msg += f"{self.two_player_list[0].user.display_name} ({self.two_player_list[0].user.id})\n"
+        msg += f"{self.two_player_list[1].user.display_name} ({self.two_player_list[1].user.id})\n"
         msg += "```"
 
         embed = discord.Embed(description = msg)
@@ -174,9 +152,36 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         other = random.choice(other_possibilities)
 
         two_player_list = [townsfolk, other]
-        random.shuffle(two_player_list)
         two_player_list.append(registered_townsfolk_type)
 
         globvars.logging.info(f">>> Washerwoman: Sent {townsfolk} and {other} as {registered_townsfolk_type}")
 
         return two_player_list
+
+    async def process_night_ability(self, player):
+        # Dead players do not receive anything
+        if not player.is_alive():
+            return
+
+        # Poisoned info
+        if player.is_droisoned():
+            self.two_player_list = self.__create_droisoned_info(player)
+        # Good info
+        else:
+            self.two_player_list = self.get_two_possible_townsfolks(player.user)
+
+        # Get rid of the last element
+        self.registered_townsfolk_type = self.two_player_list.pop()
+
+        self.two_player_list[0].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/washerwoman_townsfolk.png')
+        self.two_player_list[1].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/washerwoman_wrong.png')
+
+        random.shuffle(self.two_player_list)
+        assert self.registered_townsfolk_type.category == Category.townsfolk, "Washerwoman did not receive a townsfolk character"
+        
+        # Add information to replay
+        drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
+        globvars.master_state.game.replay += f"- {player.user.name} ({drunk}Washerwoman) knows that "\
+                        f"{self.two_player_list[0].user.name} ({self.two_player_list[0].role.true_self}) or "\
+                        f"{self.two_player_list[1].user.name} ({self.two_player_list[1].role.true_self}) is "\
+                        f"{self.registered_townsfolk_type}\n"

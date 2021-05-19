@@ -116,7 +116,9 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
 
         from botc import Grimoire
         try:
-            Grimoire().create(globvars.master_state.game)
+            import asyncio
+            loop = asyncio.get_running_loop()
+            await loop.run_in_executor(None, lambda: Grimoire.create(globvars.master_state.game))
         except Exception as e:
             print("Grimoire image was not able to be generated: " + str(e))
 
@@ -127,7 +129,7 @@ class Spy(Minion, TroubleBrewing, Character, NonRecurringAction):
         msg += spy_nightly
 
         embed = discord.Embed(description = msg)
-        file = discord.File("botc/assets/grimoire/grimoire.png", filename="grimoire.png")
+        file = discord.File(Grimoire.GRIMOIRE_PATH, filename="grimoire.png")
         embed.set_image(url="attachment://grimoire.png")
         embed.timestamp = datetime.datetime.utcnow()
         embed.set_footer(text = copyrights_str)

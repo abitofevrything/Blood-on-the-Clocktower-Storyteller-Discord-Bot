@@ -1,5 +1,6 @@
 """Contains the Grimoire class"""
 
+from config import GRIMOIRE_SHOW_TIME
 import math
 import random
 
@@ -18,18 +19,38 @@ class Grimoire:
     SHROUD = "botc/assets/grimoire/shroud.png"
     FONT = "botc/assets/grimoire/Bitstream_Cyberbit.ttf"
 
-    def __init__(self):
+    def create(game_obj):
+        # Load image
+        backgroud_path = Grimoire.random_background()
+        image = Image.open(backgroud_path)
+        image.convert('RGBA')
 
-        background = Image.open(self.BACKGROUND_PATH)
-        background.convert("RGBA")
+        # Get some dimensions
+        image_width = image.size[0]
+        image_height = image.size[1]
+        smallest_dimension = min(image_width, image_height)
 
-        self.PIC_SQUARE_SIDE = min(background.size)
-        self.PIC_LENGTH = max(background.size)
+        sitting_circle_radius = math.ceil(smallest_dimension * 0.75 * 0.5)
+        token_diameter = math.ceil(smallest_dimension / 5.5)
+        font_size = math.ceil(smallest_dimension * 0.04)
 
-        background.save(self.GRIMOIRE_PATH, format="PNG")
+        # Load font
+        font = ImageFont.truetype(Grimoire.FONT, font_size)
 
-    @property
-    def BACKGROUND_PATH(self):
+        # Add the gamemode icon in the center
+        Grimoire.paste_gamemode_icon(game_obj, image, smallest_dimension, image_width / 2, image_height / 2)
+
+        # Iterate in reverse to make the sitting order clockwise
+        for i, n in enumerate(range(game_obj.nb_players - 1, -1, -1)):
+            current_player = game_obj.sitting_order[i]
+            current_angle = (2 * math.pi / game_obj.nb_players) * n
+
+            Grimoire.process_player(image, font, current_player, sitting_circle_radius, token_diameter, current_angle)
+
+        # Save grimoire to output
+        image.save(Grimoire.GRIMOIRE_PATH)
+
+    def random_background():
         """Select a random background"""
         backgrounds = [
             "botc/assets/grimoire/grimoire_background1.png",
@@ -37,140 +58,124 @@ class Grimoire:
         ]
         return random.choice(backgrounds)
 
-    @property
-    def token_width(self):
-        "Find the width of each token based on the background size"
-        return math.ceil(self.PIC_SQUARE_SIDE/5.5)
-
-    @property
-    def sitting_circle_radius(self):
-        """Find the radius of the big sitting circle based on the background size"""
-        return math.ceil(self.PIC_SQUARE_SIDE * 0.75 * 0.5)
-
-    @property
-    def font_size(self):
-        """Find the font size appropriate for the size of the image"""
-        return math.ceil(self.PIC_SQUARE_SIDE * 0.04)
-
-    def create(self, game_obj):
-
-        nb_players = len(game_obj.sitting_order)
-        background = Image.open(self.GRIMOIRE_PATH)
-        draw = ImageDraw.Draw(background, "RGBA")
-        font = ImageFont.truetype(self.FONT, self.font_size)
-        self.paste_gamemode_icon(game_obj, background)
-
-        # Iterate in reverse to make the sitting order clockwise
-        for i, n in enumerate(range(nb_players - 1, -1, -1)):
-
-            player_obj = game_obj.sitting_order[i]
-            true_role = player_obj.role.true_self
-            token_file_path = TokenPathGrabber().getpath(true_role)
-            token = Image.open(token_file_path)
-            token.thumbnail((self.token_width, self.token_width), Image.ANTIALIAS)
-
-            x = self.get_x_from_angle(n*self.get_rad_angle(nb_players))
-            y = self.get_y_from_angle(n*self.get_rad_angle(nb_players))
-
-            new_x, new_y = self.translate(x, y)
-            token_center_x = int(new_x + self.token_width / 2)
-            token_center_y = int(new_y + self.token_width / 2)
-
-            try:
-                background.paste(token, (new_x, new_y), token.convert("RGBA"))
-            except Exception:
-                pass
-
-            # Add the shroud reminder
-            if player_obj.is_apparently_dead():
-
-                shroud = Image.open(self.SHROUD)
-                shroud_size_x = shroud.size[0]
-                shroud_size_y = shroud.size[1]
-
-                ratio = shroud_size_y / (self.token_width / 2)
-                ratio = 1 / ratio
-                thumbnail_x = int(shroud_size_x * ratio)
-                thumbnail_y = int(shroud_size_y * ratio)
-                shroud.thumbnail((thumbnail_x, thumbnail_y), Image.ANTIALIAS)
-
-                shroud_x = int(token_center_x - thumbnail_x / 2)
-                shroud_y = int(token_center_y - self.token_width / 2)
-                background.paste(shroud, (shroud_x, shroud_y), shroud.convert("RGBA"))
-
-            text = player_obj.user.display_name
-            w, h = font.getsize(text)
-            new_x, new_y = self.translate_text(x, y, w)
-            draw.rectangle((new_x, new_y, new_x + w, new_y + h), fill = (37, 30, 23, 140))
-            draw.text((new_x, new_y), text, (255, 255, 255), font = font)
-
-        background.save(self.GRIMOIRE_PATH)
-
-    def paste_gamemode_icon(self, game_obj, background):
-
-        x = self.PIC_LENGTH / 2
-        y = self.PIC_SQUARE_SIDE / 2
-
+    def paste_gamemode_icon(game_obj, image, image_smallest_size, x, y):
         if game_obj.gamemode == Gamemode.trouble_brewing:
-
-            edition_logo = Image.open(self.TB_ICON)
-
-            logo_size_x = edition_logo.size[0]
-            logo_size_y = edition_logo.size[1]
-            ratio = logo_size_y / (self.PIC_SQUARE_SIDE / 4)
-            ratio = 1 / ratio
-            thumbnail_x = int(logo_size_x * ratio)
-            thumbnail_y = int(logo_size_y * ratio)
-
-            edition_logo.thumbnail((thumbnail_x, thumbnail_y), Image.ANTIALIAS)
-
-            x -= thumbnail_x / 2
-            y -= thumbnail_y / 2
-
-            try:
-                background.paste(edition_logo, (int(x), int(y)), edition_logo.convert("RGBA"))
-            except Exception:
-                pass
-
+            icon = Image.open(Grimoire.TB_ICON)
         elif game_obj.gamemode == Gamemode.bad_moon_rising:
-            pass
-
+            icon = Image.open(Grimoire.BMR_ICON)
         elif game_obj.gamemode == Gamemode.sects_and_violets:
+            icon = Image.open(Grimoire.SV_ICON)
+        else:
+            assert 0, "Invalid gamemode for grimoire creation"
+
+        icon_width = icon.size[0]
+        icon_height = icon.size[1]
+
+        icon_smallest_size = min(icon_width, icon_height)
+
+        reduction_ration = icon_smallest_size / (image_smallest_size / 4)
+        reduction_ration = 1 / reduction_ration
+
+        icon.thumbnail((icon_width * reduction_ration, icon_height * reduction_ration), Image.ANTIALIAS)
+
+        adjusted_x = int(x - (icon_width * reduction_ration) / 2)
+        adjusted_y = int(y - (icon_height * reduction_ration) / 2)
+
+        try:
+            image.paste(icon, (adjusted_x, adjusted_y), icon.convert('RGBA'))
+        except Exception:
             pass
 
-    def translate(self, x, y):
-        image_center_x = self.PIC_LENGTH / 2
-        image_center_y = self.PIC_SQUARE_SIDE / 2
+    def process_player(image, font: ImageFont, player_obj, sitting_circle_radius, token_width, player_angle):
+        draw = ImageDraw.Draw(image, 'RGBA')
 
-        image_center_x -= self.token_width / 2
-        image_center_y -= self.token_width / 2
+        reminder_token_size = math.ceil(token_width / 2)
 
-        return(int(x + image_center_x), int(y + image_center_y))
+        image_width, image_height = image.size
 
-    def translate_text(self, x, y, text_width):
-        image_center_x = self.PIC_LENGTH / 2
-        image_center_y = self.PIC_SQUARE_SIDE / 2
+        token_x = math.sin(player_angle) * sitting_circle_radius + (image_width / 2)
+        token_y = math.cos(player_angle) * sitting_circle_radius + (image_height / 2)
 
-        image_center_x -= self.token_width / 2
-        image_center_y -= self.token_width / 2
+        adjusted_token_x = int(token_x - (token_width / 2))
+        adjusted_token_y = int(token_y - (token_width / 2))
 
-        offset = (text_width - self.token_width) / 2
+        # Paste the token
+        role_obj = player_obj.role
+        if player_obj.old_role is not None:
+            # Use old_role, role change tokens should be handled by the relevant character classes
+            role_obj = player_obj.old_role
+        try:
+            token_image = Image.open(TokenPathGrabber().getpath(role_obj.ego_self)) # True self is added as a reminder token
+            token_image.thumbnail((token_width, token_width), Image.ANTIALIAS)
+            image.paste(token_image, (adjusted_token_x, adjusted_token_y), token_image.convert('RGBA'))
+        except Exception:
+            # If we are unable to paste the image, paste the role name instead
+            role_text = player_obj.role.ego_self.name
+            w, h = font.getsize(role_text)
+            adjusted_text_x = int(token_x - (w / 2))
+            adjusted_text_y = int(token_y - (h / 2))
 
-        return(int(x + image_center_x - offset), int(y + image_center_y))
+            draw.rectangle((
+                            adjusted_text_x,
+                            adjusted_text_y,
+                            adjusted_text_x + w,
+                            adjusted_text_y + h
+                        ), fill = (37, 30, 23, 140))
+            draw.text((adjusted_text_x, adjusted_text_y), role_text, (255, 255, 255), font=font)
 
-    def get_image(self):
-        return self.GRIMOIRE_PATH
+        reminder_tokens = []
+        if role_obj.true_self.name != role_obj.ego_self.name:
+            reminder_tokens.append(TokenPathGrabber().getpath(role_obj.true_self))
 
-    def get_rad_angle(self, nb_player):
-        return 2 * math.pi / nb_player
+        # Dead shroud
+        if player_obj.is_apparently_dead():
+            shroud = Image.open(Grimoire.SHROUD)
+            shroud_size_x = shroud.size[0]
+            shroud_size_y = shroud.size[1]
 
-    def get_x_from_angle(self, rad_angle):
-        """For the tokens only"""
-        return self.sitting_circle_radius * math.sin(rad_angle)
+            ratio = shroud_size_y / (token_width / 2)
+            ratio = 1 / ratio
+            thumbnail_x = int(shroud_size_x * ratio)
+            thumbnail_y = int(shroud_size_y * ratio)
+            shroud.thumbnail((thumbnail_x, thumbnail_y), Image.ANTIALIAS)
 
-    def get_y_from_angle(self, rad_angle):
-        """For the tokens only"""
-        return self.sitting_circle_radius * math.cos(rad_angle)
+            shroud_x = int(token_x - thumbnail_x / 2)
+            shroud_y = int(token_y - token_width / 2)
+            image.paste(shroud, (shroud_x, shroud_y), shroud.convert("RGBA"))
+
+        reminder_tokens += player_obj.reminder_tokens
+
+        token_spacing = math.floor(min(token_width + 2, # Normal spacing
+        (sitting_circle_radius - (reminder_token_size + token_width) / 2) / (len(reminder_tokens) + 1))) # Possible overlap, too many tokens
+        curr_radius = sitting_circle_radius - (token_width / 2) - (reminder_token_size / 2)
+        
+        for reminder_token in reminder_tokens:
+            reminder_token_image = Image.open(reminder_token)
+            reminder_token_image.thumbnail((reminder_token_size, reminder_token_size), Image.ANTIALIAS)
+            
+            reminder_token_x = math.sin(player_angle) * curr_radius + (image_width / 2)
+            reminder_token_y = math.cos(player_angle) * curr_radius + (image_height / 2)
+
+            adjusted_reminder_token_x = int(reminder_token_x - (reminder_token_size / 2))
+            adjusted_reminder_token_y = int(reminder_token_y - (reminder_token_size / 2))
+
+            image.paste(reminder_token_image, (adjusted_reminder_token_x, adjusted_reminder_token_y), reminder_token_image.convert('RGBA'))
+
+            curr_radius -= token_spacing
+
+        # Player name
+        name_text = player_obj.user.display_name
+        w, h = font.getsize(name_text)
+        adjusted_text_x = int(token_x - (w / 2))
+        adjusted_text_y = int(adjusted_token_y - h)
+
+        draw.rectangle((
+                        adjusted_text_x,
+                        adjusted_text_y,
+                        adjusted_text_x + w,
+                        adjusted_text_y + h
+                    ), fill = (37, 30, 23, 140))
+        draw.text((adjusted_text_x, adjusted_text_y), name_text, (255, 255, 255), font=font)
 
 
 class TokenPathGrabber:
