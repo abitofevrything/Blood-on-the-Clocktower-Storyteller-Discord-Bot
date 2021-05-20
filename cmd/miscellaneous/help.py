@@ -1,7 +1,7 @@
 """Help command"""
 
 from discord.ext import commands
-import json
+import discord
 from botutils import bot_text
 
 help_str = bot_text["cmd"]["help"]
@@ -12,5 +12,6 @@ class Help(commands.DefaultHelpCommand):
         commands.DefaultHelpCommand.__init__(self, *args, **kwargs)
 
     async def prepare_help_command(self, ctx, command):
-        await ctx.send(help_str.format(ctx.author.mention))
+        if not isinstance(ctx.channel, discord.channel.DMChannel):
+            await ctx.send(help_str.format(ctx.author.mention))
         await super().prepare_help_command(ctx, command)

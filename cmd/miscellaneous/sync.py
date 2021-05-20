@@ -95,6 +95,11 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
                 dead_role = globvars.client.get_guild(SERVER_ID).get_role(DEAD_ROLE_ID)
                 for player in dead_role.members:
                     await botutils.remove_dead_role(player)
+                
+                alive_role = globvars.client.get_guild(SERVER_ID).get_role(ALIVE_ROLE_ID)
+                mismatched_alive_players = list(filter(lambda user: user.id not in globvars.master_state.pregame.list, alive_role.members))
+                for member in mismatched_alive_players:
+                    await member.remove_roles(alive_role)
             except Exception:
                 pass
 
