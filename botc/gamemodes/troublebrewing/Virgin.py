@@ -4,7 +4,7 @@ import json
 
 import botutils
 from botc import (Category, Character, Flags, Inventory, NonRecurringAction,
-                  Townsfolk)
+                  Townsfolk, ChoppingBlock)
 
 from ._utils import TBRole, TroubleBrewing
 
@@ -113,6 +113,7 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
                     )
                     await nominator_player.role.true_self.on_being_executed(nominator_player)
                     await botutils.send_lobby(msg)
+                    globvars.master_state.game.chopping_block = ChoppingBlock(None, 0)
                     import botc.switches
                     botc.switches.master_proceed_to_night = True
                     return

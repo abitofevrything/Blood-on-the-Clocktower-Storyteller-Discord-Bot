@@ -421,8 +421,9 @@ async def day_loop(game):
         await asyncio.sleep(1)
 
     # Nominations are open
-    msg = botutils.BotEmoji.clocktower + " " + nominations_open.format(PREFIX)
-    await botutils.send_lobby(msg)
+    if not botc.switches.master_proceed_to_night:
+        msg = botutils.BotEmoji.clocktower + " " + nominations_open.format(PREFIX)
+        await botutils.send_lobby(msg)
 
     timers = [90, 60, 45, 30, 20, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]
 
@@ -433,8 +434,9 @@ async def day_loop(game):
             timer
         )
 
-        msg = botutils.BotEmoji.clocktower + " " + nomination_countdown.format(timer)
-        await botutils.send_lobby(msg)
+        if not botc.switches.master_proceed_to_night:
+            msg = botutils.BotEmoji.clocktower + " " + nomination_countdown.format(timer)
+            await botutils.send_lobby(msg)
 
         countdown = timer
         count = 0
