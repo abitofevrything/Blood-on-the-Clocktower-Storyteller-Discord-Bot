@@ -12,6 +12,7 @@ from botutils import BotEmoji
 
 from discord.ext import commands
 
+import botc
 from botc import game_text
 
 from botutils import bot_text
@@ -23,7 +24,7 @@ class RevealRole(commands.Cog, name = game_text["misc"]["debug_cog"]):
         self.client = client
 
     def cog_check(self, ctx):
-        return botutils.check_if_admin(ctx)
+        return botutils.check_if_admin(ctx) and botc.check_if_not_player(ctx)
 
     @commands.command(
         pass_context = True,
@@ -49,8 +50,11 @@ class RevealRole(commands.Cog, name = game_text["misc"]["debug_cog"]):
 
     @reveal_roles.error
     async def reveal_roles_error(self, ctx, error):
+        # Check failed -> commands.CheckFailure
+        if isinstance(error, commands.CheckFailure):
+            return
         # Incorrect argument -> commands.BadArgument
-        if isinstance(error, commands.BadArgument):
+        elif isinstance(error, commands.BadArgument):
             return
         # Missing argument -> commands.MissingRequiredArgument
         elif isinstance(error, commands.MissingRequiredArgument):

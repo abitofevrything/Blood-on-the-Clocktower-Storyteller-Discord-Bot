@@ -2,10 +2,9 @@
 
 import toml
 
-from botc import (AliveOnlyCommand, BOTCUtils, DeadOnlyCommand, NotAPlayer,
-                  NotDawn, NotDay, NotDMChannel, NotLobbyChannel, NotNight,
-                  RoleCannotUseCommand)
-
+from botc import (AliveOnlyCommand, BOTCUtils, DeadOnlyCommand, IsAPlayer,
+                  NotAPlayer, NotDawn, NotDay, NotDMChannel, NotLobbyChannel,
+                  NotNight, RoleCannotUseCommand)
 from config import LOBBY_CHANNEL_ID
 
 
@@ -19,6 +18,15 @@ def check_if_is_player(ctx):
             return True
     else:
         raise NotAPlayer("Command not allowed: user is not a player (BoTC).")
+
+
+def check_if_not_player(ctx):
+    """Return true if user is not player"""
+    player = BOTCUtils.get_player_from_id(ctx.author.id)
+    if player:
+        raise IsAPlayer("Command not allowed: user is a player (BoTC).")
+    else:
+        return True
 
 
 def can_use_serve(user_id):

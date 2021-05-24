@@ -177,6 +177,9 @@ class NotAPlayer(commands.CheckFailure):
     """Raised when a command user is not a registered player"""
     pass
 
+class IsAPlayer(commands.CheckFailure):
+    """Raised when a command user is a registered player"""
+    pass
 
 class RoleCannotUseCommand(commands.CheckFailure):
     """Raised when a command user doesn't have a character that allows for a command to be used """

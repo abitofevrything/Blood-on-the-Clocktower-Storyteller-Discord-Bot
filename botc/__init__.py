@@ -1,8 +1,9 @@
 """Blood on the Clocktower (BoTC) game specific mechanics"""
 
 import json
-import globvars
 import sys
+
+import globvars
 
 try:
     with open("botc/game_text.json") as game_text_file:
@@ -20,12 +21,12 @@ except FileNotFoundError:
 
 from .abilities import Action, ActionGrid, ActionTypes
 from .BOTCUtils import (AbilityForbidden, AliveOnlyCommand, BOTCUtils,
-                        DeadOnlyCommand, GameLogic, LorePicker, NotAPlayer,
-                        NotDawn, NotDay, NotDMChannel, NotLobbyChannel,
-                        NotNight, PlayerConverter, PlayerNotFound,
-                        PlayerParser, RoleCannotUseCommand, RoleConverter,
-                        RoleNotFound, WhisperConverter, WhisperTooLong,
-                        get_number_image)
+                        DeadOnlyCommand, GameLogic, IsAPlayer, LorePicker,
+                        NotAPlayer, NotDawn, NotDay, NotDMChannel,
+                        NotLobbyChannel, NotNight, PlayerConverter,
+                        PlayerNotFound, PlayerParser, RoleCannotUseCommand,
+                        RoleConverter, RoleNotFound, WhisperConverter,
+                        WhisperTooLong, get_number_image)
 from .Category import Category
 from .Character import Character
 from .checks import (can_use_kill, can_use_learn, can_use_poison,
@@ -35,7 +36,7 @@ from .checks import (can_use_kill, can_use_learn, can_use_poison,
                      check_if_can_read, check_if_can_serve, check_if_can_slay,
                      check_if_dm, check_if_is_dawn, check_if_is_day,
                      check_if_is_night, check_if_is_player, check_if_lobby,
-                     check_if_player_apparently_alive,
+                     check_if_not_player, check_if_player_apparently_alive,
                      check_if_player_apparently_dead,
                      check_if_player_really_alive, check_if_player_really_dead)
 from .ChoppingBlock import ChoppingBlock
