@@ -2,11 +2,12 @@
 
 import botutils
 from botc.status import StatusList
+import globvars
 
 from .abilities import ActionGrid
 from .errors import AlreadyDead
 from .PlayerState import PlayerState
-
+from .Notes import Notes
 
 class Player:
     """Player class
@@ -30,6 +31,9 @@ class Player:
         self.was_nominated = False
         self._reminder_tokens = []
         self._persistent_reminder_tokens = []
+
+        # Notes will be initialized upon first access, as player list may not be complete when this Player object is created
+        self._notes = None
 
     def toggle_has_nominated(self):
         """The player has nominated a person."""
@@ -201,6 +205,13 @@ class Player:
     @property
     def status_effects(self):
         return self._status_effects
+
+    @property
+    def notes(self):
+        if self._notes is None:
+            self._notes = Notes(globvars.master_state.game.sitting_order, self)
+        return self._notes
+
 
     def __repr__(self):
         return f"{str(self.user.display_name)} ({self.user.id}) is {str(self.role)}"

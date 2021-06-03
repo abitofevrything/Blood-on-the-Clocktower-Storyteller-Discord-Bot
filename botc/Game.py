@@ -1,6 +1,7 @@
 """Contains the BOTC Game class"""
 
 import asyncio
+from botc.Notes import Notes, NotesManager
 import datetime
 import json
 import random
@@ -672,6 +673,9 @@ class Game(GameMeta):
         self.replay += f"Start: {d_formatted}\n"\
                         f"[BoTC: {self.gamemode.value}, {len(self.sitting_order)} players]\n"
         self.replay += GameLog(self).create_game_obj_log_str(roles_only=True)
+        # Create the public notes
+        self._notes = Notes(self.sitting_order)
+        self._note_manager = NotesManager(self._notes, [p.notes for p in self.sitting_order])
         # Log the game data
         await GameLog(self).send_game_obj_log_str()
         # Unload conflicting commands
@@ -687,6 +691,7 @@ class Game(GameMeta):
 
         globvars.client.load_extension("botc.commands.townhall")
         globvars.client.load_extension("botc.commands.debug")
+        globvars.client.load_extension("botc.commands.info")
         # Start the game loop
         self.gameloop.start(self)
 
@@ -966,6 +971,14 @@ class Game(GameMeta):
         """Return the list of alive players (truly alive state)"""
         return [player for player in self.sitting_order if player.is_alive()]
 
+    @property
+    def notes(self):
+        return self._notes
+        
+    @property
+    def note_manager(self):
+        return self._note_manager
+
     async def check_winning_conditions(self):
         """Check if the game has reached the winning conditons. Promote new demons or
         end the game is necessary.
@@ -1034,6 +1047,7 @@ class Game(GameMeta):
 
         globvars.client.unload_extension("botc.commands.townhall")
         globvars.client.unload_extension("botc.commands.debug")
+        globvars.client.unload_extension("botc.commands.info")
         # Load conflicting commands
         for extension in CONFLICTING_CMDS:
             globvars.client.load_extension(extension)

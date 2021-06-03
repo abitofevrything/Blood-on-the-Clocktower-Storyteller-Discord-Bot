@@ -396,6 +396,13 @@ class Character:
         else:
             globvars.master_state.game.night_deaths.append(killed_player)
 
+    async def on_claim(self, player, claimed_category, claimed_role, self_claim):
+        """Function that runs after a player claims a role.
+        Default behaviour is to do nothing.
+        Override by child classes and / or other classes inherited by child classes.
+        """
+        pass
+
     # -------------------- Character ABILITIES --------------------
 
     async def process_night_ability(self, player):

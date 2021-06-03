@@ -1,16 +1,15 @@
 """Contains functions to send messages"""
 
 import enum
-import json
-
-import toml
+import math
 
 import globvars
+from config import (LOBBY_CHANNEL_ID, LOGGING_CHANNEL_ID, MAX_MESSAGE_LENGTH,
+                    OWNER_ID, REPLAY_CHANNEL_ID, SERVER_ID)
+
+from botutils import bot_text
 
 from .helpers import make_ping
-
-from config import SERVER_ID, LOBBY_CHANNEL_ID, REPLAY_CHANNEL_ID, LOGGING_CHANNEL_ID, OWNER_ID, MAX_MESSAGE_LENGTH
-from botutils import bot_text
 
 stats_pregame_header = bot_text["cmd"]["stats_pregame_header"]
 
@@ -100,3 +99,17 @@ async def send_lobby(message, embed = None, file = None, delete_after = None):
     lobby_channel = globvars.client.get_channel(LOBBY_CHANNEL_ID)
     ret = await lobby_channel.send(message, embed = embed, file = file, delete_after = delete_after)
     return ret
+
+async def send_long_message(channel, message, make_code = False, *, embed = None, file = None, delete_after = None):
+    max = int(MAX_MESSAGE_LENGTH) - (6 if make_code else 0)
+    ptr = 0
+    for _ in range(0, math.ceil(len(message) / max)):
+        msg = message[ptr:ptr+max]
+        if make_code:
+            if not msg.startswith('```'):
+                msg = '```' + msg
+            if not msg.endswith('```'):
+                msg = msg + '```'
+
+        await channel.send(msg, embed = embed, file = file, delete_after = delete_after)
+        ptr += max

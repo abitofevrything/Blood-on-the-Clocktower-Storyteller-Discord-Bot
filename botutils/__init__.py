@@ -34,7 +34,7 @@ from .helpers import (AmbiguousUserError, find_role_in_all, get_emoji,
 from .MasterState import MasterState, StateMachine
 from .Pregame import Pregame
 from .sends import (Level, create_code_block, log, send_lobby, send_replay,
-                    send_pregame_stats)
+                    send_pregame_stats, send_long_message)
 from .tasks import (after_lobby_timeout, cycling_bot_status,
                     lobby_timeout, rate_limit_commands, start_votes_timer,
                     votestop_votes_timer)

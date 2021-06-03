@@ -24,6 +24,7 @@ whisper_cooldown = 15
 townsquare_cooldown = 60
 grimoire_show_time = 40
 whisper_show_time = 30
+claim_show_time = 30
 
 [duration]
 start_clear = 60

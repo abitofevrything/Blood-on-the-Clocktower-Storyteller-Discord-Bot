@@ -11,7 +11,8 @@
         "social_medias" : "{} Facebook: https://www.facebook.com/BloodOnTheClocktower/\n{} YouTube: https://www.youtube.com/channel/UCVmPTpM355K0dXW4MbF_R6Q\n{} Twitter: https://twitter.com/bloodclocktower?lang=en\n{} Reddit: https://www.reddit.com/r/BloodOnTheClocktower/",
         "abilities_cog" : "༺ 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 ༻ 𝔄𝔟𝔦𝔩𝔦𝔱𝔦𝔢𝔰",
         "townhall_cog" : "༺ 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 ༻ 𝔗𝔬𝔴𝔫𝔥𝔞𝔩𝔩",
-        "debug_cog" :  "༺ 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 ༻ 𝔇𝔢𝔟𝔲𝔤"
+        "debug_cog" :  "༺ 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 ༻ 𝔇𝔢𝔟𝔲𝔤",
+        "info_cog" :  "༺ 𝕭𝖑𝖔𝖔𝖉 𝖔𝖓 𝖙𝖍𝖊 𝕮𝖑𝖔𝖈𝖐𝖙𝖔𝖜𝖊𝖗 ༻ ℑ𝔫𝔣𝔬"
 
     },
 
@@ -306,6 +307,7 @@
         "not_under_status" : "{} {} You are not allowed to use your ability at this time.",
         "already_dead" : "{} {} That player is already dead.",
         "missing_arguments" : "{} {} You are missing arguments.",
+        "bad_argument" : "{} {} You provided an invalid argument.",
         "no_self_targetting_str" : "{} {} You may not choose yourself as one of the targets.",
         "except_first_night_str" : "{} {} You may not use this ability on the first night.",
         "requires_one_target_str" : "{} {} You must pick exactly one target for your ability. Note that the separator `and` is a special keyword and allows you to input multiple targets.",
@@ -463,6 +465,66 @@
             "help" : "get your role card",
             "description" : "[GETROLE] command - BOTC",
             "feedback": "{} {} Sent you your role card!"
+        },
+
+        "notes" : {
+            "brief" : "manage or view notes",
+            "help" : "Register or view info or additional notes for each player. Use `notes` alone to see a notes summary. If no subcommand is provided, defaults to `notes add`.",
+            "description" : "[NOTES] command - BOTC",
+
+            "add" : {
+                "brief" : "add a note for a player",
+                "help" : "Add a note for a player. Can only be run in DM. Syntax is `notes add <player> <note>`. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+                "description" : "[NOTES ADD] command - BOTC",
+                "feedback" : "{} Succesfully added your note."
+            },
+            "remove" : {
+                "brief" : "remove a note for a player",
+                "help" : "Remove a note for a player. Can only be run in DM. Syntax is `notes remove <player> <note>`, with `<note>` being a number indicating the note to remove. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+                "description" : "[NOTES REMOVE] command - BOTC",
+                "feedback" : "{} Succesfully removed your note."
+            },
+
+            "info" : {
+                "brief" : "manage player info",
+                "help" : "Add or remove info for yourself or for another player. If no subcommand is provided, defaults to `notes info add`.",
+                "description" : "[NOTES INFO] command - BOTC",
+
+                "add" : {
+                    "brief" : "add info for a player",
+                    "help" : "Add info for a player. Can only be run in DM. Syntax is `notes info add <player> <cycle> <info>`, with `<player>` and `<cycle>` being optional parameters. If `<player>` is not given, the info will be set as your own on the public claims list, else that player's private info will be updated. If `<cycle>` is not given, defaults to the current cycle. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+                    "description" : "[NOTES INFO ADD] command - BOTC",
+                    "feedback" : "{} Succesfully added the info."
+                },
+                "remove" : {
+                    "brief" : "remove info for a player",
+                    "help" : "Remove info for a player. Can only be run in DM. Syntax is `notes info remove <player> <cycle>`, with `<player>` and `<cycle>` being optional parameters. If `<player>` is not given, the info will be removed from your public info, else that player's private info will be updated. If `<cycle>` is not given, defaults to the current cycle. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+                    "description" : "[NOTES INFO REMOVE] command - BOTC",
+                    "feedback" : "{} Succesfully removed the info."
+                }
+            },
+
+            "claim" : {
+                "brief" : "manage claims",
+                "help" : "Claim to be a role or category on the public claims list, or register a private claim or suspicion from another player. If no subcommand is given, defaults to `notes claim add`.",
+                "description" : "[NOTES CLAIM] command - BOTC",
+
+                "add" : {
+                    "brief" : "claim a role",
+                    "help" : "Claim to be a role or category on the public claims list, or register a private claim or suspicion from another player. Syntax is `notes claim add <player> <claim>`, with `<player>` being an optional parameter. If `<player>` is not given, the claim will be set as your own on the public claims list, else that player's private claim will be set. `<claim>` can be either a role or category. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+                    "description" : "[NOTES CLAIM ADD] command - BOTC",
+                    "feedback": "{} claims to be {} **{}**",
+                    "private_feedback" : "{} Successfully added the claim."
+                },
+
+                "remove" : {
+                    "brief" : "clear a claim",
+                    "help" : "Clear your public claim, or clear one of your private claims. Syntax is `notes claim remove <player>`, with `<player>` being an optional parameter. If `<player>` is not given, your public claim will be removed, else that player's private claim will be removed. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+                    "description" : "[NOTES CLAIM REMOVE] command - BOTC",
+                    "feedback": "{} has removed their claim.",
+                    "private_feedback" : "{} Successfully removed the claim."
+                }
+            }
         }
 
     }

@@ -89,6 +89,7 @@ try:
         TOWNSQUARE_COOLDOWN = BOTC.get("townsquare_cooldown", 60)
         GRIMOIRE_SHOW_TIME = BOTC.get("grimoire_show_time", 40)
         WHISPER_SHOW_TIME = BOTC.get("whisper_show_time", 30)
+        CLAIM_SHOW_TIME = BOTC.get("claim_show_time", 30)
 
         # duration
         DURATION = preferences["duration"]
