@@ -6,8 +6,9 @@ from typing import Union
 import botutils
 import discord
 import globvars
-from botc import (BOTCUtils, PlayerConverter, PlayerNotFound, RoleNotFound,
-                  check_if_dm, game_text, NotDMChannel)
+from botc import (BOTCUtils, NotDMChannel, PlayerConverter, PlayerNotFound,
+                  RoleNotFound, check_if_dm, game_text, NotNight)
+from botc.checks import check_if_is_player
 from botutils import BotEmoji, bot_text
 from config import CLAIM_SHOW_TIME
 from discord.ext import commands
@@ -33,6 +34,7 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
         help = game_text["doc"]["notes"]["info"]["help"],
         description = game_text["doc"]["notes"]["info"]["description"]
     )
+    @commands.check(check_if_is_player)
     async def info(self, ctx, *, args: str = None):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
@@ -44,7 +46,8 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
                 await botutils.send_long_message(ctx.channel, globvars.master_state.game.note_manager.format_notes(), make_code=True, delete_after=CLAIM_SHOW_TIME)
             return
         else:
-            await self.notes_info_command.callback(self, ctx, args=args)
+            if isinstance(ctx.channel, discord.channel.DMChannel):
+                await self.notes_info_command.callback(self, ctx, args=args)
 
     @info.command(
         pass_context = True,
@@ -82,11 +85,15 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(error)
         elif isinstance(error, commands.CheckFailure):
             return
+        elif isinstance(error, BOTCUtils.NotAPlayer):
+            return
         elif isinstance(error, commands.BadArgument):
             msg = game_text["cmd_warnings"]["bad_argument"]
             await ctx.send(msg.format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, NotDMChannel):
             return
+        elif isinstance(error, NotNight):
+            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         else:
             try:
                 raise error

@@ -1,18 +1,20 @@
 """Contains the notes command cog"""
 
-from inspect import Parameter
-from botc.Character import Character
 import re
 import traceback
+from inspect import Parameter
 from typing import Union
 
 import botutils
 import discord
 import globvars
-from botc import (BOTCUtils, Category, Player, PlayerConverter,
-                  PlayerNotFound, check_if_dm, game_text, RoleNotFound, NotDMChannel)
+from botc import (BOTCUtils, Category, NotDMChannel, Player, PlayerConverter,
+                  PlayerNotFound, RoleNotFound, check_if_dm, game_text, Phase,
+                  NotNight)
+from botc.Character import Character
+from botc.checks import check_if_is_player
 from botutils import BotEmoji, bot_text
-from config import BOT, CLAIM_SHOW_TIME
+from config import CLAIM_SHOW_TIME
 from discord.ext import commands
 from discord.ext.commands.errors import MissingRequiredArgument
 
@@ -44,6 +46,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         help = game_text["doc"]["notes"]["help"],
         description = game_text["doc"]["notes"]["description"]
     )
+    @commands.check(check_if_is_player)
     async def notes(self, ctx, *, args = None):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
@@ -160,6 +163,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         if target_player is not None:
             globvars.master_state.game.note_manager.info(target_player, rem, invoking_player, target_phase)
         else:
+            if globvars.master_state.game._chrono.phase == Phase.night:
+                raise NotNight("Command is allowed during night phase only (BoTC)")
             globvars.master_state.game.note_manager.info(invoking_player, rem, None, target_phase)
 
         await ctx.send(info_add_feedback_str.format(BotEmoji.check))
@@ -181,6 +186,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             player_or_id = None
 
         if player_or_id is None:
+            if globvars.master_state.game._chrono.phase == Phase.night:
+                raise NotNight("Command is allowed during night phase only (BoTC)")
             globvars.master_state.game.note_manager.rm_info(invoking_player, id)
         else:
             globvars.master_state.game.note_manager.rm_info(player_or_id, id, invoking_player)
@@ -270,6 +277,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
                 raise RoleNotFound(role_not_found_str.format(ctx.author.mention, BotEmoji.x_emoji))
 
         if player_or_claim is None:
+            if globvars.master_state.game._chrono.phase == Phase.night:
+                raise NotNight("Command is allowed during night phase only (BoTC)")
             globvars.master_state.game.note_manager.claim(invoking_player, claimed_category, claimed_character)
 
             an_a_the = "the"
@@ -298,6 +307,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         if player is None:
+            if globvars.master_state.game._chrono.phase == Phase.night:
+                raise NotNight("Command is allowed during night phase only (BoTC)")
             globvars.master_state.game.note_manager.rm_claim(invoking_player)
             await botutils.send_lobby(remove_claim_str.format(ctx.author.mention), delete_after = CLAIM_SHOW_TIME)
         else:
@@ -319,11 +330,15 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(error)
         elif isinstance(error, commands.CheckFailure):
             return
+        elif isinstance(error, BOTCUtils.NotAPlayer):
+            return
         elif isinstance(error, commands.BadArgument):
             msg = game_text["cmd_warnings"]["bad_argument"]
             await ctx.send(msg.format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, NotDMChannel):
             return
+        elif isinstance(error, NotNight):
+            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         else:
             try:
                 raise error
