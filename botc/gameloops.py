@@ -75,6 +75,7 @@ async def nomination_loop(game, nominator, nominated):
     denied_emoji = str(botutils.get_emoji(botutils.BotEmoji.denied) or '❌')
 
     # Debate time
+    debate_timer.cancel()
     debate_timer.start()
     await asyncio.sleep(DEBATE_TIME)
 
