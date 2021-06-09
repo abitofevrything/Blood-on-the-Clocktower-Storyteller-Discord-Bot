@@ -392,7 +392,7 @@ async def base_day_loop(duration):
     await asyncio.sleep(duration)
 
 
-@tasks.loop(seconds = DEBATE_TIME, count=2)
+@tasks.loop(seconds = DEBATE_TIME, count=1)
 async def debate_timer():
     """Debate phase timer, for the time command"""
     pass
