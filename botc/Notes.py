@@ -7,6 +7,7 @@ from discord.ext import commands
 import globvars
 import botutils
 
+
 class NotesEntry:
     """Represents a single Entry into some Notes.
     Contains info about claim, player info and additional notes.
@@ -30,7 +31,7 @@ class NotesEntry:
         if info is None:
             info = ''
         self._info[n] = info
-        
+
         while len(self._info) > 0 and self._info[-1] == '':
             self._info.pop()
 
@@ -48,7 +49,7 @@ class NotesEntry:
     @property
     def claimed_category(self):
         return self._claimed_category
-        
+
     @property
     def claimed_role(self):
         return self._claimed_role
@@ -56,6 +57,7 @@ class NotesEntry:
     @property
     def player(self):
         return self._player
+
 
 class Notes:
     """Represents a set of notes.
@@ -76,6 +78,7 @@ class Notes:
     @property
     def player(self):
         return self._player
+
 
 class NotesManager:
     """Manages global note operations, such as madness, and provides easy access to player's notes
@@ -103,7 +106,7 @@ class NotesManager:
             if role is None:
                 return
             category = role.category
-        
+
         if target_notes is None:
             self._public_notes.get_entry(player).claim(category, role)
             if self._self_madness[player] != (category, role):
@@ -122,7 +125,7 @@ class NotesManager:
                 if self._inferred_madness[player][0] != category and self._self_madness[player][0] != category:
                     self._inferred_madness[player] = (category, None)
                     asyncio.create_task(player.role.true_self.on_claim(player, category, role, False))
-    
+
     def rm_claim(self, player, target_notes = None):
         if target_notes is None:
             self._public_notes.get_entry(player).claim(None, None)
@@ -145,9 +148,9 @@ class NotesManager:
             raise commands.BadArgument()
 
         if target_notes is None:
-            self._public_notes.get_entry(player).info(info, n -1) # Remove one to get 0-based index
+            self._public_notes.get_entry(player).info(info, n - 1) # Remove one to get 0-based index
         else:
-            self.private_notes(target_notes).get_entry(player).info(info, n -1) # Remove one to get 0-based index
+            self.private_notes(target_notes).get_entry(player).info(info, n - 1) # Remove one to get 0-based index
 
     def rm_info(self, player, info_idx = None, target_notes = None):
         if info_idx is None:
@@ -157,9 +160,9 @@ class NotesManager:
             raise commands.BadArgument()
 
         if target_notes is None:
-            self._public_notes.get_entry(player).info(None, info_idx -1) # Remove one to get 0-based index
+            self._public_notes.get_entry(player).info(None, info_idx - 1) # Remove one to get 0-based index
         else:
-            self.private_notes(target_notes).get_entry(player).info(None, info_idx -1) # Remove one to get 0-based index
+            self.private_notes(target_notes).get_entry(player).info(None, info_idx - 1) # Remove one to get 0-based index
 
     def note(self, player, note, target_notes):
         if target_notes is None:
@@ -176,7 +179,7 @@ class NotesManager:
     def check_madness(self, player, category, role = None):
         """Checks if a given player is mad
         """
-        
+
         # "Inferred" madness
         if role is None:
             num_matching = len(list(filter(lambda n: n.get_entry(player).claimed_category == category, self._private_notes)))
@@ -246,8 +249,8 @@ class NotesManager:
 
                 death_indicator = '[ALIVE]' if player.is_apparently_alive() else '[DEAD] '
                 player_name = player.user.display_name.ljust(max_player_name_len, ' ')
-                claim = entry.claimed_role.name if entry.claimed_role else \
-                        (entry.claimed_category.value if entry.claimed_category else '')
+                claim = (entry.claimed_role.name if entry.claimed_role else
+                         (entry.claimed_category.value if entry.claimed_category else ''))
 
                 if self.is_cc(player):
                     claim += ' [CC]'
@@ -256,7 +259,7 @@ class NotesManager:
                 for info in entry.info_list:
                     if info:
                         info_str += ' [' + (str(info) if info else '?') + ']'
-                
+
                 msg += f"{death_indicator} {player_name} - {claim}{info_str}\n"
         else:
             for entry, public_entry in zip(self.private_notes(target_notes).entries, self._public_notes.entries):
@@ -264,8 +267,8 @@ class NotesManager:
 
                 death_indicator = '[ALIVE]' if player.is_apparently_alive() else '[DEAD] '
                 player_name = player.user.display_name.ljust(max_player_name_len, ' ')
-                public_claim = public_entry.claimed_role.name if public_entry.claimed_role else \
-                               (public_entry.claimed_category.value if public_entry.claimed_category else '')
+                public_claim = (public_entry.claimed_role.name if public_entry.claimed_role else
+                                (public_entry.claimed_category.value if public_entry.claimed_category else ''))
 
                 if self.is_cc(player):
                     public_claim += ' [CC]'
@@ -276,8 +279,8 @@ class NotesManager:
                 for info in public_entry.info_list:
                     public_info_str += ' [' + (str(info) if info else '?') + ']'
 
-                private_claim = entry.claimed_role.name if entry.claimed_role else \
-                                (entry.claimed_category.value if entry.claimed_category else '')
+                private_claim = (entry.claimed_role.name if entry.claimed_role else
+                                 (entry.claimed_category.value if entry.claimed_category else ''))
 
                 if self.is_cc(player, target_notes, True):
                     private_claim += ' [CC]'
@@ -285,17 +288,16 @@ class NotesManager:
                 private_info_str = ''
                 for info in entry.info_list:
                     private_info_str += ' [' + (str(info) if info else '?') + ']'
-                
+
                 msg += f"{death_indicator} {player_name} - "
 
-                if private_claim is not '':
+                if private_claim:
                     msg += f"({private_claim}"
-                    if private_info_str == '':
+                    if not private_info_str:
                         msg += ') '
 
-
-                if private_info_str is not '':
-                    if private_claim == '':
+                if private_info_str:
+                    if not private_claim:
                         msg += "("
                     msg += private_info_str + ") "
 
