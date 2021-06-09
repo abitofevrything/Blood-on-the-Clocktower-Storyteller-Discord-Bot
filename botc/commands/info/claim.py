@@ -18,24 +18,20 @@ claim_role_str = game_text["doc"]["notes"]["claim"]["add"]["feedback"]
 
 # Claim strings
 claim_matches = {
-    r"im .+": r"(?<=im ).+",
-    r"i'm .+": r"(?<=i'm ).+", 
-    r"i am .+": r"(?<=i am ).+",
-    r"im a .+": r"(?<=im a ).+",
-    r"i'm a .+": r"(?<=i'm a ).+",
-    r"i am a .+": r"(?<=i am a ).+",
-    r"im an .+": r"(?<=im an ).+",
-    r"i'm an .+": r"(?<=i'm an ).+",
-    r"i am an .+": r"(?<=i am an ).+",
-    r"im the .+": r"(?<=im the ).+",
-    r"i'm the .+": r"(?<=i'm the ).+",
-    r"i am the .+": r"(?<=i am the ).+",
+    r"^im [^,.]+(\.|,|$)": r"(?<=im )[^,.]+(?=(\.|,|$))",
+    r"^i'm [^,.]+(\.|,|$)": r"(?<=i'm )[^,.]+(?=\.|,|$)",
+    r"^i am [^,.]+(\.|,|$)": r"(?<=i am )[^,.]+(?=\.|,|$)",
+    r"^i was [^,.]+(\.|,|$)": r"(?<=i was )[^,.]+(?=\.|,|$)",
 
-    r".+ here": r".+(?= here)",
-    r"your .+ here": r"(?<=your ).+(?= here)",
+    r"^i(m|'m| am| was) the [^,.]+(\.|,|$)": r"(?<= the )[^,.]+(?=\.|,|$)",
+    r"^i(m|'m| am| was) an [^,.]+(\.|,|$)": r"(?<= an )[^,.]+(?=\.|,|$)",
+    r"^i(m|'m| am| was) a [^,.]+(\.|,|$)": r"(?<= a )[^,.]+(?=\.|,|$)",
+
+    r"^[^,.]+ here(\.|,|$)": r"[^,.]+(?= here)",
+    r"^your [^,.]+ here(\.|,|$)": r"(?<=your )[^,.]+(?= here)",
 }
 
-claim_matches = {re.compile(f"^{k}$", re.IGNORECASE): re.compile(v, re.IGNORECASE) for k, v in claim_matches.items()}
+claim_matches = {re.compile(k, re.IGNORECASE): re.compile(v, re.IGNORECASE) for k, v in claim_matches.items()}
 
 class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
     
@@ -107,7 +103,7 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
                     if globvars.master_state.game._chrono.phase == Phase.night:
                         return
                     for k, v in claim_matches.items():
-                        if k.fullmatch(message.content):
+                        if k.search(message.content):
                             claim_str = v.search(message.content).group().lower()
 
                             claimed_character = None
@@ -139,7 +135,7 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
                                     an_a_the = "a"
 
                             globvars.master_state.game.note_manager.claim(player, claimed_category, claimed_character)
-                            await botutils.send_lobby(claim_role_str.format(message.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)))
+                            await botutils.send_lobby(claim_role_str.format(message.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
                             return
         except Exception:
             await ctx.send(error_str)

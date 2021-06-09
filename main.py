@@ -39,7 +39,7 @@ if __name__ == "__main__":
         pass
     else:
         if psutil.pid_exists(pid):
-            print(f"Error: Another instance of the bot is already running (PID {pid}). Please close it before starting a new instance.")
+            print(f"Error: Another instance of the bot is already running (PID {pid}). Please close it before starting a new instance.")
             sys.exit(1)
         else:
             print("PID file is stale, removing")
@@ -66,7 +66,7 @@ if __name__ == "__main__":
     help_command = cmd.Help(
         verify_checks = False,
         show_hidden = False,
-        dm_help = None,
+        dm_help = True,
         dm_help_threshold = 700,
         no_category = bot_text["system"]["others_cog"],
         command_attrs = {

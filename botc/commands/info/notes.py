@@ -10,7 +10,7 @@ import discord
 import globvars
 from botc import (BOTCUtils, Category, NotDMChannel, Player, PlayerConverter,
                   PlayerNotFound, RoleNotFound, check_if_dm, game_text, Phase,
-                  NotNight)
+                  NotNight, NotAPlayer)
 from botc.Character import Character
 from botc.checks import check_if_is_player
 from botutils import BotEmoji, bot_text
@@ -288,7 +288,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
                 else:
                     an_a_the = "a"
 
-            await botutils.send_lobby(claim_role_str.format(ctx.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)))
+            await botutils.send_lobby(claim_role_str.format(ctx.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
         else:
             globvars.master_state.game.note_manager.claim(player_or_claim, claimed_category, claimed_character, invoking_player)
 
@@ -330,7 +330,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(error)
         elif isinstance(error, commands.CheckFailure):
             return
-        elif isinstance(error, BOTCUtils.NotAPlayer):
+        elif isinstance(error, NotAPlayer):
             return
         elif isinstance(error, commands.BadArgument):
             msg = game_text["cmd_warnings"]["bad_argument"]
