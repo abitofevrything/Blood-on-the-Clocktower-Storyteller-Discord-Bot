@@ -6,6 +6,7 @@ import botutils
 import re
 import discord
 import globvars
+from unidecode import unidecode
 from botc import (BOTCUtils, NotDMChannel, PlayerConverter, PlayerNotFound,
                   RoleNotFound, check_if_dm, game_text, NotNight, Category, Phase)
 from botc.checks import check_if_is_player
@@ -27,7 +28,7 @@ claim_matches = {
     r"^i(m|'m| am| was) an [^,.]+(\.|,|$)": r"(?<= an )[^,.]+(?=\.|,|$)",
     r"^i(m|'m| am| was) a [^,.]+(\.|,|$)": r"(?<= a )[^,.]+(?=\.|,|$)",
 
-    r"^[^,.]+ here(\.|,|$)": r"[^,.]+(?= here)",
+    r"^[^,.]+(?<!^im)(?<!^i'm)(?<!^i)(?<!^i am) here(\.|,|$)": r"[^,.]+(?= here)",
     r"^your [^,.]+ here(\.|,|$)": r"(?<=your )[^,.]+(?= here)",
 }
 
@@ -96,6 +97,8 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
         # Empty messages (image uploads) may cause issues, we ignore them
         if not isinstance(message.content, str):
             return
+
+        s = unidecode(message.content)
         try:
             if botutils.check_if_lobby(ctx):
                 player = BOTCUtils.get_player_from_id(message.author.id)
@@ -103,8 +106,8 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
                     if globvars.master_state.game._chrono.phase == Phase.night:
                         return
                     for k, v in claim_matches.items():
-                        if k.search(message.content):
-                            claim_str = v.search(message.content).group().lower()
+                        if k.search(s):
+                            claim_str = v.search(s).group().lower()
 
                             claimed_character = None
                             claimed_category = None
