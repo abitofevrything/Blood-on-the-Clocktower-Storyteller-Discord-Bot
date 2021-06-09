@@ -44,7 +44,7 @@ class Playerstats(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"])
     @commands.command(
         pass_context = True,
         name = "playerstats",
-        aliases = ["games", "wins"],
+        aliases = ["games", "wins", "winrate", "wr"],
         brief = bot_text["doc"]["playerstats"]["brief"],
         help = bot_text["doc"]["playerstats"]["help"],
         description = bot_text["doc"]["playerstats"]["description"]
