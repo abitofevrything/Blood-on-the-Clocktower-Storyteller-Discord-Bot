@@ -3,15 +3,17 @@
 import traceback
 from typing import Union
 
-import botutils
 import discord
+from discord.ext import commands
+
+import botutils
 import globvars
-from botc import (BOTCUtils, NotDMChannel, PlayerConverter, PlayerNotFound,
-                  RoleNotFound, check_if_dm, game_text, NotNight)
+from botc import (BOTCUtils, NotAPlayer, NotDMChannel, NotNight,
+                  PlayerConverter, PlayerNotFound, RoleNotFound, check_if_dm,
+                  game_text)
 from botc.checks import check_if_is_player
 from botutils import BotEmoji, bot_text
 from config import CLAIM_SHOW_TIME
-from discord.ext import commands
 
 error_str = bot_text["system"]["error"]
 
@@ -85,7 +87,7 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(error)
         elif isinstance(error, commands.CheckFailure):
             return
-        elif isinstance(error, BOTCUtils.NotAPlayer):
+        elif isinstance(error, NotAPlayer):
             return
         elif isinstance(error, commands.BadArgument):
             msg = game_text["cmd_warnings"]["bad_argument"]
