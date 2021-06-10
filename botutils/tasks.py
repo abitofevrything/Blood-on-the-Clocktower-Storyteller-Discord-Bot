@@ -27,7 +27,7 @@ async def rate_limit_commands():
         globvars.ratelimit_dict[user] = 0
 
 
-@tasks.loop(seconds = LOBBY_TIMEOUT, count = 2)
+@tasks.loop(seconds = LOBBY_TIMEOUT, count = 1)
 async def lobby_timeout():
     """Lobby timeout loop"""
     pass
