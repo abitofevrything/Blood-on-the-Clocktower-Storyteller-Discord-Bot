@@ -276,6 +276,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             else:
                 raise RoleNotFound(role_not_found_str.format(ctx.author.mention, BotEmoji.x_emoji))
 
+            player_or_claim = None
+
         if player_or_claim is None:
             if globvars.master_state.game._chrono.phase == Phase.night:
                 raise NotNight("Command is allowed during night phase only (BoTC)")
