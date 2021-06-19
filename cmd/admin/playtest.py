@@ -4,9 +4,10 @@ import toml
 from discord.ext import commands
 
 import botutils
+from config import PLAYTESTERS
 
 from ._admin import Admin
-from config import PLAYTESTERS
+
 
 class Playtest(Admin):
     """Playtest command"""

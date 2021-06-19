@@ -4,10 +4,9 @@ import enum
 import math
 
 import globvars
+from botutils import bot_text
 from config import (LOBBY_CHANNEL_ID, LOGGING_CHANNEL_ID, MAX_MESSAGE_LENGTH,
                     OWNER_ID, REPLAY_CHANNEL_ID, SERVER_ID)
-
-from botutils import bot_text
 
 from .helpers import make_ping
 

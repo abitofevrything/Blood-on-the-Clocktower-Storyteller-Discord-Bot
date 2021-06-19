@@ -9,11 +9,10 @@ import toml
 from discord.ext import commands
 
 import globvars
+from botutils import bot_text
+from config import TOP_LIMIT, TOP_WINRATE_MIN_GAMES
 
 from ._miscellaneous import Miscellaneous
-
-from config import TOP_LIMIT, TOP_WINRATE_MIN_GAMES
-from botutils import bot_text
 
 top_games_str = bot_text["cmd"]["top_games"]
 top_evil_games_str = bot_text["cmd"]["top_evil_games"]

@@ -6,8 +6,9 @@ import sqlite3
 import discord
 from discord.ext import commands
 
-from ._miscellaneous import Miscellaneous
 from botutils import bot_text
+
+from ._miscellaneous import Miscellaneous
 
 gamestats_title_str = bot_text["cmd"]["gamestats_title"]
 gamestats_title_players_str = bot_text["cmd"]["gamestats_title_players"]

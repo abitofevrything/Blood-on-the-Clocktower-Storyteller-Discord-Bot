@@ -10,8 +10,7 @@ from discord.ext import commands
 
 import botutils
 from botutils import bot_text
-
-from config import SERVER_ID, LOBBY_CHANNEL_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID
+from config import ALIVE_ROLE_ID, DEAD_ROLE_ID, LOBBY_CHANNEL_ID, SERVER_ID
 
 restart_msg = bot_text["system"]["restart"]
 restarted_notify_msg = bot_text["system"]["restarted_notify"]

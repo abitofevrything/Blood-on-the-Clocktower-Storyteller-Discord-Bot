@@ -13,9 +13,9 @@ from botc import (BOTCUtils, Category, Character, NonRecurringAction, Outsider,
                   Townsfolk, game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.librarian.value.lower()]
 
 librarian_init = game_text["gameplay"]["librarian_init"]
@@ -24,8 +24,8 @@ copyrights_str = game_text["misc"]["copyrights"]
 blank_token = game_text["images"]["blank_token"]
 
 from botc import emojis
-
 from config import DISABLE_DMS
+
 
 class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
     """Librarian: You start knowing that 1 of 2 players is a particular Outsider.

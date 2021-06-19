@@ -8,12 +8,12 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, BOTCUtils, ButlerService, Character,
-                  Outsider, RecurringAction, game_text, emojis)
+                  Outsider, RecurringAction, emojis, game_text)
 from botc.BOTCUtils import GameLogic
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.butler.value.lower()]
 
 action_assign = game_text["gameplay"]["action_assign"]

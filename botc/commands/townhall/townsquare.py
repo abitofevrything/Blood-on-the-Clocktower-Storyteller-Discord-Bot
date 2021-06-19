@@ -9,11 +9,11 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botc import Townsquare as TownsquareImage, game_text
-from library import display_time
+from botc import Townsquare as TownsquareImage
+from botc import game_text
 from botutils import bot_text
-
 from config import TOWNSQUARE_COOLDOWN
+from library import display_time
 
 error_str = bot_text["system"]["error"]
 cooldown = bot_text["errors"]["cmd_cooldown"]

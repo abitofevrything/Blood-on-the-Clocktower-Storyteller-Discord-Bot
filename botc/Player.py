@@ -1,13 +1,14 @@
 """Contains the Player class"""
 
 import botutils
-from botc.status import StatusList
 import globvars
+from botc.status import StatusList
 
 from .abilities import ActionGrid
 from .errors import AlreadyDead
-from .PlayerState import PlayerState
 from .Notes import Notes
+from .PlayerState import PlayerState
+
 
 class Player:
     """Player class

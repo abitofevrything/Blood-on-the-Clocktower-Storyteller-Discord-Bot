@@ -10,13 +10,14 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, Category, Character, RecurringAction,
-                  RedHerring, StatusList, Storyteller, Townsfolk, game_text, emojis)
+                  RedHerring, StatusList, Storyteller, Townsfolk, emojis,
+                  game_text)
 from botc.BOTCUtils import GameLogic
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.fortuneteller.value.lower()]
 
 fortune_teller_nightly = game_text["gameplay"]["fortune_teller_nightly"]

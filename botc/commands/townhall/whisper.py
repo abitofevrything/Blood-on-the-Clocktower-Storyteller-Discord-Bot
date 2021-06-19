@@ -11,10 +11,9 @@ import globvars
 from botc import (BOTCUtils, NotAPlayer, NotDay, NotDMChannel, PlayerConverter,
                   WhisperConverter, WhisperTooLong, check_if_dm,
                   check_if_is_day, check_if_is_player, game_text)
-from library import display_time
 from botutils import bot_text
-
 from config import WHISPER_COOLDOWN, WHISPER_SHOW_TIME
+from library import display_time
 
 error_str = bot_text["system"]["error"]
 cooldown = bot_text["errors"]["cmd_cooldown"]

@@ -10,8 +10,8 @@ from discord.ext import tasks
 
 import botutils
 from botutils import bot_text
-
-from config import ALIVE_ROLE_ID, PREFIX, LOBBY_TIMEOUT, TOKEN_RESET, STATUS_CYCLE, START_CLEAR, BACKUP_INTERVAL_MIN, VOTESTOP_CLEAR
+from config import (ALIVE_ROLE_ID, BACKUP_INTERVAL_MIN, LOBBY_TIMEOUT, PREFIX,
+                    START_CLEAR, STATUS_CYCLE, TOKEN_RESET, VOTESTOP_CLEAR)
 
 lobby_timeout_str = bot_text["system"]["lobby_timeout"]
 not_enough_votes_to_start = bot_text["system"]["not_enough_votes_to_start"]

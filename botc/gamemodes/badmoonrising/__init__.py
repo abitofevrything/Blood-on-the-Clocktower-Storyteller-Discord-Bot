@@ -1,7 +1,8 @@
 """Blood on the Clocktower (BoTC) - Bad Moon Rising Edition Characters"""
 
-import sys
 import json
+import sys
+
 import globvars
 
 try:
@@ -36,4 +37,3 @@ from .Shabaloth import Shabaloth
 from .TeaLady import TeaLady
 from .Tinker import Tinker
 from .Zombuul import Zombuul
-

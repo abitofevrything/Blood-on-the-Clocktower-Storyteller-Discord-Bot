@@ -7,9 +7,9 @@ import botutils
 from botc import BOTCUtils, Character, Minion, NonRecurringAction, Townsfolk
 from botc.Outsider import Outsider
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.baron.value.lower()]
 
 from botc import emojis

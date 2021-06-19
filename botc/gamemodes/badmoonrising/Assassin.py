@@ -5,9 +5,9 @@ import json
 import globvars
 from botc import ActionTypes, Character, Minion
 
+from . import character_texts
 from ._utils import BadMoonRising, BMRRole
 
-from . import character_texts
 character_text = character_texts[BMRRole.assassin.value.lower()]
 
 from botc import emojis

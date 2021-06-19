@@ -7,11 +7,9 @@ import discord
 from discord.ext import commands
 
 import botutils
-from botutils import lobby_timeout
+from botutils import bot_text, lobby_timeout
 
 from ._admin import Admin
-
-from botutils import bot_text
 
 fjoin_str = bot_text["cmd"]["fjoin"]
 fjoined_str = bot_text["cmd"]["fjoined"]

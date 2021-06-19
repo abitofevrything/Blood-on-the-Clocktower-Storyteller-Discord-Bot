@@ -8,11 +8,10 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botutils import lobby_timeout, bot_text
+from botutils import bot_text, lobby_timeout
+from config import LOBBY_TIMEOUT
 
 from ._gameplay import Gameplay
-
-from config import LOBBY_TIMEOUT
 
 error_str = bot_text["system"]["error"]
 lobby_timeout_str = bot_text["system"]["lobby_timeout"]

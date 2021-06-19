@@ -7,9 +7,8 @@ import toml
 from discord.ext import commands
 
 import botutils
-
-from config import NORMAL_CARD_COLOR
 from botc import game_text
+from config import NORMAL_CARD_COLOR
 
 copyrights_str = game_text["misc"]["copyrights"]
 res_title = game_text["misc"]["res_title"]

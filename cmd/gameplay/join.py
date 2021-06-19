@@ -8,11 +8,9 @@ import traceback
 from discord.ext import commands
 
 import botutils
-from botutils import lobby_timeout
+from botutils import bot_text, lobby_timeout
 
 from ._gameplay import Gameplay
-
-from botutils import bot_text
 
 joined_str = bot_text["cmd"]["joined"]
 joined_alt_str = bot_text["cmd"]["joined_alt"]

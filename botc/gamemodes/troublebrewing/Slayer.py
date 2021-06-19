@@ -11,14 +11,13 @@ import globvars
 from botc import (Action, ActionTypes, AlreadyDead, Category, Character, Flags,
                   Inventory, LorePicker, NonRecurringAction, Townsfolk, emojis)
 from botc.BOTCUtils import BOTCUtils, GameLogic
-from botc.gamemodes.troublebrewing.Imp import Imp
 from botc.gamemodes.troublebrewing.Drunk import Drunk
-
-from ._utils import TBRole, TroubleBrewing
-
+from botc.gamemodes.troublebrewing.Imp import Imp
 from config import DISABLE_DMS
 
 from . import character_texts
+from ._utils import TBRole, TroubleBrewing
+
 character_text = character_texts[TBRole.slayer.value.lower()]
 
 

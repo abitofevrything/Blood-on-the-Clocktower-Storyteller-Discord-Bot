@@ -6,11 +6,9 @@ import traceback
 from discord.ext import commands
 
 import botutils
-from botutils import start_votes_timer
+from botutils import bot_text, start_votes_timer
 
 from ._gameplay import Gameplay
-
-from botutils import bot_text
 
 error_str = bot_text["system"]["error"]
 fstart_min = bot_text["errors"]["fstart_min"]

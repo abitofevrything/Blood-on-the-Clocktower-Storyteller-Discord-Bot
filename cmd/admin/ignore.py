@@ -9,10 +9,9 @@ from discord.ext import commands
 
 import botutils
 from botutils import bot_text
+from config import PREFIX, SERVER_ID
 
 from ._admin import Admin
-
-from config import PREFIX, SERVER_ID
 
 add_ignore = bot_text["cmd"]["add_ignore"]
 remove_ignore = bot_text["cmd"]["remove_ignore"]

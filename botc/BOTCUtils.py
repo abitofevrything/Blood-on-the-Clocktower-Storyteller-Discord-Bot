@@ -6,12 +6,11 @@ import random
 import toml
 from discord.ext import commands, tasks
 
+from botc import game_text
 from botutils import BotEmoji
+from config import MAX_MESSAGE_LENGTH
 
 from .Category import Category
-
-from config import MAX_MESSAGE_LENGTH
-from botc import game_text
 
 player_not_found = game_text["cmd_warnings"]["player_not_found"]
 no_self_targetting_str = game_text["cmd_warnings"]["no_self_targetting_str"]

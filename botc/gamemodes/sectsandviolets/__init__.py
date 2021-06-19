@@ -1,8 +1,9 @@
 """Blood on the Clocktower (BoTC) - Sects & Violets Edition Characters"""
 
-import sys
-import globvars
 import json
+import sys
+
+import globvars
 
 try:
     with open("botc/gamemodes/sectsandviolets/character_text.json") as character_texts_file:

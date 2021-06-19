@@ -11,12 +11,11 @@ import botutils
 import globvars
 from botc import (BOTCUtils, Character, Minion, NonRecurringAction, Outsider,
                   Townsfolk, emojis, game_text)
-
-from ._utils import TBRole, TroubleBrewing
-
 from config import DISABLE_DMS, GRIMOIRE_SHOW_TIME
 
 from . import character_texts
+from ._utils import TBRole, TroubleBrewing
+
 character_text = character_texts[TBRole.spy.value.lower()]
 
 copyrights_str = game_text["misc"]["copyrights"]

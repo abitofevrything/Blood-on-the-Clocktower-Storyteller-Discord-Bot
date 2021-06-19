@@ -5,9 +5,9 @@ import json
 import botutils
 from botc import AlreadyDead, Character, NonRecurringAction, Outsider, Team
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.saint.value.lower()]
 
 from botc import emojis

@@ -3,7 +3,6 @@
 import toml
 
 import globvars
-
 from config import SERVER_ID
 
 

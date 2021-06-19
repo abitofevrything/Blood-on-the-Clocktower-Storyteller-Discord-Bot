@@ -12,8 +12,8 @@ from discord.ext import commands
 
 import botutils
 import globvars
+from botc import emojis, game_text
 from botc.setups import setup
-from botc import game_text, emojis
 from botutils import bot_text
 
 from ._miscellaneous import Miscellaneous

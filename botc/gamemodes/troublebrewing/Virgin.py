@@ -3,15 +3,16 @@
 import json
 
 import botutils
-from botc import (Category, Character, Flags, Inventory, NonRecurringAction,
-                  Townsfolk, ChoppingBlock)
-
-from ._utils import TBRole, TroubleBrewing
+from botc import (Category, Character, ChoppingBlock, Flags, Inventory,
+                  NonRecurringAction, Townsfolk)
 
 from . import character_texts
+from ._utils import TBRole, TroubleBrewing
+
 character_text = character_texts[TBRole.virgin.value.lower()]
 
 from botc import game_text
+
 immediately_executed = game_text["gameplay"]["immediately_executed"]
 
 from botc import emojis

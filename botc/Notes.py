@@ -4,8 +4,9 @@ import asyncio
 import math
 
 from discord.ext import commands
-import globvars
+
 import botutils
+import globvars
 
 
 class NotesEntry:

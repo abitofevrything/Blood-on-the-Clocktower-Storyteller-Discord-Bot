@@ -7,9 +7,9 @@ import botutils
 import globvars
 from botc import BOTCUtils, Character, Demon, Outsider, Townsfolk, game_text
 
+from . import character_texts
 from ._utils import BadMoonRising, BMRRole
 
-from . import character_texts
 character_text = character_texts[BMRRole.shabaloth.value.lower()]
 
 demon_bluff_str = game_text["gameplay"]["demonbluffs"]

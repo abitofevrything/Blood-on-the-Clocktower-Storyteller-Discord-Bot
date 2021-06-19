@@ -9,8 +9,7 @@ from discord.ext import commands
 
 import botutils
 from botutils import bot_text
-
-from config import IGNORE_THRESHOLD, TOKENS_GIVEN, TOKEN_RESET
+from config import IGNORE_THRESHOLD, TOKEN_RESET, TOKENS_GIVEN
 
 ignore = bot_text["system"]["ignore"]
 

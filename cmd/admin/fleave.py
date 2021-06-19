@@ -1,23 +1,22 @@
 """Contains the fleave command cog"""
 
 import json
-
-import discord
-from discord.ext import commands
 from typing import Union
 
-import botutils
+import discord
 import toml
-from botutils import lobby_timeout, start_votes_timer
+from discord.ext import commands
+
+import botutils
+from botutils import bot_text, lobby_timeout, start_votes_timer
 
 from ._admin import Admin
-
-from botutils import bot_text
 
 fleave_str = bot_text["cmd"]["fleave"]
 fleaved_str = bot_text["cmd"]["fleaved"]
 
 from config import SERVER_ID
+
 
 class Fleave(Admin, name = bot_text["system"]["admin_cog"]):
     """Fleave command"""

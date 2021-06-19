@@ -11,10 +11,10 @@ import botutils
 from botc import Phase, check_if_is_player, game_text
 from botc.gameloops import (base_day_loop, calculate_base_day_duration,
                             debate_timer, nomination_loop)
-from library import display_time
 from botutils import bot_text
-
-from config import BASE_NIGHT, NIGHT_MULTIPLER, BASE_DAWN, DAWN_MULTIPLIER, DEBATE_TIME, INCREMENT
+from config import (BASE_DAWN, BASE_NIGHT, DAWN_MULTIPLIER, DEBATE_TIME,
+                    INCREMENT, NIGHT_MULTIPLER)
+from library import display_time
 
 error_str = bot_text["system"]["error"]
 

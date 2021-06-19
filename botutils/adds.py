@@ -6,10 +6,12 @@ import discord
 import toml
 
 import globvars
+from config import (ADMIN_ROLE_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID,
+                    LOBBY_CHANNEL_ID, LOCK_CHANNEL_IDS, SERVER_ID,
+                    SPECIAL_LOCK_CHANNEL_IDS)
 
 from .sends import Level, log
 
-from config import LOBBY_CHANNEL_ID, SERVER_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID, ADMIN_ROLE_ID, LOCK_CHANNEL_IDS, SPECIAL_LOCK_CHANNEL_IDS
 
 async def add_admin_role(user):
     """Grant the admin role to a member"""

@@ -10,11 +10,11 @@ from discord.ext import commands
 
 import botutils
 import globvars
-from botc import AlreadyDead, Category, PlayerConverter, PlayerNotFound, game_text
+from botc import (AlreadyDead, Category, PlayerConverter, PlayerNotFound,
+                  game_text)
 from botc.BOTCUtils import BOTCUtils
 from botc.gamemodes.troublebrewing import Imp
 from botutils import bot_text
-
 from config import DISABLE_DMS, NO_INVALIDATE
 
 error_str = bot_text["system"]["error"]

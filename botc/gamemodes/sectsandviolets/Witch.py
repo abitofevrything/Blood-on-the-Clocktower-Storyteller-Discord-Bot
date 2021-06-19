@@ -4,9 +4,9 @@ import json
 
 from botc import Character, Minion
 
+from . import character_texts
 from ._utils import SectsAndViolets, SnVRole
 
-from . import character_texts
 character_text = character_texts[SnVRole.witch.value.lower()]
 
 

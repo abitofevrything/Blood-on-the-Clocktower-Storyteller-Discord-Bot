@@ -1,22 +1,21 @@
 """Contains the notify command cog"""
 
-from botutils.emoji import BotEmoji
+import re
 import sqlite3
 import time
 import traceback
 
 from discord import Status
 from discord.ext import commands
-import re
 
 import botutils
-from library import display_time
-from botutils import bot_text
 from botc import game_text
+from botutils import bot_text
+from botutils.emoji import BotEmoji
+from config import NOTIFY_COOLDOWN, SERVER_ID
+from library import display_time
 
 from ._gameplay import Gameplay
-
-from config import SERVER_ID, NOTIFY_COOLDOWN
 
 error_str = bot_text["system"]["error"]
 no_users_to_notify = bot_text["errors"]["no_users_to_notify"]

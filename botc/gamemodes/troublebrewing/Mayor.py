@@ -7,9 +7,9 @@ import botutils
 from botc import (BOTCUtils, Category, Character, NonRecurringAction,
                   StatusList, Team, Townsfolk)
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.mayor.value.lower()]
 
 from botc import emojis

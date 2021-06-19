@@ -6,7 +6,7 @@ import math
 from discord.ext import commands
 
 from botc import check_if_is_player, game_text
-from botutils import check_if_lobby, votestop_votes_timer, send_lobby, bot_text
+from botutils import bot_text, check_if_lobby, send_lobby, votestop_votes_timer
 
 votestop_vote = bot_text["cmd"]["votestop_vote"]
 
@@ -53,7 +53,8 @@ class Votestop(commands.Cog, name = game_text["misc"]["townhall_cog"]):
         if len(globvars.votestop_votes) >= votes_needed:
             votestop_votes_timer.cancel()
 
-            from botc.gameloops import base_day_loop, debate_timer, nomination_loop
+            from botc.gameloops import (base_day_loop, debate_timer,
+                                        nomination_loop)
 
             # Stop the nomination loop if it is running
             if nomination_loop.is_running():

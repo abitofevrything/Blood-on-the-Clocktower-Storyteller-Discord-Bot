@@ -1,7 +1,6 @@
 """Contains the BOTC Game class"""
 
 import asyncio
-from botc.Notes import Notes, NotesManager
 import datetime
 import json
 import random
@@ -13,7 +12,11 @@ import toml
 
 import botutils
 import globvars
-from botc import StatusList, Team
+from botc import StatusList, Team, game_text
+from botc.Notes import Notes, NotesManager
+from config import (DAWN_CARD_COLOR, DAY_CARD_COLOR, DEBUG, DEMON_CARD_COLOR,
+                    DISABLE_DMS, NIGHT_CARD_COLOR, NO_INVALIDATE, SERVER_ID,
+                    TIMEZONE, TOWNSFOLK_CARD_COLOR)
 from library import fancy
 from models import GameMeta
 
@@ -37,10 +40,6 @@ from .Player import Player
 from .PlayerState import PlayerState
 from .RoleGuide import RoleGuide
 from .Townsfolk import Townsfolk
-
-from config import SERVER_ID, DISABLE_DMS, NIGHT_CARD_COLOR, DAWN_CARD_COLOR, DAY_CARD_COLOR, TOWNSFOLK_CARD_COLOR, DEMON_CARD_COLOR, \
-    TIMEZONE, DEBUG, NO_INVALIDATE
-from botc import game_text
 
 CONFLICTING_CMDS = [
    "cmd.gameplay"

@@ -8,12 +8,11 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botc import PlayerConverter, PlayerNotFound, RoleConverter, RoleNotFound
-
-from botc import game_text
+from botc import (PlayerConverter, PlayerNotFound, RoleConverter, RoleNotFound,
+                  game_text)
+from botutils import bot_text
 from config import NO_INVALIDATE
 
-from botutils import bot_text
 error_str = bot_text["system"]["error"]
 
 x_emoji = botutils.BotEmoji.x_emoji

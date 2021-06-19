@@ -5,10 +5,9 @@ import json
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
 from ._admin import Admin
-
-from botutils import bot_text
 
 fstart_min = bot_text["errors"]["fstart_min"]
 fstart_max = bot_text["errors"]["fstart_max"]

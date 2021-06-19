@@ -10,9 +10,9 @@ import globvars
 from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, GameLogic,
                   Outsider, RecurringAction, StatusList, Townsfolk, game_text)
 
+from . import character_texts
 from ._utils import BadMoonRising, BMRRole
 
-from . import character_texts
 character_text = character_texts[BMRRole.zombuul.value.lower()]
 
 demon_bluff_str = game_text["gameplay"]["demonbluffs"]

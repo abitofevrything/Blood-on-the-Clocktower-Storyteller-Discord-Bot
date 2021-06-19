@@ -9,12 +9,13 @@ import toml
 
 import botutils
 import globvars
-from botc import BOTCUtils, Category, Character, NonRecurringAction, Townsfolk, emojis, game_text
+from botc import (BOTCUtils, Category, Character, NonRecurringAction,
+                  Townsfolk, emojis, game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.washerwoman.value.lower()]
 
 washerwoman_init = game_text["gameplay"]["washerwoman_init"]

@@ -7,14 +7,15 @@ import botutils
 import globvars
 from botc import BOTCUtils, Character, Demon, Outsider, Townsfolk, game_text
 
+from . import character_texts
 from ._utils import BadMoonRising, BMRRole
 
-from . import character_texts
 character_text = character_texts[BMRRole.po.value.lower()]
 
 demon_bluff_str = game_text["gameplay"]["demonbluffs"]
 
 from botc import emojis
+
 
 class Po(Demon, BadMoonRising, Character):
     """Po: Each night*, you may choose a player: they die. If you chose no-one last night,

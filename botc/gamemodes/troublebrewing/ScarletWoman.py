@@ -7,11 +7,11 @@ import toml
 
 import botutils
 import globvars
-from botc import (Character, Minion, NonRecurringAction, emojis)
-
-from ._utils import TBRole, TroubleBrewing
+from botc import Character, Minion, NonRecurringAction, emojis
 
 from . import character_texts
+from ._utils import TBRole, TroubleBrewing
+
 character_text = character_texts[TBRole.scarletwoman.value.lower()]
 
 from config import DISABLE_DMS

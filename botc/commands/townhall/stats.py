@@ -8,13 +8,13 @@ from discord.ext import commands
 
 import botutils
 from botc import Phase, RoleGuide
-from library import fancy
-
 from botutils import bot_text
+from library import fancy
 
 error_str = bot_text["system"]["error"]
 
 from botc import game_text
+
 current_phase = game_text["gameplay"]["current_phase"]
 stats_tied = game_text["gameplay"]["stats_tied"]
 stats_no_one = game_text["gameplay"]["stats_no_one"]

@@ -7,7 +7,6 @@ import toml
 
 import botutils
 from botc import BOTCUtils, game_text
-
 from config import DISABLE_DMS
 
 butterfly = botutils.BotEmoji.butterfly

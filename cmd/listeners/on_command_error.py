@@ -7,7 +7,6 @@ import traceback
 from discord.ext import commands
 
 import botutils
-
 from botutils import bot_text
 
 error_str = bot_text["system"]["error"]

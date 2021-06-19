@@ -12,8 +12,7 @@ import toml
 import botutils
 import globvars
 from botutils import bot_text
-
-from config import SERVER_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID
+from config import ALIVE_ROLE_ID, DEAD_ROLE_ID, SERVER_ID
 
 error_str = bot_text["system"]["error"]
 

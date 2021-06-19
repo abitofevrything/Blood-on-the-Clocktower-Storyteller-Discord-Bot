@@ -15,9 +15,10 @@ from discord.ext import tasks
 import botutils
 from botc import ChoppingBlock, game_text
 from botutils import bot_text
-
-from config import BASE_NIGHT, NIGHT_MULTIPLER, BASE_DAWN, DAWN_MULTIPLIER, VOTE_TIMEOUT, DELETE_VOTE_AFTER, \
-    DEBATE_TIME, INCREMENT, PREFIX, ADMIN_IDS, OWNER_ID, FORCE_VOTES, LYNCH_CARD_COLOR, NO_LYNCH_CARD_COLOR
+from config import (ADMIN_IDS, BASE_DAWN, BASE_NIGHT, DAWN_MULTIPLIER,
+                    DEBATE_TIME, DELETE_VOTE_AFTER, FORCE_VOTES, INCREMENT,
+                    LYNCH_CARD_COLOR, NIGHT_MULTIPLER, NO_LYNCH_CARD_COLOR,
+                    OWNER_ID, PREFIX, VOTE_TIMEOUT)
 
 approved_seal = game_text["images"]["approved_seal"]
 denied_seal = game_text["images"]["denied_seal"]

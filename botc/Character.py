@@ -8,6 +8,9 @@ import toml
 
 import botutils
 import globvars
+from botc import game_text
+from config import (DEMON_CARD_COLOR, DISABLE_DMS, MINION_CARD_COLOR,
+                    OUTSIDER_CARD_COLOR, PREFIX, TOWNSFOLK_CARD_COLOR)
 
 from .abilities import Action, ActionTypes
 from .BOTCUtils import GameLogic, LorePicker
@@ -15,9 +18,6 @@ from .Category import Category
 from .errors import AlreadyDead
 from .flag_inventory import Flags, Inventory
 from .Team import Team
-
-from config import DISABLE_DMS, PREFIX, TOWNSFOLK_CARD_COLOR, OUTSIDER_CARD_COLOR, MINION_CARD_COLOR, DEMON_CARD_COLOR
-from botc import game_text
 
 copyrights_str = game_text["misc"]["copyrights"]
 role_dm = game_text["gameplay"]["role_dm"]

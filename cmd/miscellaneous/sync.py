@@ -1,17 +1,16 @@
 """Sync command"""
 
-from discord.ext import commands
-import botutils
-import toml
 import json
 import traceback
-from library import display_time
 
+import toml
+from discord.ext import commands
+
+import botutils
 import globvars
-
-from config import SERVER_ID, LOBBY_CHANNEL_ID, ALIVE_ROLE_ID, DEAD_ROLE_ID
-
 from botutils import bot_text
+from config import ALIVE_ROLE_ID, DEAD_ROLE_ID, LOBBY_CHANNEL_ID, SERVER_ID
+from library import display_time
 
 sync_succesful_string = bot_text["cmd"]["sync_success"]
 error_str = bot_text["system"]["error"]
@@ -62,7 +61,8 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
             except Exception as e:
                 print(e)
 
-            from botc.gameloops import base_day_loop, nomination_loop, master_game_loop
+            from botc.gameloops import (base_day_loop, master_game_loop,
+                                        nomination_loop)
 
             try:
                 # Stop the nomination loop if it is running

@@ -5,7 +5,6 @@ import json
 from discord.ext import commands
 
 import botutils
-
 from botutils import bot_text
 
 

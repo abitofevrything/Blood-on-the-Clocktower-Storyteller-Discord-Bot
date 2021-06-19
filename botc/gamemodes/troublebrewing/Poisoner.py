@@ -10,12 +10,13 @@ from botc import (Action, ActionTypes, Character, Minion, Poison,
                   RecurringAction, emojis)
 from botc.BOTCUtils import GameLogic
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.poisoner.value.lower()]
 
 from config import DISABLE_DMS
+
 
 class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
     """Poisoner: Each night, choose a player, their ability malfunctions tonight and tomorrow day.

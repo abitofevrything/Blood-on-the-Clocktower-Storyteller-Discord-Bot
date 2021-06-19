@@ -11,9 +11,9 @@ from botc import (Action, ActionTypes, Character, RecurringAction,
 from botc.BOTCUtils import GameLogic
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.monk.value.lower()]
 
 from config import DISABLE_DMS

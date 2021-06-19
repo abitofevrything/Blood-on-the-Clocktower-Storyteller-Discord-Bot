@@ -1,21 +1,18 @@
 """Revealroles command"""
 
 import json
-from typing import Union
-import discord
 import traceback
+from typing import Union
 
-import botutils
-import globvars
-from botc import BOTCUtils, PlayerNotFound
-from botutils import BotEmoji
-
+import discord
 from discord.ext import commands
 
 import botc
-from botc import game_text
+import botutils
+import globvars
+from botc import BOTCUtils, PlayerNotFound, game_text
+from botutils import BotEmoji, bot_text
 
-from botutils import bot_text
 error_str = bot_text["system"]["error"]
 
 class RevealRole(commands.Cog, name = game_text["misc"]["debug_cog"]):

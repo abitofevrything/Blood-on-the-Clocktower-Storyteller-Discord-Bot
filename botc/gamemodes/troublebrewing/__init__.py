@@ -2,6 +2,7 @@
 
 import json
 import sys
+
 import globvars
 
 try:
@@ -33,4 +34,3 @@ from .Spy import Spy
 from .Undertaker import Undertaker
 from .Virgin import Virgin
 from .Washerwoman import Washerwoman
-

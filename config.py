@@ -1,9 +1,10 @@
 """Contains the bot config & preferences"""
 
-import toml
-import globvars
-
 import sys
+
+import toml
+
+import globvars
 
 # Config
 try:

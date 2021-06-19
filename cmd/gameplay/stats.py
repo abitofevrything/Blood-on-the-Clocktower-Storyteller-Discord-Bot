@@ -8,10 +8,9 @@ from discord.ext import commands
 
 import botutils
 from botutils import bot_text
+from config import PREFIX
 
 from ._gameplay import Gameplay
-
-from config import PREFIX
 
 error_str = bot_text["system"]["error"]
 no_game = bot_text["cmd"]["no_game"]

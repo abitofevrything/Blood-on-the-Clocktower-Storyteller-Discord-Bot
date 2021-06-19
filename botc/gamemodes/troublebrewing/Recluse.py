@@ -7,9 +7,9 @@ import botutils
 import globvars
 from botc import Character, Demon, Minion, NonRecurringAction, Outsider
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.recluse.value.lower()]
 
 from botc import emojis

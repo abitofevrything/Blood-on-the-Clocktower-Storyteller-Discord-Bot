@@ -11,9 +11,7 @@ from botc import (AbilityForbidden, AliveOnlyCommand, BOTCUtils, NotAPlayer,
                   NotDMChannel, NotNight, PlayerParser, RoleCannotUseCommand,
                   check_if_can_read, check_if_dm, check_if_is_night,
                   check_if_is_player, check_if_player_really_alive)
-from botutils import BotEmoji
-
-from botutils import bot_text
+from botutils import BotEmoji, bot_text
 
 error_str = bot_text["system"]["error"]
 

@@ -13,9 +13,9 @@ from botc import (BOTCUtils, Character, Demon, Minion, NonRecurringAction,
                   Outsider, Townsfolk, emojis, game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.undertaker.value.lower()]
 
 undertaker_nightly = game_text["gameplay"]["undertaker_nightly"]

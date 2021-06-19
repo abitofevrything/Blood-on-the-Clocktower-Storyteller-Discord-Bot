@@ -5,10 +5,9 @@ import json
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
 from ._admin import Admin
-
-from botutils import bot_text
 
 
 class Deop(Admin, name = bot_text["system"]["admin_cog"]):

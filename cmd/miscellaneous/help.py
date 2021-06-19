@@ -1,7 +1,8 @@
 """Help command"""
 
-from discord.ext import commands
 import discord
+from discord.ext import commands
+
 from botutils import bot_text
 
 help_str = bot_text["cmd"]["help"]

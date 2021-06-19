@@ -6,7 +6,6 @@ import traceback
 from discord.ext import commands
 
 import botutils
-
 from botutils import bot_text
 
 user_not_found_str = bot_text["errors"]["user_not_found"]

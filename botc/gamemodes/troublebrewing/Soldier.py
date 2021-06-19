@@ -6,9 +6,9 @@ import botutils
 from botc import (Character, NonRecurringAction, SafetyFromDemon, Storyteller,
                   Townsfolk)
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.soldier.value.lower()]
 
 from botc import emojis

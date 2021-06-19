@@ -25,11 +25,12 @@ from discord.ext import commands
 
 import globvars  # isort: split
 
+import cmd
+
 import botc
 import botutils
-import cmd
-from config import TOKEN, OWNER_ID, PREFIX, DISABLE_PINGS
 from botutils import bot_text
+from config import DISABLE_PINGS, OWNER_ID, PREFIX, TOKEN
 
 if __name__ == "__main__":
     try:

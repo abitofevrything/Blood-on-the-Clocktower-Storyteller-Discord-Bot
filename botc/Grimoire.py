@@ -1,12 +1,12 @@
 """Contains the Grimoire class"""
 
-from config import GRIMOIRE_SHOW_TIME
 import math
 import random
 
 from PIL import Image, ImageDraw, ImageFont
 
 from botc.gamemodes import Gamemode
+from config import GRIMOIRE_SHOW_TIME
 
 
 class Grimoire:

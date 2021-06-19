@@ -6,10 +6,9 @@ import random
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
 from ._miscellaneous import Miscellaneous
-
-from botutils import bot_text
 
 
 class Coin(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):

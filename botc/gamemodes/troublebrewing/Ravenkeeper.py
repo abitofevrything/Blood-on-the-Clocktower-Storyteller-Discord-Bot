@@ -11,13 +11,13 @@ import botutils
 import globvars
 from botc import (Action, ActionTypes, BOTCUtils, Character, Demon, Minion,
                   NonRecurringAction, Outsider, RavenkeeperActivated,
-                  StatusList, Townsfolk, game_text, emojis)
+                  StatusList, Townsfolk, emojis, game_text)
 from botc.BOTCUtils import GameLogic
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.ravenkeeper.value.lower()]
 
 copyrights_str = game_text["misc"]["copyrights"]

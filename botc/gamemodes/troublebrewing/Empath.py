@@ -9,12 +9,13 @@ import toml
 
 import botutils
 import globvars
-from botc import BOTCUtils, Character, NonRecurringAction, Townsfolk, game_text, emojis
+from botc import (BOTCUtils, Character, NonRecurringAction, Townsfolk, emojis,
+                  game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.empath.value.lower()]
 
 empath_nightly = game_text["gameplay"]["empath_nightly"]

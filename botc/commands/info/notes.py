@@ -5,18 +5,19 @@ import traceback
 from inspect import Parameter
 from typing import Union
 
-import botutils
 import discord
+from discord.ext import commands
+from discord.ext.commands.errors import MissingRequiredArgument
+
+import botutils
 import globvars
-from botc import (BOTCUtils, Category, NotDMChannel, Player, PlayerConverter,
-                  PlayerNotFound, RoleNotFound, check_if_dm, game_text, Phase,
-                  NotNight, NotAPlayer)
+from botc import (BOTCUtils, Category, NotAPlayer, NotDMChannel, NotNight,
+                  Phase, Player, PlayerConverter, PlayerNotFound, RoleNotFound,
+                  check_if_dm, game_text)
 from botc.Character import Character
 from botc.checks import check_if_is_player
 from botutils import BotEmoji, bot_text
 from config import CLAIM_SHOW_TIME
-from discord.ext import commands
-from discord.ext.commands.errors import MissingRequiredArgument
 
 notes_add_feedback_str = game_text["doc"]["notes"]["add"]["feedback"]
 notes_remove_feedback_str = game_text["doc"]["notes"]["remove"]["feedback"]

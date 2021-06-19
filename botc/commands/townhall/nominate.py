@@ -10,12 +10,12 @@ from botc import (AliveOnlyCommand, BOTCUtils, NotAPlayer, NotDay,
                   NotLobbyChannel, PlayerConverter, check_if_is_day,
                   check_if_is_player, check_if_lobby,
                   check_if_player_apparently_alive)
-
 from botutils import bot_text
 
 error_str = bot_text["system"]["error"]
 
 from botc import game_text
+
 nomination_ongoing = game_text["cmd_warnings"]["nomination_ongoing"]
 nominations_not_open = game_text["cmd_warnings"]["nominations_not_open"]
 cannot_be_nominated_again = game_text["cmd_warnings"]["cannot_be_nominated_again"]

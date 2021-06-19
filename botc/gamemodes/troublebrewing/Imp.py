@@ -10,14 +10,13 @@ import toml
 import botutils
 import globvars
 from botc import (Action, ActionTypes, Character, Demon, Outsider,
-                  RecurringAction, StatusList, Townsfolk, game_text, emojis)
+                  RecurringAction, StatusList, Townsfolk, emojis, game_text)
 from botc.BOTCUtils import BOTCUtils, GameLogic
-
-from ._utils import TBRole, TroubleBrewing
-
-from config import DISABLE_DMS, DEMON_CARD_COLOR
+from config import DEMON_CARD_COLOR, DISABLE_DMS
 
 from . import character_texts
+from ._utils import TBRole, TroubleBrewing
+
 character_text = character_texts[TBRole.imp.value.lower()]
 
 demon_bluff_str = game_text["gameplay"]["demonbluffs"]

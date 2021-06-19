@@ -10,12 +10,12 @@ import toml
 import botutils
 import globvars
 from botc import (BOTCUtils, Category, Character, Minion, NonRecurringAction,
-                  Townsfolk, game_text, emojis)
+                  Townsfolk, emojis, game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
+from . import character_texts
 from ._utils import TBRole, TroubleBrewing
 
-from . import character_texts
 character_text = character_texts[TBRole.investigator.value.lower()]
 
 investigator_init = game_text["gameplay"]["investigator_init"]

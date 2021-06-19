@@ -2,17 +2,17 @@
 
 import traceback
 
-from discord.ext import commands
 import discord
+from discord.ext import commands
 
 import botutils
 from botc import BOTCUtils
-
-from botutils import bot_text, BotEmoji
+from botutils import BotEmoji, bot_text
 
 error_str = bot_text["system"]["error"]
 
-from botc import game_text, check_if_is_player
+from botc import check_if_is_player, game_text
+
 
 class GetRole(commands.Cog, name = game_text["misc"]["townhall_cog"]):
     """BoTC in-game commands cog

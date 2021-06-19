@@ -6,11 +6,9 @@ import traceback
 from discord.ext import commands
 
 import botutils
-from botutils import lobby_timeout, start_votes_timer
+from botutils import bot_text, lobby_timeout, start_votes_timer
 
 from ._gameplay import Gameplay
-
-from botutils import bot_text
 
 quit_str = bot_text["cmd"]["quit"]
 quitted_str = bot_text["cmd"]["quitted"]

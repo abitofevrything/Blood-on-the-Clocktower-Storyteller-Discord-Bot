@@ -5,10 +5,9 @@ import json
 from discord.ext import commands
 
 import botutils
+from botutils import bot_text
 
 from ._miscellaneous import Miscellaneous
-
-from botutils import bot_text
 
 github_str = bot_text["cmd"]["github"]
 

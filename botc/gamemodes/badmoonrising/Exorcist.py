@@ -4,9 +4,9 @@ import json
 
 from botc import Character, Townsfolk
 
+from . import character_texts
 from ._utils import BadMoonRising, BMRRole
 
-from . import character_texts
 character_text = character_texts[BMRRole.exorcist.value.lower()]
 
 from botc import emojis
