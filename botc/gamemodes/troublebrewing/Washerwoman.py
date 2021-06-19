@@ -179,7 +179,7 @@ class Washerwoman(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         random.shuffle(self.two_player_list)
         assert self.registered_townsfolk_type.category == Category.townsfolk, "Washerwoman did not receive a townsfolk character"
-        
+
         # Add information to replay
         drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
         globvars.master_state.game.replay += f"- {player.user.name} ({drunk}Washerwoman) knows that "\

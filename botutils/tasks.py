@@ -68,8 +68,8 @@ async def cycling_bot_status():
             "a{n} {count} player {gamemode} game".format(
                                                             count = len(globvars.master_state.game.sitting_order),
                                                             gamemode = globvars.master_state.game.gamemode.value,
-                                                            n = ("n" if len(globvars.master_state.game.sitting_order) in [8, 11] else "")    
-                                                        ),    
+                                                            n = ("n" if len(globvars.master_state.game.sitting_order) in [8, 11] else "")
+                                                        ),
         ]
 
         message = ingame_messages[current_status_index % len(ingame_messages)]

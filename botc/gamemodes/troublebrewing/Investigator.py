@@ -183,15 +183,15 @@ class Investigator(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # Good info
         else:
             self.two_player_list = self.get_two_possible_minions(player)
-        
+
         self.two_player_list[0].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/investigator_minion.png')
         self.two_player_list[1].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/investigator_wrong.png')
 
         # Get rid of the last element (the minion type)
         self.registered_minion_type = self.two_player_list.pop()
         random.shuffle(self.two_player_list)
-        
-        assert self.registered_minion_type.category == Category.minion, f"Investigator received {self.registered_minion_type}" 
+
+        assert self.registered_minion_type.category == Category.minion, f"Investigator received {self.registered_minion_type}"
 
         # Add information to replay
         drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""

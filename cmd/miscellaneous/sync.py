@@ -17,7 +17,7 @@ error_str = bot_text["system"]["error"]
 cooldown = bot_text["errors"]["cmd_cooldown"]
 
 class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
-    
+
     @commands.command(
         name = "sync",
         aliases = [],
@@ -33,7 +33,7 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
         # Case 1 : Game softlock
         if globvars.master_state.game and not globvars.master_state.game.gameloop.is_running() and not globvars.master_state.game.working:
             from botc.gamemodes.Gamemode import Gamemode
-            
+
             globvars.master_state.game.invalidated = True
             try:
                 await botutils.unlock_lobby()
@@ -71,7 +71,7 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
                 # Stop the base day loop if it is running
                 if base_day_loop.is_running():
                     base_day_loop.cancel()
-                
+
                 if master_game_loop.is_running():
                     master_game_loop.cancel()
             except Exception as e:
@@ -83,7 +83,7 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
                     globvars.client.load_extension(cmd)
             except Exception:
                 pass
-            
+
             globvars.master_state.game = None
 
             botutils.update_state_machine()
@@ -91,11 +91,11 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
         elif not globvars.master_state.game:
             try:
                 await botutils.unlock_lobby()
-                
+
                 dead_role = globvars.client.get_guild(SERVER_ID).get_role(DEAD_ROLE_ID)
                 for player in dead_role.members:
                     await botutils.remove_dead_role(player)
-                
+
                 alive_role = globvars.client.get_guild(SERVER_ID).get_role(ALIVE_ROLE_ID)
                 mismatched_alive_players = list(filter(lambda user: user.id not in globvars.master_state.pregame.list, alive_role.members))
                 for member in mismatched_alive_players:
@@ -109,17 +109,17 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
                     globvars.client.load_extension(cmd)
             except Exception:
                 pass
-                
+
             try:
                 await botutils.unlock_lobby()
             except Exception:
                 pass
-            
+
             botutils.update_state_machine()
 
 
         await ctx.send(sync_succesful_string.format(ctx.author.mention, botutils.BotEmoji.success))
-    
+
     @sync.error
     async def sync_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):

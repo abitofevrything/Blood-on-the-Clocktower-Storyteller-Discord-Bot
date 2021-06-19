@@ -18,7 +18,7 @@ from config import CLAIM_SHOW_TIME
 error_str = bot_text["system"]["error"]
 
 class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
-    
+
     def __init__(self, client) -> None:
         self.client = client
 

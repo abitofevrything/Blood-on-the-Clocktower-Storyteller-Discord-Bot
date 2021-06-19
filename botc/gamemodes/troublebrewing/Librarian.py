@@ -205,7 +205,7 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
         # Good info
         else:
             self.two_player_list = self.get_two_possible_outsiders(player.user)
-        
+
         drunk = "Drunk " if player.role.true_self.name == Drunk().name else ""
         if self.two_player_list is not None and len(self.two_player_list) > 0:
             self.two_player_list[0].add_reminder_token('botc/assets/tb_reminder_tokens_cropped/librarian_outsider.png')
@@ -214,8 +214,8 @@ class Librarian(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             # Get rid of the last element (the minion type)
             self.registered_outsider_type = self.two_player_list.pop()
             random.shuffle(self.two_player_list)
-            
-            assert self.registered_outsider_type.category == Category.outsider, f"Librarian received {self.registered_outsider_type}" 
+
+            assert self.registered_outsider_type.category == Category.outsider, f"Librarian received {self.registered_outsider_type}"
 
             # Add information to replay
             globvars.master_state.game.replay += f"- {player.user.name} ({drunk}Librarian) knows that "\

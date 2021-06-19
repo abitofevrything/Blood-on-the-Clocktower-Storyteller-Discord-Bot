@@ -48,7 +48,7 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
                 min_next_no_cd_players = 20
                 while cooldown_map.get(min_next_no_cd_players, None) is None or cooldown_map[min_next_no_cd_players] < time.time():
                     min_next_no_cd_players -= 1
-                
+
                 return await ctx.send(notify_cooldown.format(ctx.author.mention, BotEmoji.x_emoji, display_time(int(cooldown_map[len(globvars.master_state.pregame)] - time.time())), min_next_no_cd_players))
 
             # Set cooldowns
@@ -115,7 +115,7 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
 
             if not re.fullmatch(r"(\d+(hours|h|hour|hrs)|)( *)(\d+(minutes|mins|mins|minute|mn|mns|m|min)|)( *)(\d+(seconds|second|secs|sec|s)|)( *)", cooldown):
                 raise commands.BadArgument()
-            
+
             cooldown = ''.join(re.split(' +', cooldown)).lower()
             splits = re.split('(?<=[a-z])(?=\d)', cooldown)
 

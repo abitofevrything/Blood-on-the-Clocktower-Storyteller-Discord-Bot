@@ -37,7 +37,7 @@ claim_matches = {
 claim_matches = {re.compile(k, re.IGNORECASE): re.compile(v, re.IGNORECASE) for k, v in claim_matches.items()}
 
 class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
-    
+
     def __init__(self, client) -> None:
         self.client = client
 
@@ -92,7 +92,7 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
     @commands.check(check_if_dm)
     async def claim_remove(self, ctx, player: PlayerConverter = None):
         await self.notes_claim_remove_command.callback(self, ctx, player)
-    
+
     @commands.Cog.listener('on_message')
     async def on_message(self, message: discord.Message):
         ctx = await globvars.client.get_context(message)

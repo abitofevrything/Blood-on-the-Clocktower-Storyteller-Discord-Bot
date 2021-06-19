@@ -973,7 +973,7 @@ class Game(GameMeta):
     @property
     def notes(self):
         return self._notes
-        
+
     @property
     def note_manager(self):
         return self._note_manager

@@ -199,7 +199,7 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                                 SELECT COUNT(*) AS streak
                                 FROM run_groups
                                 WHERE won = 1
-                                GROUP BY run_group, won 
+                                GROUP BY run_group, won
                             )
                             SELECT MAX(streak) AS biggest_streak FROM streak_total
                         """, {
@@ -231,7 +231,7 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                                 SELECT COUNT(*) AS streak
                                 FROM run_groups
                                 WHERE won = 1
-                                GROUP BY run_group, won 
+                                GROUP BY run_group, won
                             )
                             SELECT MAX(streak) AS biggest_streak FROM streak_total
                         """, {
@@ -263,7 +263,7 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                                 SELECT COUNT(*) AS streak
                                 FROM run_groups
                                 WHERE won = 0
-                                GROUP BY run_group, won 
+                                GROUP BY run_group, won
                             )
                             SELECT MAX(streak) AS biggest_streak FROM streak_total
                         """, {
@@ -295,7 +295,7 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                                 SELECT COUNT(*) AS streak
                                 FROM run_groups
                                 WHERE won = 0
-                                GROUP BY run_group, won 
+                                GROUP BY run_group, won
                             )
                             SELECT MAX(streak) AS biggest_streak FROM streak_total
                         """, {
@@ -396,7 +396,7 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                             SELECT COUNT(*) AS streak
                             FROM run_groups
                             WHERE won = 1
-                            GROUP BY run_group, won 
+                            GROUP BY run_group, won
                         )
                         SELECT MAX(streak) AS biggest_streak FROM streak_total
                     """, {
@@ -429,7 +429,7 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                             SELECT COUNT(*) AS streak
                             FROM run_groups
                             WHERE won = 0
-                            GROUP BY run_group, won 
+                            GROUP BY run_group, won
                         )
                         SELECT MAX(streak) AS biggest_streak FROM streak_total
                     """, {

@@ -90,7 +90,7 @@ class Virgin(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
 
         assert virgin_player.role.true_self.name == self.name, \
             f"The nominated player's role is {virgin_player.role.true_self.name} instead of Virgin"
-            
+
         if virgin_player.role.true_self.inventory.has_item_in_inventory(Flags.virgin_first_nomination):
             # Remove the unique use ability from the player's inventory
             virgin_player.role.true_self.inventory.remove_item_from_inventory(Flags.virgin_first_nomination)

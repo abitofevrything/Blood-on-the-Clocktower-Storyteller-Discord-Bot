@@ -85,7 +85,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         globvars.master_state.game.note_manager.note(target_player, note, invoking_player)
         await ctx.send(notes_add_feedback_str.format(BotEmoji.check))
-        
+
     @notes.command(
         pass_context = True,
         name = "remove",
@@ -132,8 +132,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         args = re.split(' +', args)
-        
-        # Ensure that we have enough values in the list 
+
+        # Ensure that we have enough values in the list
         args += ['', '']
 
         target_player = BOTCUtils.get_player_from_string(args[0])
@@ -148,7 +148,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
                 raise commands.BadArgument()
         except ValueError:
             target_phase = None
-        
+
         # Remove the two dummy elements
         args.pop()
         args.pop()
@@ -257,7 +257,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
                     claimed_category = Category.demon
                 else:
                     raise RoleNotFound(role_not_found_str.format(ctx.author.mention, BotEmoji.x_emoji))
-                    
+
         elif isinstance(player_or_claim, Character):
             claimed_character = player_or_claim
             claimed_category = claimed_character.category

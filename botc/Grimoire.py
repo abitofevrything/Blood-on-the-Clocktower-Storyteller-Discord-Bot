@@ -148,11 +148,11 @@ class Grimoire:
         token_spacing = math.floor(min(token_width + 2, # Normal spacing
         (sitting_circle_radius - (reminder_token_size + token_width) / 2) / (len(reminder_tokens) + 1))) # Possible overlap, too many tokens
         curr_radius = sitting_circle_radius - (token_width / 2) - (reminder_token_size / 2)
-        
+
         for reminder_token in reminder_tokens:
             reminder_token_image = Image.open(reminder_token)
             reminder_token_image.thumbnail((reminder_token_size, reminder_token_size), Image.ANTIALIAS)
-            
+
             reminder_token_x = math.sin(player_angle) * curr_radius + (image_width / 2)
             reminder_token_y = math.cos(player_angle) * curr_radius + (image_height / 2)
 
