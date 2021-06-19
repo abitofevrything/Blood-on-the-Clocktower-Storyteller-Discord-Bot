@@ -52,9 +52,10 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
                 return await ctx.send(notify_cooldown.format(ctx.author.mention, BotEmoji.x_emoji, display_time(int(cooldown_map[len(globvars.master_state.pregame)] - time.time())), min_next_no_cd_players))
 
             # Set cooldowns
-            for i in range(len(globvars.master_state.pregame), -1, -1):
-                if cooldown_map.get(i, None) is None or cooldown_map[i] < time.time():
-                    cooldown_map[i] = time.time() + NOTIFY_COOLDOWN
+            if botutils.check_if_lobby(ctx):
+                for i in range(len(globvars.master_state.pregame), -1, -1):
+                    if cooldown_map.get(i, None) is None or cooldown_map[i] < time.time():
+                        cooldown_map[i] = time.time() + NOTIFY_COOLDOWN
 
             users_to_ping = []
 
