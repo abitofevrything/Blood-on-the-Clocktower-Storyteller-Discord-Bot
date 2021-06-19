@@ -30,6 +30,4 @@ start_votes = []
 
 votestop_votes = []
 
-last_notify = 0
-
 last_whisper = defaultdict(lambda: defaultdict(int))

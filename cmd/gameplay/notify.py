@@ -1,29 +1,32 @@
 """Contains the notify command cog"""
 
-import json
+from botutils.emoji import BotEmoji
 import sqlite3
 import time
 import traceback
 
-import toml
 from discord import Status
 from discord.ext import commands
+import re
 
 import botutils
 from library import display_time
 from botutils import bot_text
+from botc import game_text
 
 from ._gameplay import Gameplay
 
 from config import SERVER_ID, NOTIFY_COOLDOWN
 
 error_str = bot_text["system"]["error"]
-cooldown_str = bot_text["errors"]["cmd_cooldown"]
-already_in_notify = bot_text["errors"]["already_in_notify"]
+no_users_to_notify = bot_text["errors"]["no_users_to_notify"]
 already_not_notify = bot_text["errors"]["already_not_notify"]
+notify_cooldown = bot_text["errors"]["notify_cooldown"]
 add_notify = bot_text["cmd"]["add_notify"]
 remove_notify = bot_text["cmd"]["remove_notify"]
 
+notify_map = {}
+cooldown_map = {}
 
 class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Notify command cog"""
@@ -42,45 +45,60 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
         if ctx.invoked_subcommand is None:
             import globvars
 
-            delta = time.time() - globvars.last_notify
-            if delta < NOTIFY_COOLDOWN:
-                await ctx.send(cooldown_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji, display_time(int(NOTIFY_COOLDOWN - delta))))
-                return
+            if cooldown_map.get(len(globvars.master_state.pregame), 0) > time.time():
+                min_next_no_cd_players = 20
+                while cooldown_map.get(min_next_no_cd_players, None) is None or cooldown_map[min_next_no_cd_players] < time.time():
+                    min_next_no_cd_players -= 1
+                
+                return await ctx.send(notify_cooldown.format(ctx.author.mention, BotEmoji.x_emoji, display_time(int(cooldown_map[len(globvars.master_state.pregame)] - time.time())), min_next_no_cd_players))
 
-            if botutils.check_if_lobby(ctx):
-                globvars.last_notify = time.time()
+            # Set cooldowns
+            for i in range(len(globvars.master_state.pregame), -1, -1):
+                if cooldown_map.get(i, None) is None or cooldown_map[i] < time.time():
+                    cooldown_map[i] = time.time() + NOTIFY_COOLDOWN
 
             users_to_ping = []
 
             with sqlite3.connect("data.sqlite3") as conn:
                 c = conn.cursor()
 
-                c.execute("SELECT user_id FROM notify")
-                for row in c.fetchall():
-                    userid = row[0]
-                    users_to_ping.append(userid)
+                c.execute("""
+                SELECT user_id, min_playercount, cooldown, always_notify
+                    FROM notify
+                """)
+
+                for user_id, min_playercount, cooldown, always_notify in c.fetchall():
+                    member = globvars.client.get_guild(SERVER_ID).get_member(user_id)
+
+                    # Do not ping the person that ran the command
+                    notify_map[ctx.author.id] = time.time()
+
+                    if (
+                        member and
+                        member.id not in globvars.master_state.pregame and
+                        len(globvars.master_state.pregame) >= min_playercount and
+                        time.time() - notify_map.get(member.id, 0) > cooldown and
+                        (always_notify == 1 or member.status != Status.offline) and
+                        member.id != ctx.author.id
+                    ):
+                        notify_map[member.id] = time.time()
+
+                        users_to_ping.append(member.id)
 
                 c.execute("SELECT user_id FROM ignore")
-                for row in c.fetchall():
-                    userid = row[0]
-                    if userid in users_to_ping:
-                        users_to_ping.remove(userid)
+                for user_id, in c.fetchall():
+                    if user_id in users_to_ping:
+                        users_to_ping.remove(user_id)
 
-            pings = []
+            if len(users_to_ping) > 0:
+                pings = []
+                for user_id in users_to_ping:
+                    pings.append(botutils.make_ping(user_id))
 
-            for userid in users_to_ping:
-                member = globvars.client.get_guild(SERVER_ID).get_member(userid)
-
-                # Only ping if in server and not offline, already joined or the user who's calling !notify
-                if (member and
-                        member.status != Status.offline and
-                        member.id not in globvars.master_state.pregame and
-                        member.id != ctx.author.id):
-                    pings.append(member.mention)
-
-            pings = " ".join(pings)
-
-            msg = f"{ctx.author.mention} {botutils.BotEmoji.mention} {pings}"
+                pings = ' '.join(pings)
+                msg = f"{ctx.author.mention} {BotEmoji.mention} {pings}"
+            else:
+                msg = no_users_to_notify.format(ctx.author.mention, BotEmoji.x_emoji)
             await ctx.send(msg)
 
     @notify.command(
@@ -91,18 +109,38 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
         help = bot_text["doc"]["notify"]["add"]["help"],
         description = bot_text["doc"]["notify"]["add"]["description"]
     )
-    async def add(self, ctx):
+    async def add(self, ctx, min_playercount: int = 0, always_notify: bool = False, cooldown: str = '1h'):
         """Add the user to the notify list"""
         with sqlite3.connect("data.sqlite3") as conn:
             c = conn.cursor()
 
-            c.execute("INSERT OR IGNORE INTO notify (user_id) VALUES (:user_id)", {"user_id": ctx.author.id})
+            if not re.fullmatch(r"(\d+(hours|h|hour|hrs)|)( *)(\d+(minutes|mins|mins|minute|mn|mns|m|min)|)( *)(\d+(seconds|second|secs|sec|s)|)( *)", cooldown):
+                raise commands.BadArgument()
+            
+            cooldown = ''.join(re.split(' +', cooldown)).lower()
+            splits = re.split('(?<=[a-z])(?=\d)', cooldown)
 
-            if c.rowcount:
-                msg = add_notify.format(botutils.BotEmoji.check)
-            else:
-                msg = already_in_notify.format(ctx.author.mention, botutils.BotEmoji.x_emoji)
+            parsed_cooldown = 0
 
+            for split in splits:
+                if re.search(r'(hours|h|hour|hrs)$', split):
+                    hrs_parsed = int(re.search(r'\d+', split).group())
+                    parsed_cooldown += hrs_parsed * 3600
+                elif re.search(r'(minutes|mins|mins|minute|mn|mns|m|min)$', split):
+                    mns_parsed = int(re.search(r'\d+', split).group())
+                    parsed_cooldown += mns_parsed * 60
+                else:
+                    scs_parsed = int(re.search(r'\d+', split).group())
+                    parsed_cooldown += scs_parsed
+
+            c.execute("INSERT OR REPLACE INTO notify (user_id, min_playercount, always_notify, cooldown) VALUES (:user_id, :min_playercount, :always_notify, :cooldown)", {
+                "user_id": ctx.author.id,
+                "min_playercount": min_playercount,
+                "always_notify": (1 if always_notify else 0),
+                "cooldown": parsed_cooldown
+            })
+
+        msg = add_notify.format(botutils.BotEmoji.check)
         await ctx.send(msg)
 
     @notify.command(
@@ -128,12 +166,17 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
         await ctx.send(msg)
 
     @notify.error
+    @add.error
+    @remove.error
     async def notify_error(self, ctx, error):
         """Error handling of the notify command"""
 
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
+        elif isinstance(error, commands.BadArgument):
+            msg = game_text["cmd_warnings"]["bad_argument"]
+            await ctx.send(msg.format(ctx.author.mention, BotEmoji.x_emoji))
 
         # For other cases we will want to see the error logged
         else:

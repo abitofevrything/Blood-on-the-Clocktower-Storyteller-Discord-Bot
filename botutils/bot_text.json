@@ -218,7 +218,7 @@
 
             "add" : {
                 "brief" : "add yourself to the notify list",
-                "help" : "Add yourself to the notify list. The notification command pings users who have registered themselves with the command to be notified of new games. The command will only ping users who are online, idle or on do-not-disturb.",
+                "help" : "Add yourself to the notify list. The notification command pings users who have registered themselves with the command to be notified of new games.\n'min_playercount' can be used to specify the minimum number of players needed in the lobby to be pinged. Default is 0.\n'always_notify' can be used to choose whether to be pinged when offline or invisible (true = ping when offline). Default is false.\n'cooldown' can be used to specify how long the ping cooldown is for you. It is a string of the format '00h 00m 00s'. Default is 1h.",
                 "description" : "[NOTIFY] [ADD] command",
                 "outputs" : [],
                 "weights" : []
@@ -423,14 +423,15 @@
         "ambiguous_user" : "{} :x: Specified user is ambiguous (one of {}).",
         "missing_user" : "{} :x: Missing argument, please specify a valid user.",
         "cmd_cooldown" : "{} {} This command has a cooldown. Please try again in **{}**.",
-        "already_in_notify" : "{} {} You are already in the notify list.",
         "already_not_notify" : "{} {} You are already not in the notify list.",
         "fstart_min" : "{} {} The currently selected game is **{}**, with a **minimum** of **{}** players. You may not start the game until the minimum player count is reached.",
         "fstart_max" : "{} {} The currently selected game is **{}**, with a **maximum** of **{}** players. There are too many players in the lobby to run this game.",
         "fjoin_max" : "{} {} The currently selected game is **{}**, with a **maximum** of **{}** players. There are too many players in the lobby.",
-        "cant_fjoin_bot": "{} :x: You can't fjoin a bot."
+        "cant_fjoin_bot": "{} :x: You can't fjoin a bot.",
+        "no_users_to_notify": "{} {} There are currently no users to ping.",
+        "notify_cooldown" : "{} {} This command has a cooldown. Please try again in **{}**, or wait until the player count in the lobby exceeds **{}**."
 
-        },
+    },
 
     "system" : {
 

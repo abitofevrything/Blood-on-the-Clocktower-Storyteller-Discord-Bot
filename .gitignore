@@ -144,6 +144,7 @@ townsquare.png
 playtest.py
 log.txt
 data.sqlite3
+data.sqlite3-journal
 emojis.json
 botc/emojis.json
 botc.pid
