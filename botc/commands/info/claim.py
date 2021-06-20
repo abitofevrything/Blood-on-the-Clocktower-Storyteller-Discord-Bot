@@ -21,16 +21,16 @@ claim_role_str = game_text["doc"]["notes"]["claim"]["add"]["feedback"]
 
 # Claim strings
 claim_matches = {
-    r"^im [^,.]+(\.|,|$)": r"(?<=im )[^,.]+(?=(\.|,|$))",
-    r"^i'm [^,.]+(\.|,|$)": r"(?<=i'm )[^,.]+(?=\.|,|$)",
-    r"^i am [^,.]+(\.|,|$)": r"(?<=i am )[^,.]+(?=\.|,|$)",
-    r"^i was [^,.]+(\.|,|$)": r"(?<=i was )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?im [^,.]+(\.|,|$)": r"(?<=im )[^,.]+(?=(\.|,|$))",
+    r"^(ok( *, *| )|but )?i'm [^,.]+(\.|,|$)": r"(?<=i'm )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i am [^,.]+(\.|,|$)": r"(?<=i am )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i was [^,.]+(\.|,|$)": r"(?<=i was )[^,.]+(?=\.|,|$)",
 
-    r"^i(m|'m| am| was) the [^,.]+(\.|,|$)": r"(?<= the )[^,.]+(?=\.|,|$)",
-    r"^i(m|'m| am| was) an [^,.]+(\.|,|$)": r"(?<= an )[^,.]+(?=\.|,|$)",
-    r"^i(m|'m| am| was) a [^,.]+(\.|,|$)": r"(?<= a )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i(m|'m| am| was) the [^,.]+(\.|,|$)": r"(?<= the )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i(m|'m| am| was) an [^,.]+(\.|,|$)": r"(?<= an )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i(m|'m| am| was) a [^,.]+(\.|,|$)": r"(?<= a )[^,.]+(?=\.|,|$)",
 
-    r"^[^,.]+(?<!^im)(?<!^i'm)(?<!^i)(?<!^i am) here(\.|,|$)": r"[^,.]+(?= here)",
+    r"^(ok( *, *| ))?[^,.]+(?<!^im)(?<!^i'm)(?<!^i)(?<!^i am) here(\.|,|$)": r"((?<!,)(?<= )|(?<=,)(?! )|(?<=^)(?!ok))[^,.\n]+(?= here)",
     r"^your [^,.]+ here(\.|,|$)": r"(?<=your )[^,.]+(?= here)",
 }
 
@@ -139,14 +139,22 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
                                 else:
                                     an_a_the = "a"
 
+
+                            old_claim_role = globvars.master_state.game.note_manager.public_notes().get_entry(player).claimed_role
+                            old_claim_category = globvars.master_state.game.note_manager.public_notes().get_entry(player).claimed_category
+
                             globvars.master_state.game.note_manager.claim(player, claimed_category, claimed_character)
-                            await botutils.send_lobby(claim_role_str.format(message.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
+
+                            if old_claim_role != claimed_character or old_claim_category != claimed_category:
+                                await botutils.send_lobby(claim_role_str.format(message.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
                             return
         except Exception:
             await ctx.send(error_str)
             await botutils.log(botutils.Level.error, traceback.format_exc())
 
     @claim.error
+    @claim_add.error
+    @claim_remove.error
     async def claim_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             msg = game_text["cmd_warnings"]["missing_arguments"]
@@ -157,6 +165,8 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
         elif isinstance(error, RoleNotFound):
             error = getattr(error, 'original', error)
             await ctx.send(error)
+        elif isinstance(error, NotNight):
+            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, commands.CheckFailure):
             return
         elif isinstance(error, NotAPlayer):
@@ -166,22 +176,9 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(msg.format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, NotDMChannel):
             return
-        elif isinstance(error, NotNight):
-            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         else:
             try:
                 raise error
             except Exception:
                 await ctx.send(error_str)
                 await botutils.log(botutils.Level.error, traceback.format_exc())
-
-
-    # Errors must be handled per-command, not per-group
-
-    @claim_add.error
-    async def claim_add_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @claim_remove.error
-    async def claim_remove_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)

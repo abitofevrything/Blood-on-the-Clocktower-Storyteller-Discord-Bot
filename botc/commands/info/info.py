@@ -75,6 +75,8 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
         await self.notes_info_remove_command.callback(self, ctx, n_or_player, player)
 
     @info.error
+    @info_add.error
+    @info_remove.error
     async def info_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             msg = game_text["cmd_warnings"]["missing_arguments"]
@@ -85,6 +87,8 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
         elif isinstance(error, RoleNotFound):
             error = getattr(error, 'original', error)
             await ctx.send(error)
+        elif isinstance(error, NotNight):
+            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, commands.CheckFailure):
             return
         elif isinstance(error, NotAPlayer):
@@ -94,21 +98,9 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(msg.format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, NotDMChannel):
             return
-        elif isinstance(error, NotNight):
-            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         else:
             try:
                 raise error
             except Exception:
                 await ctx.send(error_str)
                 await botutils.log(botutils.Level.error, traceback.format_exc())
-
-    # Errors must be handled per-command, not per-group
-
-    @info_add.error
-    async def info_add_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @info_remove.error
-    async def info_remove_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)

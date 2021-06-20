@@ -136,29 +136,34 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         # Ensure that we have enough values in the list
         args += ['', '']
 
-        target_player = BOTCUtils.get_player_from_string(args[0])
-        if target_player is not None:
-            args.pop(0)
-
         try:
             target_phase = int(args[0])
+            target_player = None
             args.pop(0)
-
-            if target_phase > globvars.master_state.game._chrono.cycle:
-                raise commands.BadArgument()
         except ValueError:
-            target_phase = None
+            target_player = BOTCUtils.get_player_from_string(args[0])
+            if target_player is not None:
+                args.pop(0)
+
+            try:
+                target_phase = int(args[0])
+                args.pop(0)
+
+                if target_phase > globvars.master_state.game._chrono.cycle:
+                    raise commands.BadArgument()
+            except ValueError:
+                target_phase = None
 
         # Remove the two dummy elements
         args.pop()
         args.pop()
 
         rem = ' '.join(args)
-        if rem == '':
+        if not rem.strip():
             if target_phase is None:
                 raise commands.MissingRequiredArgument(Parameter('info', Parameter.POSITIONAL_ONLY))
             # Added info was a number (empath for example)
-            rem = target_phase
+            rem = str(target_phase)
             target_phase = None
 
         if target_player is not None:
@@ -282,6 +287,10 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         if player_or_claim is None:
             if globvars.master_state.game._chrono.phase == Phase.night:
                 raise NotNight("Command is allowed during night phase only (BoTC)")
+
+            old_claim_role = globvars.master_state.game.note_manager.public_notes().get_entry(invoking_player).claimed_role
+            old_claim_category = globvars.master_state.game.note_manager.public_notes().get_entry(invoking_player).claimed_category
+
             globvars.master_state.game.note_manager.claim(invoking_player, claimed_category, claimed_character)
 
             an_a_the = "the"
@@ -291,7 +300,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
                 else:
                     an_a_the = "a"
 
-            await botutils.send_lobby(claim_role_str.format(ctx.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
+            if old_claim_role != claimed_character or old_claim_category != claimed_category:
+                await botutils.send_lobby(claim_role_str.format(ctx.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
         else:
             globvars.master_state.game.note_manager.claim(player_or_claim, claimed_category, claimed_character, invoking_player)
 
@@ -321,6 +331,14 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
 
     @notes.error
+    @notes_add.error
+    @notes_remove.error
+    @info.error
+    @info_add.error
+    @info_remove.error
+    @claim.error
+    @claim_add.error
+    @claim_remove.error
     async def notes_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             msg = game_text["cmd_warnings"]["missing_arguments"]
@@ -331,6 +349,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         elif isinstance(error, RoleNotFound):
             error = getattr(error, 'original', error)
             await ctx.send(error)
+        elif isinstance(error, NotNight):
+            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, commands.CheckFailure):
             return
         elif isinstance(error, NotAPlayer):
@@ -340,45 +360,9 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             await ctx.send(msg.format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, NotDMChannel):
             return
-        elif isinstance(error, NotNight):
-            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         else:
             try:
                 raise error
             except Exception:
                 await ctx.send(error_str)
                 await botutils.log(botutils.Level.error, traceback.format_exc())
-
-    # Errors must be handled per-command, not per-group
-
-    @notes_add.error
-    async def notes_add_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @notes_remove.error
-    async def notes_remove_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @info.error
-    async def info_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @info_add.error
-    async def info_add_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @info_remove.error
-    async def info_remove_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @claim.error
-    async def claim_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @claim_add.error
-    async def claim_add_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)
-
-    @claim_remove.error
-    async def claim_remove_error(self, ctx, error):
-        await ctx.command.root_parent.on_error(self, ctx, error)

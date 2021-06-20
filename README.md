@@ -28,9 +28,9 @@ Clone this repository. Rename `config.toml.example` to `config.toml` and `prefer
 
 Rename `emojis.json.example` to `emojis.json` and `botc/emojis.json.example` to `botc/emojis.json`.
 
-Run `pip install -r requirements.txt` to install the required dependencies.
+Run `poetry install` or `pip install -r requirements.txt` to install the required dependencies.
 
-Finally, run the `main.py` file to start the bot.
+Finally, run the `main.py` file to start the bot. If you installed dependancies with poetry, make sure to run the file with `poetry run`.
 
 ### If you are on Windows:
 
@@ -44,7 +44,7 @@ Run `poetry install` or `pip install -r requirements.txt` to install the require
 
 Set the environment variable `PYTHONUTF8` to `1`.
 
-Finally, run the `main.py` file to start the bot.
+Finally, run the `main.py` file to start the bot. If you installed dependancies with poetry, make sure to run the file with `poetry run`.
 
 ## Player Guidelines for Discord Games
 
