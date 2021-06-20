@@ -45,15 +45,15 @@ attrs==21.2.0; python_version >= "3.6" and python_full_version >= "3.5.3" \
 chardet==4.0.0; python_version >= "3.6" and python_full_version >= "3.5.3" \
     --hash=sha256:f864054d66fd9118f2e67044ac8981a54775ec5b67aed0441892edb553d21da5 \
     --hash=sha256:0d6f53a15db4120f2b08c94f11e7d93d2c911ee118b6b30a04ec3ee8310179fa
-discord.py==1.7.2; python_full_version >= "3.5.3" \
-    --hash=sha256:f179db299c949a8cf0a12c1b1b94d0da9a18e088857154d93ae5ab1d807ec61d \
-    --hash=sha256:114e76cd27362fb919abf7f001a2dbdc77c9a67cff74ed6a89aecd6582ee298e
+discord.py==1.7.3; python_full_version >= "3.5.3" \
+    --hash=sha256:c6f64db136de0e18e090f6752ea68bdd4ab0a61b82dfe7acecefa22d6477bb0c \
+    --hash=sha256:462cd0fe307aef8b29cbfa8dd613e548ae4b2cb581d46da9ac0d46fb6ea19408
 emoji==1.2.0 \
     --hash=sha256:6b19b65da8d6f30551eead1705539cc0eadcd9e33a6ecbc421a29b87f96287eb \
     --hash=sha256:496f432058567985838c13d67dde84ca081614a8286c0b9cdc7d63dfa89d51a3
 idna-ssl==1.1.0; python_version >= "3.6" and python_full_version >= "3.5.3" and python_version < "3.7" \
     --hash=sha256:a933e3bb13da54383f9e8f35dc4f9cb9eb9b3b78c6b36f311254d6d0d92c6c7c
-idna==3.2; python_version >= "3.6" and python_full_version >= "3.5.3" and python_version < "3.7" \
+idna==3.2; python_version >= "3.6" and python_full_version >= "3.5.3" and python_version < "3.7" or python_version >= "3.6" and python_full_version >= "3.5.3" \
     --hash=sha256:14475042e284991034cb48e06f6851428fb14c4dc953acd9be9a5e95c7b6dd7a \
     --hash=sha256:467fbad99067910785144ce333826c71fb0e63a425657295239737f7ecd125f3
 multidict==5.1.0; python_version >= "3.6" and python_full_version >= "3.5.3" \
@@ -163,7 +163,7 @@ pytz==2021.1 \
 toml==0.10.2; (python_version >= "2.6" and python_full_version < "3.0.0") or (python_full_version >= "3.3.0") \
     --hash=sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b \
     --hash=sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f
-typing-extensions==3.10.0.0; python_version >= "3.6" and python_full_version >= "3.5.3" and python_version < "3.8" \
+typing-extensions==3.10.0.0; python_version >= "3.6" and python_full_version >= "3.5.3" or python_version >= "3.6" and python_full_version >= "3.5.3" and python_version < "3.8" \
     --hash=sha256:0ac0f89795dd19de6b97debb0c6af1c70987fd80a2d62d1958f7e56fcc31b497 \
     --hash=sha256:779383f6086d90c99ae41cf0ff39aac8a7937a9283ce0a414e5dd782f4c94a84 \
     --hash=sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342
