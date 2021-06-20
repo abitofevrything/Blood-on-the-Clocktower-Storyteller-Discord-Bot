@@ -404,7 +404,7 @@
 
         },
 
-        
+
         "streak" : {
             "brief" : "check various streaks",
             "help" : "See your best win streaks, loss streaks, good streaks or evil streaks",

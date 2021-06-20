@@ -446,7 +446,7 @@
             "brief" : "show the game statistics board",
             "help" : "The game statistics board contains information about player life or death states, the sitting order, and pending executions.",
             "description" : "[STATS] command - BOTC"
-        }, 
+        },
 
         "votestop" : {
             "brief" : "vote to stop the game",
