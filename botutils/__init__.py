@@ -16,7 +16,7 @@ from .adds import (add_admin_role, add_alive_role, add_dead_role, lock_lobby,
                    remove_admin_role, remove_alive_role,
                    remove_all_alive_dead_roles_after_game,
                    remove_all_alive_roles_pregame, remove_dead_role,
-                   unlock_lobby)
+                   unlock_lobby, add_all_alive_role)
 from .BotState import BotState
 from .checks import (check_if_admin, check_if_dm, check_if_in_pregame,
                      check_if_is_pregame_player, check_if_lobby,

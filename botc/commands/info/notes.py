@@ -148,9 +148,6 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             try:
                 target_phase = int(args[0])
                 args.pop(0)
-
-                if target_phase > globvars.master_state.game._chrono.cycle:
-                    raise commands.BadArgument()
             except ValueError:
                 target_phase = None
 
@@ -159,12 +156,22 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         args.pop()
 
         rem = ' '.join(args)
+
         if not rem.strip():
             if target_phase is None:
-                raise commands.MissingRequiredArgument(Parameter('info', Parameter.POSITIONAL_ONLY))
-            # Added info was a number (empath for example)
-            rem = str(target_phase)
-            target_phase = None
+                if target_player is None:
+                    raise commands.MissingRequiredArgument(Parameter('info', Parameter.POSITIONAL_ONLY))
+                else:
+                    # Added info was a player name
+                    rem = str(target_player)
+                    target_player = None
+            else:
+                # Added info was a number (empath for example)
+                rem = str(target_phase)
+                target_phase = None
+
+        if target_phase is not None and target_phase > globvars.master_state.game._chrono.cycle:
+            raise commands.BadArgument()
 
         if target_player is not None:
             globvars.master_state.game.note_manager.info(target_player, rem, invoking_player, target_phase)

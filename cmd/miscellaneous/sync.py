@@ -9,7 +9,7 @@ from discord.ext import commands
 import botutils
 import globvars
 from botutils import bot_text
-from config import ALIVE_ROLE_ID, DEAD_ROLE_ID, LOBBY_CHANNEL_ID, SERVER_ID
+from config import ALIVE_ROLE_ID, DEAD_ROLE_ID, SERVER_ID
 from library import display_time
 
 sync_succesful_string = bot_text["cmd"]["sync_success"]
@@ -100,6 +100,8 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
                 mismatched_alive_players = list(filter(lambda user: user.id not in globvars.master_state.pregame.list, alive_role.members))
                 for member in mismatched_alive_players:
                     await member.remove_roles(alive_role)
+
+                await botutils.add_all_alive_role()
             except Exception:
                 pass
 
@@ -116,7 +118,8 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
                 pass
 
             botutils.update_state_machine()
-
+        elif globvars.master_state.game:
+            await botutils.add_all_alive_role()
 
         await ctx.send(sync_succesful_string.format(ctx.author.mention, botutils.BotEmoji.success))
 

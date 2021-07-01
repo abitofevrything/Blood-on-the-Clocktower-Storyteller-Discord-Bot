@@ -4,6 +4,7 @@ import asyncio
 import math
 
 from discord.ext import commands
+import demoji
 
 import botutils
 import globvars
@@ -242,14 +243,26 @@ class NotesManager:
         game = globvars.master_state.game
 
         # Get some values for spacing
-        max_player_name_len = len(max(game.sitting_order, key=lambda player: len(player.user.display_name)).user.display_name)
+        max_player_name_len = len(
+            demoji.replace(
+                max(
+                    game.sitting_order,
+                    key=lambda player: len(
+                            demoji.replace(
+                                player.user.display_name, ' '
+                            )
+                        )
+                ).user.display_name,
+                repl=' '
+            )
+        )
 
         if target_notes is None:
             for entry in self._public_notes.entries:
                 player = entry.player
 
                 death_indicator = '[ALIVE]' if player.is_apparently_alive() else '[DEAD] '
-                player_name = player.user.display_name.ljust(max_player_name_len, ' ')
+                player_name = demoji.replace(player.user.display_name, ' ').ljust(max_player_name_len, ' ')
                 claim = (entry.claimed_role.name if entry.claimed_role else
                          (entry.claimed_category.value if entry.claimed_category else ''))
 
@@ -267,7 +280,7 @@ class NotesManager:
                 player = entry.player
 
                 death_indicator = '[ALIVE]' if player.is_apparently_alive() else '[DEAD] '
-                player_name = player.user.display_name.ljust(max_player_name_len, ' ')
+                player_name = demoji.replace(player.user.display_name, ' ').ljust(max_player_name_len, ' ')
                 public_claim = (public_entry.claimed_role.name if public_entry.claimed_role else
                                 (public_entry.claimed_category.value if public_entry.claimed_category else ''))
 
@@ -300,6 +313,9 @@ class NotesManager:
                 if private_info_str:
                     if not private_claim:
                         msg += "("
+                        # A space is inserted before each private info
+                        # entry, remove it if there is no claim
+                        private_info_str = private_info_str.lstrip()
                     msg += private_info_str + ") "
 
                 msg += f"{public_claim}{public_info_str}\n"

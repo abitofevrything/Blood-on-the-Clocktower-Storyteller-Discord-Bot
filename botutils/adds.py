@@ -1,5 +1,6 @@
 """Contains functions to handle roles and permissions"""
 
+from botutils.BotState import BotState
 import traceback
 
 import discord
@@ -38,6 +39,23 @@ async def add_alive_role(member_obj):
 
     if member_obj is not None:
         await member_obj.add_roles(alive_role)
+
+async def add_all_alive_role():
+    """Grant the alive role to all players in the game or pregame if they do not have it"""
+    alive_role = globvars.client.get_guild(SERVER_ID).get_role(ALIVE_ROLE_ID)
+
+    if globvars.master_state.session == BotState.pregame:
+        members = globvars.master_state.pregame.list
+    elif globvars.master_state.session == BotState.game:
+        members = [m.id for m in globvars.master_state.game.member_obj_list]
+
+    for member_id in members:
+        member_obj = globvars.client.get_guild(SERVER_ID).get_member(int(member_id))
+        if member_obj is None:
+            continue
+
+        if alive_role not in member_obj.roles:
+            await member_obj.add_roles(alive_role)
 
 
 async def remove_alive_role(member_obj):

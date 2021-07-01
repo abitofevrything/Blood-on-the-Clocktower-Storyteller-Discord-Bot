@@ -119,6 +119,8 @@ class Join(Gameplay, name = bot_text["system"]["gameplay_cog"]):
 
             # If you are the first player to join the game, then start the lobby timeout loop
             if len(globvars.master_state.pregame) == 1:
+                if lobby_timeout.is_running():
+                    lobby_timeout.cancel()
                 lobby_timeout.start()
 
         # Still give everyone the role just in case of discord sync issue

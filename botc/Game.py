@@ -641,6 +641,8 @@ class Game(GameMeta):
         botutils.tasks.update_status = True
         # If game is still starting after 60s, something went wrong
         asyncio.create_task(self.clear_working(60))
+        # Ensure all players have alive role
+        await botutils.add_all_alive_role()
         # Cancel the timer
         if botutils.start_votes_timer.is_running():
             botutils.start_votes_timer.cancel()

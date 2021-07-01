@@ -14,14 +14,15 @@ affiliated with them in any way.
 """
 
 import atexit
-import json
 import os
 import sys
+from datetime import datetime
 
 import discord
 import psutil
-import toml
 from discord.ext import commands
+import demoji
+import pytz
 
 import globvars  # isort: split
 
@@ -53,6 +54,13 @@ if __name__ == "__main__":
         os.unlink("botc.pid")
 
     atexit.register(remove_pidfile)
+
+    
+    last_downloaded = demoji.last_downloaded_timestamp()
+    if last_downloaded is None or (datetime.now(pytz.utc) - last_downloaded).days > 100:
+        # Download emojis
+        print(f"===== DOWNLOADING EMOJI DATA =====")
+        demoji.download_codes()
 
     globvars.init_client()
     globvars.init_master_state()
