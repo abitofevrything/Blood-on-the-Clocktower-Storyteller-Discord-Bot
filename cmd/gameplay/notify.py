@@ -14,6 +14,7 @@ from botutils import bot_text
 from botutils.emoji import BotEmoji
 from config import NOTIFY_COOLDOWN, SERVER_ID
 from library import display_time
+from globvars import notify_user_ping_cooldown_map, notify_playercount_cooldown_map
 
 from ._gameplay import Gameplay
 
@@ -23,9 +24,6 @@ already_not_notify = bot_text["errors"]["already_not_notify"]
 notify_cooldown = bot_text["errors"]["notify_cooldown"]
 add_notify = bot_text["cmd"]["add_notify"]
 remove_notify = bot_text["cmd"]["remove_notify"]
-
-notify_map = {}
-cooldown_map = {}
 
 class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     """Notify command cog"""
@@ -44,18 +42,18 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
         if ctx.invoked_subcommand is None:
             import globvars
 
-            if cooldown_map.get(len(globvars.master_state.pregame), 0) > time.time():
+            if notify_playercount_cooldown_map.get(len(globvars.master_state.pregame), 0) > time.time():
                 min_next_no_cd_players = 20
-                while cooldown_map.get(min_next_no_cd_players, None) is None or cooldown_map[min_next_no_cd_players] < time.time():
+                while notify_playercount_cooldown_map.get(min_next_no_cd_players, None) is None or notify_playercount_cooldown_map[min_next_no_cd_players] < time.time():
                     min_next_no_cd_players -= 1
 
-                return await ctx.send(notify_cooldown.format(ctx.author.mention, BotEmoji.x_emoji, display_time(int(cooldown_map[len(globvars.master_state.pregame)] - time.time())), min_next_no_cd_players))
+                return await ctx.send(notify_cooldown.format(ctx.author.mention, BotEmoji.x_emoji, display_time(int(notify_playercount_cooldown_map[len(globvars.master_state.pregame)] - time.time())), min_next_no_cd_players))
 
             # Set cooldowns
             if botutils.check_if_lobby(ctx):
                 for i in range(len(globvars.master_state.pregame), -1, -1):
-                    if cooldown_map.get(i, None) is None or cooldown_map[i] < time.time():
-                        cooldown_map[i] = time.time() + NOTIFY_COOLDOWN
+                    if notify_playercount_cooldown_map.get(i, None) is None or notify_playercount_cooldown_map[i] < time.time():
+                        notify_playercount_cooldown_map[i] = time.time() + NOTIFY_COOLDOWN
 
             users_to_ping = []
 
@@ -71,17 +69,17 @@ class Notify(Gameplay, name = bot_text["system"]["gameplay_cog"]):
                     member = globvars.client.get_guild(SERVER_ID).get_member(user_id)
 
                     # Do not ping the person that ran the command
-                    notify_map[ctx.author.id] = time.time()
+                    notify_user_ping_cooldown_map[ctx.author.id] = time.time()
 
                     if (
                         member and
                         member.id not in globvars.master_state.pregame and
                         len(globvars.master_state.pregame) >= min_playercount and
-                        time.time() - notify_map.get(member.id, 0) > cooldown and
+                        time.time() - notify_user_ping_cooldown_map.get(member.id, 0) > cooldown and
                         (always_notify == 1 or member.status != Status.offline) and
                         member.id != ctx.author.id
                     ):
-                        notify_map[member.id] = time.time()
+                        notify_user_ping_cooldown_map[member.id] = time.time()
 
                         users_to_ping.append(member.id)
 
