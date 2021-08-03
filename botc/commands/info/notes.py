@@ -163,7 +163,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
                     raise commands.MissingRequiredArgument(Parameter('info', Parameter.POSITIONAL_ONLY))
                 else:
                     # Added info was a player name
-                    rem = str(target_player)
+                    rem = str(target_player.game_nametag)
                     target_player = None
             else:
                 # Added info was a number (empath for example)
