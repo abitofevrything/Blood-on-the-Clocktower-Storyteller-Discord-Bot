@@ -476,13 +476,13 @@
                 "brief" : "add a note for a player",
                 "help" : "Add a note for a player. Can only be run in DM. Syntax is `notes add <player> <note>`. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
                 "description" : "[NOTES ADD] command - BOTC",
-                "feedback" : "{} Succesfully added your note."
+                "feedback" : "{} Successfully added your note."
             },
             "remove" : {
                 "brief" : "remove a note for a player",
                 "help" : "Remove a note for a player. Can only be run in DM. Syntax is `notes remove <player> <note>`, with `<note>` being a number indicating the note to remove. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
                 "description" : "[NOTES REMOVE] command - BOTC",
-                "feedback" : "{} Succesfully removed your note."
+                "feedback" : "{} Successfully removed your note."
             },
 
             "info" : {
@@ -494,13 +494,13 @@
                     "brief" : "add info for a player",
                     "help" : "Add info for a player. Can only be run in DM. Syntax is `notes info add <player> <cycle> <info>`, with `<player>` and `<cycle>` being optional parameters. If `<player>` is not given, the info will be set as your own on the public claims list, else that player's private info will be updated. If `<cycle>` is not given, defaults to the current cycle. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
                     "description" : "[NOTES INFO ADD] command - BOTC",
-                    "feedback" : "{} Succesfully added the info."
+                    "feedback" : "{} Successfully added the info."
                 },
                 "remove" : {
                     "brief" : "remove info for a player",
                     "help" : "Remove info for a player. Can only be run in DM. Syntax is `notes info remove <player> <cycle>`, with `<player>` and `<cycle>` being optional parameters. If `<player>` is not given, the info will be removed from your public info, else that player's private info will be updated. If `<cycle>` is not given, defaults to the current cycle. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
                     "description" : "[NOTES INFO REMOVE] command - BOTC",
-                    "feedback" : "{} Succesfully removed the info."
+                    "feedback" : "{} Successfully removed the info."
                 }
             },
 

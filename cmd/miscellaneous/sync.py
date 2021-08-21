@@ -12,7 +12,7 @@ from botutils import bot_text
 from config import ALIVE_ROLE_ID, DEAD_ROLE_ID, SERVER_ID
 from library import display_time
 
-sync_succesful_string = bot_text["cmd"]["sync_success"]
+sync_successful_string = bot_text["cmd"]["sync_success"]
 error_str = bot_text["system"]["error"]
 cooldown = bot_text["errors"]["cmd_cooldown"]
 
@@ -121,7 +121,7 @@ class Sync(commands.Cog, name = bot_text["system"]["miscellaneous_cog"]):
         elif globvars.master_state.game:
             await botutils.add_all_alive_role()
 
-        await ctx.send(sync_succesful_string.format(ctx.author.mention, botutils.BotEmoji.success))
+        await ctx.send(sync_successful_string.format(ctx.author.mention, botutils.BotEmoji.success))
 
     @sync.error
     async def sync_error(self, ctx, error):
