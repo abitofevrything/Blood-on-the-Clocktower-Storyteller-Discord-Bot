@@ -90,18 +90,18 @@ class Gamestats(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                 c = db.execute("SELECT COUNT(*) FROM game WHERE winner = 'evil'")
                 evil_wins = c.fetchone()[0]
 
-            good_winrate = good_wins / total_games
-            assert 0.00 <= good_winrate <= 1.00, 'invalid good winrate'
-
-            evil_winrate = evil_wins / total_games
-            assert 0.00 <= evil_winrate <= 1.00, 'invalid evil winrate'
-
             if not total_games:
                 if players:
                     desc = gamestats_no_games_players_str.format(players)
                 else:
                     desc = gamestats_no_games_str
                 return await ctx.send(embed=discord.Embed(color=discord.Color.red(), title=error_title_str, description=desc))
+
+            good_winrate = good_wins / total_games
+            assert 0.00 <= good_winrate <= 1.00, 'invalid good winrate'
+
+            evil_winrate = evil_wins / total_games
+            assert 0.00 <= evil_winrate <= 1.00, 'invalid evil winrate'
 
             embed = discord.Embed(color=discord.Color.blue(), title=title)
             embed.add_field(name=gamestats_total_games_str, value=str(total_games), inline=True)
