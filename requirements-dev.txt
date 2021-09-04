@@ -57,9 +57,6 @@ colorama==0.4.4; python_version >= "2.7" and python_full_version < "3.0.0" or py
 demoji==0.4.0; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.5.0") \
     --hash=sha256:c0f9872f9ceebbec947291ded7e0045e99a5901e6dba5472d428c185ec20f472 \
     --hash=sha256:172bd6e4f7e9dcb5dec537dcf353d0bf79fe0422189c405e4d4b97368af3d38e
-discord.py==1.7.3; python_full_version >= "3.5.3" \
-    --hash=sha256:c6f64db136de0e18e090f6752ea68bdd4ab0a61b82dfe7acecefa22d6477bb0c \
-    --hash=sha256:462cd0fe307aef8b29cbfa8dd613e548ae4b2cb581d46da9ac0d46fb6ea19408
 emoji==1.4.2 \
     --hash=sha256:21257f311e24468031e85685867c00b87249dc7612b82dc763a771ba5fb00c01
 idna-ssl==1.1.0; python_version >= "3.6" and python_full_version >= "3.5.3" and python_version < "3.7" \
@@ -191,6 +188,9 @@ psutil==5.8.0; (python_version >= "2.6" and python_full_version < "3.0.0") or (p
     --hash=sha256:ea372bcc129394485824ae3e3ddabe67dc0b118d262c568b4d2602a7070afdb0 \
     --hash=sha256:f4634b033faf0d968bb9220dd1c793b897ab7f1189956e1aa9eae752527127d3 \
     --hash=sha256:0c9ccb99ab76025f2f0bbecf341d4656e9c1351db8cc8a03ccd62e318ab4b5c6
+py-cord==1.7.3; python_full_version >= "3.5.3" \
+    --hash=sha256:b319b0c282e6cd55fedf11efefe30f024fc9293fee3b3e2b715777be6d9fb1ae \
+    --hash=sha256:19cb49ee6cb830d71e8b5d9555249cef5c15c652c096176e69edce5ff993701b
 pytz==2021.1 \
     --hash=sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798 \
     --hash=sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da
