@@ -66,10 +66,14 @@ if __name__ == "__main__":
     globvars.init_master_state()
 
     def command_prefix(bot, message):
-        if message.guild is None:
-            return (PREFIX, "")
-        else:
-            return PREFIX
+        prefix = PREFIX
+        if message.content.startswith(prefix):
+            while message.content.startswith(prefix + ' '):
+                prefix += ' '
+            return prefix
+        elif message.guild is None:
+            return ''
+        return PREFIX
 
     # The help command
     help_command = cmd.Help(
