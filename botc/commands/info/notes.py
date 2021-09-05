@@ -11,7 +11,7 @@ from discord.ext.commands.errors import MissingRequiredArgument
 
 import botutils
 import globvars
-from botc import (BOTCUtils, Category, NotAPlayer, NotDMChannel, NotNight,
+from botc import (BOTCUtils, Category, NotAPlayer, NotDMChannel, NotDay,
                   Phase, Player, PlayerConverter, PlayerNotFound, RoleNotFound,
                   check_if_dm, game_text)
 from botc.Character import Character
@@ -177,7 +177,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
             globvars.master_state.game.note_manager.info(target_player, rem, invoking_player, target_phase)
         else:
             if globvars.master_state.game._chrono.phase == Phase.night:
-                raise NotNight("Command is allowed during night phase only (BoTC)")
+                raise NotDay("Command is allowed during day phase only (BoTC)")
             globvars.master_state.game.note_manager.info(invoking_player, rem, None, target_phase)
 
         await ctx.send(info_add_feedback_str.format(BotEmoji.check))
@@ -200,7 +200,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         if player_or_id is None:
             if globvars.master_state.game._chrono.phase == Phase.night:
-                raise NotNight("Command is allowed during night phase only (BoTC)")
+                raise NotDay("Command is allowed during day phase only (BoTC)")
             globvars.master_state.game.note_manager.rm_info(invoking_player, id)
         else:
             globvars.master_state.game.note_manager.rm_info(player_or_id, id, invoking_player)
@@ -293,7 +293,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         if player_or_claim is None:
             if globvars.master_state.game._chrono.phase == Phase.night:
-                raise NotNight("Command is allowed during night phase only (BoTC)")
+                raise NotDay("Command is allowed during day phase only (BoTC)")
 
             old_claim_role = globvars.master_state.game.note_manager.public_notes().get_entry(invoking_player).claimed_role
             old_claim_category = globvars.master_state.game.note_manager.public_notes().get_entry(invoking_player).claimed_category
@@ -328,7 +328,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         if player is None:
             if globvars.master_state.game._chrono.phase == Phase.night:
-                raise NotNight("Command is allowed during night phase only (BoTC)")
+                raise NotDay("Command is allowed during day phase only (BoTC)")
             globvars.master_state.game.note_manager.rm_claim(invoking_player)
             await botutils.send_lobby(remove_claim_str.format(ctx.author.mention), delete_after = CLAIM_SHOW_TIME)
         else:
@@ -356,8 +356,8 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         elif isinstance(error, RoleNotFound):
             error = getattr(error, 'original', error)
             await ctx.send(error)
-        elif isinstance(error, NotNight):
-            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
+        elif isinstance(error, NotDay):
+            await ctx.send(game_text["cmd_warnings"]["day_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, commands.CheckFailure):
             return
         elif isinstance(error, NotAPlayer):

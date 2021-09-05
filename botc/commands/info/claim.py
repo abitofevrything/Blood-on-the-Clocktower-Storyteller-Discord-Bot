@@ -9,7 +9,7 @@ from unidecode import unidecode
 
 import botutils
 import globvars
-from botc import (BOTCUtils, Category, NotAPlayer, NotDMChannel, NotNight,
+from botc import (BOTCUtils, Category, NotAPlayer, NotDMChannel, NotDay,
                   Phase, PlayerConverter, PlayerNotFound, RoleNotFound,
                   check_if_dm, game_text)
 from botc.checks import check_if_is_player
@@ -165,8 +165,8 @@ class Claim(commands.Cog, name = game_text["misc"]["info_cog"]):
         elif isinstance(error, RoleNotFound):
             error = getattr(error, 'original', error)
             await ctx.send(error)
-        elif isinstance(error, NotNight):
-            await ctx.send(game_text["cmd_warnings"]["night_only"].format(ctx.author.mention, BotEmoji.x_emoji))
+        elif isinstance(error, NotDay):
+            await ctx.send(game_text["cmd_warnings"]["day_only"].format(ctx.author.mention, BotEmoji.x_emoji))
         elif isinstance(error, commands.CheckFailure):
             return
         elif isinstance(error, NotAPlayer):
