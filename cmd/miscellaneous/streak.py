@@ -75,13 +75,19 @@ class Streak(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
                 try:
                     user = botutils.get_member_from_string(str(user_or_role))
                 except botutils.AmbiguousUserError as e:
-                    return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
+                    users = list(sorted((str(x) for x in e.args[1]), key=str.lower))
+                    if len(users) > 5:
+                        users = [*users[:5], f"and {len(users) - 5} others"]
+                    return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(users)))
             elif user_or_role:
                 if isinstance(user_or_role, str):
                     try:
                         user = botutils.get_member_from_string(user_or_role)
                     except botutils.AmbiguousUserError as e:
-                        return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(sorted((str(x) for x in e.args[1]), key=str.lower))))
+                        users = list(sorted((str(x) for x in e.args[1]), key=str.lower))
+                        if len(users) > 5:
+                            users = [*users[:5], f"and {len(users) - 5} others"]
+                        return await ctx.send(ambiguous_user_str.format(ctx.author.mention, ", ".join(users)))
 
                     if user is None:
                         try:
