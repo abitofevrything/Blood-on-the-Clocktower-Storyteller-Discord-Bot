@@ -1100,6 +1100,15 @@ class Game(GameMeta):
         return count
 
     @property
+    def nb_truly_alive_players(self):
+        """Return the number of alive players"""
+        count = 0
+        for player in self.sitting_order:
+            if player.isalive():
+                count += 1
+        return count
+
+    @property
     def list_alive_players(self):
         """Return the list of alive players (truly alive state)"""
         return [player for player in self.sitting_order if player.is_alive()]
@@ -1125,7 +1134,7 @@ class Game(GameMeta):
             return
 
         # Less than or equal to 2 alive players. Winning condition is definitely triggered.
-        if self.nb_alive_players <= 2:
+        if self.nb_truly_alive_players <= 2:
 
             # There are still alive demons. The game is over with Evil win.
             if BOTCUtils.has_alive_demons():

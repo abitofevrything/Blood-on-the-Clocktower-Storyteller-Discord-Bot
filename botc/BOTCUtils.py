@@ -672,6 +672,9 @@ def validate_statement(player, statement: str):
         # (the|a|an) <category> is (the|a|an) <role>
         (r"((the|a|an) |)(demon|minion|outsider|townsfolk|town) is ((the|an|a|) |).+", r"(?!the |a |an )((?<= )|(?<=^)).+(?= is)|((?<=is the )|(?<=is a )|(?<= is an )|(?<=is ))(?!(the|a|an)).+(?=$)", category_contains_role),
 
+        # (the|a|an) <category> is not (the|a|an) <role>
+        (r"((the|a|an) |)(demon|minion|outsider|townsfolk|town) is not ((the|an|a|) |).+", r"(?!the |a |an )((?<= )|(?<=^)).+(?= is not)|((?<=is not the )|(?<=is not a )|(?<= is not an )|(?<=is not ))(?!(the|a|an)).+(?=$)", lambda args: not category_contains_role(args)),
+
         # one of <players> is <category/alignment>
         # one of <players> is <category/alignment>
         # there is one <category/alignment> in <players>
