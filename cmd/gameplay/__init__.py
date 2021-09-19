@@ -4,6 +4,7 @@ from .quit import Quit
 from .start import Start
 from .stats import Stats
 from .time import Time
+from .votes import Votes
 
 
 def setup(client):
@@ -13,4 +14,5 @@ def setup(client):
     client.add_cog(Stats(client))
     client.add_cog(Start(client))
     client.add_cog(Notify(client))
+    client.add_cog(Votes(client))
 

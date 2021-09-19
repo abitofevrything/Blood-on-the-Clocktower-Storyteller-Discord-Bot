@@ -5,7 +5,7 @@ import json
 from discord.ext import commands
 
 import botutils
-from botutils import bot_text
+from botutils import bot_text, get_gamemode_from_str
 
 from ._admin import Admin
 
@@ -24,12 +24,17 @@ class Fstart(Admin, name = bot_text["system"]["admin_cog"]):
         description = bot_text["doc"]["fstart"]["description"]
     )
     @commands.check(botutils.check_if_lobby_or_dm_or_admin)
-    async def fstart(self, ctx):
+    async def fstart(self, ctx, gm: str = None):
         """Force start command"""
 
         import globvars
 
-        game = botutils.GameChooser().get_selected_game()
+        if gm:
+            parsed_gamemode = get_gamemode_from_str(gm)
+            if parsed_gamemode:
+                globvars.master_state.game_chooser.select_gamemode(parsed_gamemode, ctx.author.id)
+
+        game = globvars.master_state.game_chooser.get_selected_game()
 
         # Make sure all the players are still in the guild
         globvars.master_state.pregame.remove_left_guild_players()
@@ -58,5 +63,6 @@ class Fstart(Admin, name = bot_text["system"]["admin_cog"]):
         await globvars.master_state.game.start_game()
         botutils.update_state_machine()
 
-        # Clear the start votes
+        # Clear the start and gamemode votes
         globvars.start_votes.clear()
+        globvars.master_state.game_chooser.clear_votes()

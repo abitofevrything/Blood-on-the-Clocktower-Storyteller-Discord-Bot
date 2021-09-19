@@ -256,13 +256,19 @@ class NotesManager:
                 repl=' '
             )
         )
+        has_dead_players = next((p for p in globvars.master_state.game.sitting_order if p.is_display_dead()), None) is not None
+        if has_dead_players:
+            max_death_indicator_len = len(str(max(p.apparent_death_phase_id for p in globvars.master_state.game.sitting_order if p.is_display_dead()))) + 8 # 8 = '[DEAD (N/D)...]'
+        else:
+            max_death_indicator_len = len('[ALIVE]')
 
         if target_notes is None:
             for entry in self._public_notes.entries:
                 player = entry.player
 
-                death_indicator = '[ALIVE]' if player.is_apparently_alive() else '[DEAD] '
-                player_name = demoji.replace(player.user.display_name, ' ').ljust(max_player_name_len, ' ')
+                death_indicator = '[ALIVE]' if player.is_display_alive() else f'[DEAD {"D" if player.apparent_death_phase_id % 3 == 0 else "N"}{math.ceil(player.apparent_death_phase_id / 3)}]'
+                death_indicator = death_indicator.ljust(max_death_indicator_len, ' ')
+                player_name = demoji.replace(player.user.display_name, '').ljust(max_player_name_len, ' ')
                 claim = (entry.claimed_role.name if entry.claimed_role else
                          (entry.claimed_category.value if entry.claimed_category else ''))
 
@@ -279,8 +285,9 @@ class NotesManager:
             for entry, public_entry in zip(self.private_notes(target_notes).entries, self._public_notes.entries):
                 player = entry.player
 
-                death_indicator = '[ALIVE]' if player.is_apparently_alive() else '[DEAD] '
-                player_name = demoji.replace(player.user.display_name, ' ').ljust(max_player_name_len, ' ')
+                death_indicator = '[ALIVE]' if player.is_display_alive() else f'[DEAD {"D" if player.apparent_death_phase_id % 3 == 0 else "N"}{math.ceil(player.apparent_death_phase_id / 3)}]'
+                death_indicator = death_indicator.ljust(max_death_indicator_len, ' ')
+                player_name = demoji.replace(player.user.display_name, '').ljust(max_player_name_len, ' ')
                 public_claim = (public_entry.claimed_role.name if public_entry.claimed_role else
                                 (public_entry.claimed_category.value if public_entry.claimed_category else ''))
 

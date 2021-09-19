@@ -8,8 +8,9 @@ import toml
 
 import botutils
 import globvars
-from botc import (Action, ActionTypes, AlreadyDead, Category, Character, Flags,
-                  Inventory, LorePicker, NonRecurringAction, Townsfolk, emojis)
+from botc import (
+    Action, ActionTypes, AlreadyDead, Category, Character, Flags, Inventory,
+    LorePicker, NonRecurringAction, Townsfolk, emojis)
 from botc.BOTCUtils import BOTCUtils, GameLogic
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 from botc.gamemodes.troublebrewing.Imp import Imp

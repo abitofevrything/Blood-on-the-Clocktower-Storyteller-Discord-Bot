@@ -55,10 +55,12 @@ def can_use_poison(user_id):
     """Return true if the user can use the command "poison"
     Characters that can poison:
     - Poisoner
+    - Courtier
     """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
     from botc.gamemodes.troublebrewing._utils import TBRole
     player = BOTCUtils.get_player_from_id(user_id)
-    if player.role.ego_self.name in [TBRole.poisoner.value]:
+    if player.role.ego_self.name in [TBRole.poisoner.value, BMRRole.courtier.value]:
         return True
     return False
 
@@ -74,8 +76,8 @@ def check_if_can_poison(ctx):
 
 
 def can_use_learn(user_id):
-    """Return true if the user can use the command "poison"
-    Characters that can poison:
+    """Return true if the user can use the command "learn"
+    Characters that can learn:
     - Ravenkeeper
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
@@ -97,7 +99,7 @@ def check_if_can_learn(ctx):
 
 def can_use_read(user_id):
     """Return true if the user can use the command "read"
-    Characters that can poison:
+    Characters that can read:
     - Fortune teller
     """
     from botc.gamemodes.troublebrewing._utils import TBRole
@@ -119,12 +121,16 @@ def check_if_can_read(ctx):
 
 def can_use_kill(user_id):
     """Return true if the user can use the command "kill"
-    Characters that can poison:
+    Characters that can kill:
     - Imp
+    - Po
+    - Shabaloth
+    - Zombuul
     """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
     from botc.gamemodes.troublebrewing._utils import TBRole
     player = BOTCUtils.get_player_from_id(user_id)
-    if player.role.ego_self.name in [TBRole.imp.value]:
+    if player.role.ego_self.name in [TBRole.imp.value, BMRRole.po.value, BMRRole.shabaloth.value, BMRRole.zombuul.value]:
         return True
     return False
 
@@ -137,7 +143,6 @@ def check_if_can_kill(ctx):
         return True
     else:
         raise RoleCannotUseCommand("Cannot use kill command (BoTC)")
-
 
 def can_use_slay(user_id):
     """Return true if the user can use the command "slay"
@@ -159,12 +164,14 @@ def check_if_can_slay(ctx):
 
 def can_use_protect(user_id):
     """Return true if the user can use the command "protect"
-    Characters that can poison:
+    Characters that can protect:
     - Monk
+    - Devil's advocate
     """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
     from botc.gamemodes.troublebrewing._utils import TBRole
     player = BOTCUtils.get_player_from_id(user_id)
-    if player.role.ego_self.name in [TBRole.monk.value]:
+    if player.role.ego_self.name in [TBRole.monk.value, BMRRole.devilsadvocate.value]:
         return True
     return False
 
@@ -178,6 +185,231 @@ def check_if_can_protect(ctx):
     else:
         raise RoleCannotUseCommand("Cannot use protect command (BoTC)")
 
+def can_use_assassinate(user_id):
+    """Return true if the user can use the command "assassinate"
+    Characters that can assassinate:
+    - Assassin
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.assassin.value]:
+       return True
+    return False
+
+def check_if_can_assassinate(ctx):
+    """Return True if the user can use the command "assassinate"
+    Command check function
+    """
+    if can_use_assassinate(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use assassinate command (BoTC)")
+
+def can_use_see(user_id):
+    """Return true if the user can use the command "see"
+    Characters that can see:
+    - Chambermaid
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.chambermaid.value]:
+        return True
+    return False
+
+def check_if_can_see(ctx):
+    """Return true if the user can use the command "see"
+    Characters that can see:
+    - Chambermaid
+    """
+    if can_use_see(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use see command (BoTC)")
+
+def can_use_exorcise(user_id):
+    """Return true if the user can use the command "exorcise"
+    Characters that can see:
+    - Exorcist
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.exorcist.value]:
+        return True
+    return False
+
+def check_if_can_exorcise(ctx):
+    """Return true if the user can use the command "exorcise"
+    Characters that can see:
+    - Exorcist
+    """
+    if can_use_exorcise(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use see command (BoTC)")
+
+def can_use_guess(user_id):
+    """Return true if the user can use the command "guess"
+    Characters that can guess:
+    - Gambler
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.gambler.value]:
+        return True
+    return False
+
+def check_if_can_guess(ctx):
+    """Return true if the user can use the command "guess"
+    Characters that can guess:
+    - Gambler
+    """
+    if can_use_guess(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use guess command (BoTC)")
+
+def can_use_execute(user_id):
+    """Return true if the user can use the command "execute"
+    Characters that can execute:
+    - Godfather
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.godfather.value]:
+        return True
+    return False
+
+def check_if_can_execute(ctx):
+    """Return true if the user can use the command "execute"
+    Characters that can execute:
+    - Godfather
+    """
+    if can_use_execute(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use execute command (BoTC)")
+
+def can_use_gossip(user_id):
+    """Return true if the user can use the command "gossip"
+    Characters that can gossip:
+    - Everyone (to allow for fakeclaiming)
+    """
+    return True
+
+def check_if_can_gossip(ctx):
+    """Return true if the user can use the command "gossip"
+    Characters that can gossip:
+    - Everyone (to allow for fakeclaiming)
+    """
+    if can_use_gossip(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use gossip command (BoTC)")
+
+def can_use_visit(user_id):
+    """Return true if the user can use the command "visit"
+    Characters that can visit:
+    - Sailor
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.sailor.value]:
+        return True
+    return False
+
+def check_if_can_visit(ctx):
+    """Return true if the user can use the command "visit"
+    Characters that can visit:
+    - Sailor
+    """
+    if can_use_visit(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use visit command (BoTC)")
+
+def can_use_host(user_id):
+    """Return true if the user can use the command "host"
+    Characters that can host:
+    - Innkeeper
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.innkeeper.value]:
+        return True
+    return False
+
+def check_if_can_host(ctx):
+    """Return true if the user can use the command "host"
+    Characters that can host:
+    - Innkeeper
+    """
+    if can_use_host(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use host command (BoTC)")
+
+def can_use_examine(user_id):
+    """Return true if the user can use the command "examine"
+    Characters that can examine:
+    - Professor
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.professor.value]:
+        return True
+    return False
+
+def check_if_can_examine(ctx):
+    """Return true if the user can use the command "examine"
+    Characters that can examine:
+    - Professor
+    """
+    if can_use_examine(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use examine command (BoTC)")
+
+def can_use_choose(user_id):
+    """Return true if the user can use the command "choose"
+    Characters that can choose:
+    - Moonchild
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.moonchild.value]:
+        return True
+    return False
+
+def check_if_can_choose(ctx):
+    """Return true if the user can use the command "choose"
+    Characters that can choose:
+    - Moonchild
+    """
+    if can_use_choose(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use choose command (BoTC)")
+
+def can_use_curse(user_id):
+    """Return true if the user can use the command "curse"
+    Characters that can curse:
+    - Pukka
+    """
+    from botc.gamemodes.badmoonrising._utils import BMRRole
+    player = BOTCUtils.get_player_from_id(user_id)
+    if player.role.ego_self.name in [BMRRole.pukka.value]:
+        return True
+    return False
+
+def check_if_can_curse(ctx):
+    """Return true if the user can use the command "curse"
+    Characters that can curse:
+    - Pukka
+    """
+    if can_use_curse(ctx.author.id):
+        return True
+    else:
+        raise RoleCannotUseCommand("Cannot use curse command (BoTC)")
 
 def check_if_is_night(ctx):
     """Check if the game is in night phase"""

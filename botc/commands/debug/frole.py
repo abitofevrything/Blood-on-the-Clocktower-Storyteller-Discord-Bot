@@ -8,8 +8,8 @@ import toml
 from discord.ext import commands
 
 import botutils
-from botc import (PlayerConverter, PlayerNotFound, RoleConverter, RoleNotFound,
-                  game_text)
+from botc import (Category, PlayerConverter, PlayerNotFound, RoleConverter,
+                  RoleNotFound, game_text)
 from botutils import bot_text
 from config import NO_INVALIDATE
 
@@ -42,6 +42,29 @@ class Frole(commands.Cog, name = game_text["misc"]["debug_cog"]):
         import globvars
         old_role = player.role.true_self
         await player.exec_change_role(role)
+
+        setup = globvars.master_state.game.setup
+        setup.role_dict.pop(old_role.name)
+        setup.role_dict[role.name] = player
+
+        if old_role.category == Category.townsfolk:
+            setup.townsfolks.remove(player)
+        elif old_role.category == Category.outsider:
+            setup.outsiders.remove(player)
+        elif old_role.category == Category.minion:
+            setup.minions.remove(player)
+        else:
+            setup.demon.remove(player)
+
+        if role.category == Category.townsfolk:
+            setup.townsfolks.append(player)
+        elif role.category == Category.outsider:
+            setup.outsiders.append(player)
+        elif role.category == Category.minion:
+            setup.minions.append(player)
+        else:
+            setup.demon.append(player)
+            
         player.role.exec_init_role(globvars.master_state.game.setup)
         if not NO_INVALIDATE:
             globvars.master_state.game.invalidated = True

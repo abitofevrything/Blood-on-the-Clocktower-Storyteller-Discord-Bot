@@ -9,12 +9,19 @@ from discord.ext import commands
 
 import botutils
 from botutils import bot_text, lobby_timeout
+from library.fancytext import fancy
 
 from ._gameplay import Gameplay
 
 joined_str = bot_text["cmd"]["joined"]
 joined_alt_str = bot_text["cmd"]["joined_alt"]
 error_str = bot_text["system"]["error"]
+vote_str = bot_text["cmd"]["vote"]
+gm_not_found_str = bot_text["cmd"]["gm_not_found"]
+voting_disabled_str = bot_text["cmd"]["voting_diabled"]
+not_joined_str = bot_text["cmd"]["not_joined"]
+
+x_emoji = botutils.BotEmoji.x_emoji
 
 emojis = [
     botutils.BotEmoji.char1,
@@ -40,16 +47,22 @@ class Join(Gameplay, name = bot_text["system"]["gameplay_cog"]):
     @commands.command(
         pass_context = True,
         name = "join",
-        aliases = ["j"],
+        aliases = ["j", "vote", "v"],
         brief = bot_text["doc"]["join"]["brief"],
         help = bot_text["doc"]["join"]["help"],
         description = bot_text["doc"]["join"]["description"]
     )
     @commands.check(botutils.check_if_lobby)
     @commands.check(botutils.check_if_not_in_game)
-    async def join(self, ctx):
+    async def join(self, ctx, vote: str = None):
         """Join command"""
 
+        vote = ctx.message.content[len(ctx.prefix) + len(ctx.invoked_with):]
+
+        # If player is not in lobby, make them join
+        # If no vote is provided and player is alr in lobby, send the error message
+        # If vote is given, register that vote
+        
         import globvars
 
         if globvars.master_state.game:
@@ -57,12 +70,11 @@ class Join(Gameplay, name = bot_text["system"]["gameplay_cog"]):
             # before the game is fully set up and end up breaking the game.
             return
 
-        # The command user has already joined
-        if globvars.master_state.pregame.is_joined(ctx.author.id):
-            await ctx.send(joined_str.format(ctx.author.mention))
+        if not globvars.master_state.pregame.is_joined(ctx.author.id):
+            if ctx.invoked_with == 'v' or ctx.invoked_with == 'vote':
+                await ctx.send(not_joined_str.format(ctx.author.mention, x_emoji))
+                return
 
-        # The command user has not joined yet; make them join
-        else:
             user_ids = set()
 
             with sqlite3.connect("data.sqlite3") as conn:
@@ -123,9 +135,28 @@ class Join(Gameplay, name = bot_text["system"]["gameplay_cog"]):
                     lobby_timeout.cancel()
                 lobby_timeout.start()
 
-        # Still give everyone the role just in case of discord sync issue
+        elif not vote:
+            await ctx.send(joined_str.format(ctx.author.mention))
+            return
+
         await botutils.add_alive_role(ctx.author)
 
+        if vote:
+
+                gm = botutils.get_gamemode_from_str(vote)
+
+                # Bad string passed
+                if gm is None:
+                    await ctx.send(gm_not_found_str.format(x_emoji, ctx.author.mention, vote))
+                else:
+                    globvars.master_state.game_chooser.register_vote(ctx.author.id, gm)
+
+                    current_votes = globvars.master_state.game_chooser.votes
+
+                    votes_str = '\n'.join([f"{gm.value}: {current_votes[gm]}" for gm in current_votes])
+
+                    await ctx.send(vote_str.format(ctx.author.mention, fancy.bold(gm.value), votes_str))
+    
     @join.error
     async def join_error(self, ctx, error):
         """Error handling of the join command"""
@@ -133,7 +164,10 @@ class Join(Gameplay, name = bot_text["system"]["gameplay_cog"]):
         # Case: check failure
         if isinstance(error, commands.CheckFailure):
             return
-
+        elif isinstance(error, commands.BadArgument):
+            error = getattr(error, 'original', error)
+            await ctx.send(error)
+        
         # For other cases we will want to see the error logged
         else:
             try:

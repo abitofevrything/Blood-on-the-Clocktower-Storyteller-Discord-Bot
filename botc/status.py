@@ -1,6 +1,9 @@
 """Contains classes about BoTC in-game status effects"""
 
+import asyncio
 import enum
+
+import globvars
 
 DEFAULT_EFFECT_DURATION = 3
 
@@ -9,12 +12,17 @@ class StatusList(enum.Enum):
     """List of status effects in game"""
 
     safety_from_demon = "safe_from_demon"
+    safety_from_execution = "safety_from_execution"
+    safety_from_death = "safety_from_death"
     drunkenness = "drunkenness"
     poison = "poisoned"
     red_herring = "red_herring"
     butler_service = "butler_service"  # butler serving a master
     ravenkeeper_activated = "ravenkeeper_activated"  # activated ravenkeeper ability
+    grandmother_activated = "grandmother_activated" # activated grandmother ability
 
+    no_ability = "no_ability"
+    NONE = "NONE"
 
 class Storyteller:
     """Storyteller class. Used to indicate sources of certain effects."""
@@ -120,9 +128,21 @@ class Drunkenness(StatusEffect):
         super().__init__(source_player, affected_player, pointer_player, duration)
         self._effect = StatusList.drunkenness
 
+class SailorDrunkenness(StatusEffect):
+    """Sailor Drunkenness effect"""
 
-class Poison(StatusEffect):
-    """Poison effect"""
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = 3
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.drunkenness
+
+class PoisonerPoison(StatusEffect):
+    """Poisoner Poison effect"""
 
     def __init__(
             self,
@@ -130,6 +150,19 @@ class Poison(StatusEffect):
             affected_player,
             pointer_player = None,
             duration = DEFAULT_EFFECT_DURATION
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.poison
+
+class CourtierPoison(StatusEffect):
+    """Courtier Poison effect"""
+
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = 9
         ):
         super().__init__(source_player, affected_player, pointer_player, duration)
         self._effect = StatusList.poison
@@ -143,7 +176,7 @@ class RedHerring(StatusEffect):
             source_player,
             affected_player,
             pointer_player = None,
-            duration = 1000000
+            duration = float("inf")
         ):
         """The red herring effect lasts the whole game, so we initialize it with
         a really large number
@@ -170,3 +203,89 @@ class ButlerService(StatusEffect):
         """
         super().__init__(source_player, affected_player, pointer_player, duration)
         self._effect = StatusList.butler_service
+
+class SafetyFromExecution(StatusEffect):
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = DEFAULT_EFFECT_DURATION
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.safety_from_execution
+
+class SafetyFromDeath(StatusEffect):
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = DEFAULT_EFFECT_DURATION
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.safety_from_death
+
+class PukkaPoison(StatusEffect):
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = 4
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.poison
+
+    def wear_off(self):
+        self.duration -= 1
+
+        if self.duration == 0:
+
+            async def kill_task():
+                await self.affected_player.role.ego_self.on_being_demon_killed(self.affected_player)
+
+            asyncio.create_task(kill_task())
+
+class ShabalothRevive(StatusEffect):
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = 4
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.NONE
+
+    def wear_off(self):
+        self.duration -= 1
+
+        if self.duration == 0:
+
+            from botc import AlreadyAlive
+
+            # We have to use a task because we need to call an async function
+            # from a non-async function
+            async def revive_task():
+                globvars.master_state.game.replay += f"- {self.source_player.user.name} ({self.source_player.role.name})"\
+                    f" regurgitates {self.affected_player.user.name} ({self.affected_player.role.name})\n"
+                try:
+                    await self.affected_player.revive()
+                except AlreadyAlive:
+                    pass
+                else:
+                    globvars.master_state.game.night_revives.append(self.affected_player)
+
+            asyncio.create_task(revive_task())
+
+class NoAbility(StatusEffect):
+    def __init__(
+            self,
+            source_player,
+            affected_player,
+            pointer_player = None,
+            duration = DEFAULT_EFFECT_DURATION
+        ):
+        super().__init__(source_player, affected_player, pointer_player, duration)
+        self._effect = StatusList.no_ability

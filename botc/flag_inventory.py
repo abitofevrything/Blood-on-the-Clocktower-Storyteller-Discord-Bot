@@ -8,6 +8,13 @@ class Flags(enum.Enum):
     slayer_unique_attempt = "slayer_unique_attempt"
     virgin_first_nomination = "virgin_first_nomination"
 
+    assassin_unique_kill = "assassin_unique_kill"
+    courtier_unique_poison = "courtier_unique_poison"
+    professor_unique_resurrect = "professor_unique_resurrect"
+    fool_death_evasion = "fool_death_evasion"
+    goon_alignement_take = "goon_alignement_take"
+    zombuul_unique_death_escape = "zombuul_unique_death_escape"
+
 
 class Inventory:
     """Inventory class

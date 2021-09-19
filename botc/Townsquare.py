@@ -59,6 +59,7 @@ class Townsquare:
         return math.ceil(self.PIC_SQUARE_SIDE * 0.04)
 
     def create(self, game_obj):
+        import globvars
 
         nb_players = len(game_obj.sitting_order)
         background = Image.open(self.TOWNSQUARE_PATH)
@@ -71,7 +72,7 @@ class Townsquare:
 
             player_obj = game_obj.sitting_order[i]
 
-            if player_obj.is_apparently_alive():
+            if player_obj.is_display_alive():
                 # The player is alive. We use the alive token image.
                 token = Image.open(self.TOKEN_LIFE)
             else:

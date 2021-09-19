@@ -1,4 +1,5 @@
 from .deop import Deop
+from .fgame import FGame
 from .fjoin import Fjoin
 from .fleave import Fleave
 from .frestart import Frestart
@@ -19,3 +20,4 @@ def setup(client):
     client.add_cog(Playtest(client))
     client.add_cog(Frestart(client))
     client.add_cog(Update(client))
+    client.add_cog(FGame(client))

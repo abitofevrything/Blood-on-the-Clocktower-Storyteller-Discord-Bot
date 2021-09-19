@@ -6,7 +6,7 @@ import toml
 
 import botutils
 import globvars
-from botc import (Action, ActionTypes, Character, Minion, Poison,
+from botc import (Action, ActionTypes, Character, Minion, PoisonerPoison,
                   RecurringAction, emojis)
 from botc.BOTCUtils import GameLogic
 
@@ -118,8 +118,8 @@ class Poisoner(Minion, TroubleBrewing, Character, RecurringAction):
         success = "unsuccessfully "
 
         if not poisoner_player.is_droisoned() and poisoner_player.is_alive():
+            poisoned_player.add_status_effect(PoisonerPoison(poisoner_player, poisoned_player))
             success = ""
-            poisoned_player.add_status_effect(Poison(poisoner_player, poisoned_player))
             poisoned_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/poisoned.png')
 
         # Add information to replay

@@ -42,3 +42,23 @@ class BadMoonRising:
 
         self._gm_of_appearance = Gamemode.bad_moon_rising
         self._gm_art_link = "https://bloodontheclocktower.com/wiki/images/d/d9/BMR_Logo.png"
+
+
+player_gossips = {}
+
+def register_gossip(player):
+    import globvars
+
+    if not player in player_gossips:
+        player_gossips[player] = globvars.master_state.game._chrono.phase_id
+        return
+    else:
+        if player_gossips[player] == globvars.master_state.game._chrono.phase_id:
+            from botc.BOTCUtils import ChangesNotAllowed, changes_not_allowed
+            from botutils import BotEmoji
+            
+            raise ChangesNotAllowed(changes_not_allowed.format(player.user.mention, BotEmoji.x_emoji))
+        else:
+            player_gossips[player] = globvars.master_state.game._chrono.phase_id
+            return
+

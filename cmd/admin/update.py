@@ -38,7 +38,7 @@ class Update(commands.Cog, name = bot_text["system"]["admin_cog"]):
 
         output = ""
         for line in p.stdout.decode("utf-8").splitlines():
-            if len(output + line + "\n") <= 2000:
+            if len(output + line + "\n") + 6 <= 2000:
                 output += f"{line}\n"
             else:
                 await ctx.send(f"```{output}```")

@@ -176,7 +176,7 @@
             "plural" : {
 
                 "outputs" : [
-                    "*As the sun rises and the bell rings the end of the night, it seems that after the daily count, multiple player are missing.* \n\n {} {} * have died during the night*."
+                    "*As the sun rises and the bell rings the end of the night, it seems that after the daily count, multiple players are missing.* \n\n{} {} *have died during the night*."
                 ],
 
                 "weights" : [
@@ -197,6 +197,66 @@
                     0.5
                 ]
 
+            },
+
+            "no_death_single_revive" : {
+                "outputs" : [
+                    "No one has died, but {} {} has miraculously reappeared in the townsquare."
+                ],
+
+                "weights" : [
+                    1.0
+                ]
+            },
+
+            "one_death_single_revive" : {
+                "outputs" : [
+                    "{} {} has been killed in the night, but fortunately, {} {} has miraculously reappeared in the townsquare."
+                ],
+
+                "weights" : [
+                    1.0
+                ]
+            },
+
+            "multiple_death_single_revive" : {
+                "outputs" : [
+                    "{} {} have been killed in the night, but fortunately, {} {} has miraculously reappeared in the townsquare."
+                ],
+
+                "weights" : [
+                    1.0
+                ]
+            },
+
+            "no_death_multiple_revive" : {
+                "outputs" : [
+                    "No one has died, but {} {} have miraculously reappeared in the townsquare."
+                ],
+
+                "weights" : [
+                    1.0
+                ]
+            },
+
+            "one_death_multiple_revive" : {
+                "outputs" : [
+                    "{} {} has been killed in the night, but fortunately, {} {} have miraculously reappeared in the townsquare."
+                ],
+
+                "weights" : [
+                    1.0
+                ]
+            },
+            
+            "multiple_death_multiple_revive" : {
+                "outputs" : [
+                    "{} {} have been killed in the night, but fortunately, {} {} have miraculously reappeared in the townsquare."
+                ],
+
+                "weights" : [
+                    1.0
+                ]
             }
         },
 
@@ -234,9 +294,10 @@
         "librarian_init" : "You learn that one of the following two players is the ``{}``: ",
         "librarian_init_zero" : "You learn that there is no Outsider in play.",
         "washerwoman_init" : "You learn that one of the following two players is the ``{}``: ",
+        "chambermaid_nightly" : "Tonight, you learn a `{}`.",
         "tb_lore" : "*Clouds roll in over Ravenswood Bluff, engulfing this sleepy town and its superstitious inhabitants in foreboding shadow. Anxious mothers call their children home from play, as thunder begins to clap on the horizon. Those who can read the signs know there is...* ***Trouble Brewing***.",
-        "bmr_lore" : "",
-        "snv_lore" : "",
+        "bmr_lore" : "*The sun is swallowed by a jagged horizon as another winter's day surrenders to the night. Travelers hurry into the inn, seeking shelter from the gathering chill. They warm themselves with hot tea, sweet strains of music and hearty ale, unaware that strange and nefarious eyes stalk them from the ruins of this once great city. Tonight, even the livestock know there is a...* ***Bad Moon Rising***.",
+        "snv_lore" : "*Vibrant spring gives way to a warm and inviting summer. As the townsfolk bask in frivolity and mischief, indulging themselves in fine entertainment and even finer wine, dark and clandestine forces are assembling. Witches and cults lurk in majestic ruins on the fringes of the community, hosting secret meetings in underground caves and malevolently plotting the downfall of Ravenswood Bluff and its revelers. The time is ripe for...* ***Sects & Violets***.",
         "spy_nightly" : "The Grimoire is shown below.",
         "action_assign" : "Since you did not pick a target for your mandatory action, it has been randomized to {}.",
         "yes" : "yes",
@@ -266,6 +327,7 @@
         "day_over_soon" : "The Day Phase will be over in a few seconds if no one else is nominated.",
         "no_execution" : "Nominations are now closed, and no one is executed today. Goodnight everyone.",
         "execution" : "Nominations are now closed. {} is now executed with **{}** votes. Goodnight everyone.",
+        "execution_no_death" : "Nominations are now closed. {} is now executed with **{}** votes, but does not die. Goodnight everyone.",
         "no_one_wins" : "**Game over! No one has won.**",
         "good_wins" : "**Game over! The Good team has won.**",
         "evil_wins" : "**Game over! The Evil team has won.**",
@@ -285,8 +347,12 @@
         "time_day_base" : "It is currently **daytime**. The daytime discussion phase lasts `{}`. There {} **{}** left until nominations are open.",
         "time_voting" : "It is currently **daytime**. This is the nominations phase. Votes are being counted right now.",
         "time_debate" : "It is currently **daytime**. You have `{}` for discussion. The voting will start in **{}**.",
-        "time_nomination" : "It is currently **daytime**. You have `{}` to nominate someone. The game will progress to the night phase in **{}**."
-
+        "time_nomination" : "It is currently **daytime**. You have `{}` to nominate someone. The game will progress to the night phase in **{}**.",
+        "exorcist_chose_demon" : "You learn that {} is the exorcist, and you do not act tonight.",
+        "demon_learn_lunatic" : "You learn that {} is the lunatic",
+        "day_death" : "{} suddenly dies.",
+        "pass" : "You have decided to not act tonight.",
+        "demon_learn_lunatic_attack" : "You learn that {} has attacked {} tonight."
     },
 
     "cmd_warnings" : {
@@ -306,6 +372,7 @@
         "role_not_found" : "{} {} Role not found.",
         "not_under_status" : "{} {} You are not allowed to use your ability at this time.",
         "already_dead" : "{} {} That player is already dead.",
+        "already_alive" : "{} {} That player is already alive.",
         "missing_arguments" : "{} {} You are missing arguments.",
         "bad_argument" : "{} {} You provided an invalid argument.",
         "no_self_targetting_str" : "{} {} You may not choose yourself as one of the targets.",
@@ -321,8 +388,16 @@
         "whisper_too_long" : "{} {} The content of your whisper is too long.",
         "recipient_blocked" : "{} Your whisper cannot be delivered because the recipient has blocked me.",
         "cannot_be_nominated_again" : "{} {} {} cannot be nominated, because they have been nominated once today already.",
-        "cannot_nominate_again" : "{} {} You cannot nominate more than once per day."
-
+        "cannot_nominate_again" : "{} {} You cannot nominate more than once per day.",
+        "bmr_roles_only" : "{} {} You cannot choose roles from other editions.",
+        "no_same_following_targets" : "{} {} You cannot choose the same target two times in a row.",
+        "guess_invalid_syntax" : "{} {} Invalid syntax. Correct syntax is `guess <player> is <character>`",
+        "statement_unrecognized" : "{} {} Statement not recognized. Run `statements` for a list of example statements.",
+        "no_alive_targets" : "{} {} You may not target alive players.",
+        "no_dead_targets" : "{} {} You may not target dead players.",
+        "requires_one_or_three_targets_str" : "{} {} You must pick one or three targets for your ability. Note that the separator `and` is a special keyword and allows you to input multiple targets.",
+        "no_targets_allowed_str" : "{} {} Your ability does not allow targets.",
+        "no_killing_if_execution" : "{} {} You may not kill if a player died today."
     },
 
     "doc" : {
@@ -339,6 +414,13 @@
             "help" : "This debugging command modkills a specified player. The player will remain in the game, but as a dead player. The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
             "description" : "[MODKILL] command - BOTC (debug)",
             "feedback" : "{} Successfully modkilled {}."
+        },
+
+        "modrevive" : {
+            "brief" : "modrevive a player",
+            "help" : "This debugging command modrevives a specified player.The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially.",
+            "description" : "[MODREVIVE] command - BOTC (debug)",
+            "feedback" : "{} Successfully modrevived {}."
         },
 
         "fstop" : {
@@ -388,6 +470,12 @@
             "description" : "[POISON] command - BOTC"
         },
 
+        "courtier_poison" : {
+            "brief" : "pick a 'poison' target",
+            "help" : "The bot recognizes roles. These need to be typed out fully.",
+            "description" : "[POISON] command - BOTC"
+        },
+
         "learn" : {
             "brief" : "pick a 'learn' target",
             "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
@@ -416,6 +504,89 @@
             "brief" : "pick a 'protect' target",
             "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
             "description" : "[PROTECT] command - BOTC"
+        },
+
+        "assassinate" : {
+            "brief" : "pick an 'assassinate' target",
+            "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[ASSASSINATE] command - BOTC"
+        },
+
+        "see" : {
+            "brief" : "pick a 'see' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[SEE] command - BOTC"
+        },
+
+        "exorcise" : {
+            "brief" : "pick a 'exorcise' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[EXORCISE] command - BOTC"  
+        },
+
+        "guess" : {
+            "brief" : "pick a 'guess' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[GUESS] command - BOTC"  
+        },
+
+        "execute" : {
+            "brief" : "pick a 'execute' target",
+            "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[EXECUTE] command - BOTC"
+        },
+
+        "gossip" : {
+            "brief" : "state a gossip statement",
+            "help" : "",
+            "description" : "[GOSSIP] command - BOTC",
+            "statements" : [
+                "<player> is (the) <role>",
+                "<player> is <category>",
+                "(the) <role> is in game",
+                "(the) <role> is not in game",
+                "there (are|is) <n> outsider(s) in play",
+                "(the) <player/role> is neighbouring (the) <player/role>",
+                "(the) <role/player> has whispered to (the) <role/player> today",
+                "(the) <role> used their ability tonight",
+                "(the) <role>'s name contains <c>"
+            ]
+        },
+
+        "visit" : {
+            "brief" : "pick a 'visit' target",
+            "help" : "The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[VISIT] command - BOTC"
+        },
+
+        "host" : {
+            "brief" : "pick a 'host' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[HOST] command - BOTC"
+        },
+
+        "examine" : {
+            "brief" : "pick an 'examine' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[EXAMINE] command - BOTC"
+        },
+
+        "choose" : {
+            "brief" : "pick a 'choose' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[CHOOSE] command - BOTC"
+        },
+
+        "pass" : {
+            "brief" : "pass tonight's action",
+            "help" :"",
+            "description" : "[PASS] command - BOTC"
+        },
+
+        "curse" : {
+            "brief" : "pick a 'choose' target",
+            "help" :"The bot recognizes usernames, nicknames, user ID's and mentions, typed in full or partially. If your role allows for multiple targets, use 'and' to separate each of them. Please use the command in DM.",
+            "description" : "[CHOOSE] command - BOTC"
         },
 
         "nominate" : {
@@ -455,8 +626,8 @@
         },
 
         "revealroles" : {
-            "brief" : "reveal all players' roles",
-            "help" : "reveal all players' roles",
+            "brief" : "reveal a players role",
+            "help" : "reveal a players role. Use `rr all` to reveal all players' role",
             "description" : "[REVEALROLES] command - BOTC"
         },
 

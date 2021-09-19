@@ -3,20 +3,16 @@
 from models import FormatterMeta
 
 from .Game import Game
-from .gamemodes.badmoonrising import (Assassin, Chambermaid, Courtier,
-                                      DevilsAdvocate, Exorcist, Fool, Gambler,
-                                      Godfather, Goon, Gossip, Grandmother,
-                                      Innkeeper, Lunatic, Mastermind, Minstrel,
-                                      Moonchild, Pacifist, Po, Professor,
-                                      Pukka, Sailor, Shabaloth, TeaLady,
-                                      Tinker, Zombuul)
-from .gamemodes.sectsandviolets import (Artist, Barber, Cerenovus, Clockmaker,
-                                        Dreamer, EvilTwin, FangGu, Flowergirl,
-                                        Juggler, Klutz, Mathematician, Mutant,
-                                        NoDashii, Oracle, Philosopher, PitHag,
-                                        Sage, Savant, Seamstress, SnakeCharmer,
-                                        Sweetheart, TownCrier, Vigormortis,
-                                        Vortox, Witch)
+from .gamemodes.badmoonrising import (
+    Assassin, Chambermaid, Courtier, DevilsAdvocate, Exorcist, Fool, Gambler,
+    Godfather, Goon, Gossip, Grandmother, Innkeeper, Lunatic, Mastermind,
+    Minstrel, Moonchild, Pacifist, Po, Professor, Pukka, Sailor, Shabaloth,
+    TeaLady, Tinker, Zombuul)
+from .gamemodes.sectsandviolets import (
+    Artist, Barber, Cerenovus, Clockmaker, Dreamer, EvilTwin, FangGu,
+    Flowergirl, Juggler, Klutz, Mathematician, Mutant, NoDashii, Oracle,
+    Philosopher, PitHag, Sage, Savant, Seamstress, SnakeCharmer, Sweetheart,
+    TownCrier, Vigormortis, Vortox, Witch)
 from .gamemodes.troublebrewing import (Baron, Butler, Chef, Drunk, Empath,
                                        FortuneTeller, Imp, Investigator,
                                        Librarian, Mayor, Monk, Poisoner,
@@ -37,7 +33,7 @@ class BOTCFormatter(FormatterMeta):
             final_text += self.make_section_header(mode_title)
             final_text += "\n"
             role_obj_list = setup["botc"]["gamemodes"][mode_title]
-            temp = ", ".join([self.format_role_name(role.name) for role in role_obj_list])
+            temp = ", ".join([self.format_role_name(role().name) for role in role_obj_list])
             final_text += temp
             final_text += "\n\n"
         return final_text
@@ -55,88 +51,88 @@ setup = {
 
             "trouble-brewing" : [
 
-                            Baron(),
-                            Butler(),
-                            Chef(),
-                            Drunk(),
-                            Empath(),
-                            FortuneTeller(),
-                            Imp(),
-                            Investigator(),
-                            Librarian(),
-                            Mayor(),
-                            Monk(),
-                            Poisoner(),
-                            Ravenkeeper(),
-                            Recluse(),
-                            Saint(),
-                            ScarletWoman(),
-                            Slayer(),
-                            Soldier(),
-                            Spy(),
-                            Undertaker(),
-                            Virgin(),
-                            Washerwoman()
+                            Baron,
+                            Butler,
+                            Chef,
+                            Drunk,
+                            Empath,
+                            FortuneTeller,
+                            Imp,
+                            Investigator,
+                            Librarian,
+                            Mayor,
+                            Monk,
+                            Poisoner,
+                            Ravenkeeper,
+                            Recluse,
+                            Saint,
+                            ScarletWoman,
+                            Slayer,
+                            Soldier,
+                            Spy,
+                            Undertaker,
+                            Virgin,
+                            Washerwoman
 
                         ],
 
             "bad-moon-rising" : [
 
-                            Assassin(),
-                            Chambermaid(),
-                            Courtier(),
-                            DevilsAdvocate(),
-                            Exorcist(),
-                            Fool(),
-                            Gambler(),
-                            Godfather(),
-                            Goon(),
-                            Gossip(),
-                            Grandmother(),
-                            Innkeeper(),
-                            Lunatic(),
-                            Mastermind(),
-                            Minstrel(),
-                            Moonchild(),
-                            Pacifist(),
-                            Po(),
-                            Professor(),
-                            Pukka(),
-                            Sailor(),
-                            Shabaloth(),
-                            TeaLady(),
-                            Tinker(),
-                            Zombuul()
+                            Assassin,
+                            Chambermaid,
+                            Courtier,
+                            DevilsAdvocate,
+                            Exorcist,
+                            Fool,
+                            Gambler,
+                            Godfather,
+                            Goon,
+                            Gossip,
+                            Grandmother,
+                            Innkeeper,
+                            Lunatic,
+                            Mastermind,
+                            Minstrel,
+                            Moonchild,
+                            Pacifist,
+                            Po,
+                            Professor,
+                            Pukka,
+                            Sailor,
+                            Shabaloth,
+                            TeaLady,
+                            Tinker,
+                            Zombuul
 
                         ],
 
             "sects-&-violets" : [
 
-                            Artist(),
-                            Barber(),
-                            Cerenovus(),
-                            Clockmaker(),
-                            Dreamer(),
-                            EvilTwin(),
-                            FangGu(),
-                            Flowergirl(),
-                            Juggler(),
-                            Klutz(),
-                            Mathematician(),
-                            Mutant(),
-                            NoDashii(),
-                            Oracle(),
-                            Philosopher(),
-                            PitHag(),
-                            Sage(),
-                            Savant(),
-                            Seamstress(),
-                            SnakeCharmer(),
-                            Sweetheart(),
-                            TownCrier(),
-                            Vigormortis(),
-                            Vortox(),
-                            Witch()
+                            Artist,
+                            Barber,
+                            Cerenovus,
+                            Clockmaker,
+                            Dreamer,
+                            EvilTwin,
+                            FangGu,
+                            Flowergirl,
+                            Juggler,
+                            Klutz,
+                            Mathematician,
+                            Mutant,
+                            NoDashii,
+                            Oracle,
+                            Philosopher,
+                            PitHag,
+                            Sage,
+                            Savant,
+                            Seamstress,
+                            SnakeCharmer,
+                            Sweetheart,
+                            TownCrier,
+                            Vigormortis,
+                            Vortox,
+                            Witch
 
                         ]
 

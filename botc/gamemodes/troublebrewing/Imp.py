@@ -166,18 +166,19 @@ class Imp(Demon, TroubleBrewing, Character, RecurringAction):
     async def exec_kill(self, demon_player, killed_player):
         """Execute the kill action (night ability interaction)"""
 
-        success = "unsuccessfully "
+        if demon_player.is_alive() and not demon_player.is_droisoned():
+            # Players who have received a status effect granting them safety from the demon
+            # do not die
+            if killed_player.role.true_self.can_be_demon_killed(killed_player):
+                success = ""
+                await killed_player.role.ego_self.on_being_demon_killed(killed_player)
+                killed_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/imp_dead.png')
+            else:
+                success = "unsuccessfully "
 
-        # Players who have received a status effect granting them safety from the demon do not die
-        if demon_player.is_alive() and not demon_player.is_droisoned() and\
-                not killed_player.has_status_effect(StatusList.safety_from_demon):
-            success = ""
-            await killed_player.role.ego_self.on_being_demon_killed(killed_player)
-            killed_player.add_reminder_token('botc/assets/tb_reminder_tokens_cropped/imp_dead.png')
-
-        # Add information to replay
-        globvars.master_state.game.replay += f"- {demon_player.user.name} (Imp) {success}kills "\
-                                    f"{killed_player.user.name} ({killed_player.role.true_self})\n"
+            # Add information to replay
+            globvars.master_state.game.replay += f"- {demon_player.user.name} (Imp) {success}kills "\
+                                        f"{killed_player.user.name} ({killed_player.role.true_self})\n"
 
     async def _starpass(self, demon_player):
         """Starpassing ability works when the demon is killed by himself at night"""

@@ -1,4 +1,4 @@
-"""Contains the custum game error classes"""
+"""Contains the custom game error classes"""
 
 from discord.ext import commands
 
@@ -25,4 +25,8 @@ class IncorrectNumberOfArguments(Exception):
 
 class AlreadyDead(commands.CommandInvokeError):
     """Error for when an already dead player is killed again"""
+    pass
+
+class AlreadyAlive(commands.CommandInvokeError):
+    """Error for when an already alive player is revived"""
     pass

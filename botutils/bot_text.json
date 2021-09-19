@@ -76,6 +76,12 @@
         "frestart": "{} {} Restarting",
         "frestart_confirm": "{} {} A game is currently in progress. If you still want to restart the bot, please use `!frestart --force`.",
         "update_exitcode": ":x: Process exited with return code {}",
+        "vote": "{} You have voted to play the **{}** gamemode. The current votes are:```css\n{}```",
+        "gm_not_found": "{} {} Gamemode `{}` not found.",
+        "not_joined": "{} {} You are not in the lobby.",
+        "vote_not_registered": "{} You have not voted to play any gamemode. The current votes are: ```css\n{}```",
+        "voting_diabled": "{} {} Votes are currently disabled.",
+        "fgame_success" : "{} {} Disabled votes and forced the next game to use the {} gamemode.\nVotes will be re-enabled when the game ends.",
         "votestop_vote" : "{} has voted to stop the game. **{}** more vote{} needed.",
         "sync_success" : "{} {} Successfully synced bot state.",
         "help" : "{} Help DM sent!"
@@ -404,16 +410,32 @@
 
         },
 
-
+        "vote" : {
+            "brief": "vote to play a gamemode",
+            "help": "vote to play a gamemode",
+            "description" : "[VOTE] command"
+        },
+        
         "streak" : {
             "brief" : "check various streaks",
             "help" : "See your best win streaks, loss streaks, good streaks or evil streaks",
             "description" : "[STREAK] command",
             "outputs" : [],
             "weights" : []
+        },
+
+
+        "votes" : {
+            "brief": "see the current vote tally",
+            "help": "see the current vote tally",
+            "description": "[VOTES] command"
+        },
+
+        "fgame" : {
+            "brief": "force the next game to be a certain gamemode",
+            "help": "force the next game to be a certain gamemode",
+            "description": "[FGAME] command"
         }
-
-
     },
 
     "errors" : {
@@ -428,6 +450,7 @@
         "fstart_max" : "{} {} The currently selected game is **{}**, with a **maximum** of **{}** players. There are too many players in the lobby to run this game.",
         "fjoin_max" : "{} {} The currently selected game is **{}**, with a **maximum** of **{}** players. There are too many players in the lobby.",
         "cant_fjoin_bot": "{} :x: You can't fjoin a bot.",
+        "missing_gamemode" : "{} {} You must provide a gamemode.",
         "no_users_to_notify": "{} {} There are currently no users to ping.",
         "notify_cooldown" : "{} {} This command has a cooldown. Please try again in **{}**, or wait until the player count in the lobby exceeds **{}**."
 

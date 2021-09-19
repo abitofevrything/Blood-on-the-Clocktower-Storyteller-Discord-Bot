@@ -39,7 +39,7 @@ class Start(Gameplay, name = bot_text["system"]["gameplay_cog"]):
         if ctx.author.id in globvars.start_votes:
             return
 
-        game = botutils.GameChooser().get_selected_game()
+        game = globvars.master_state.game_chooser.get_selected_game()
 
         if len(globvars.master_state.pregame) < game.MIN_PLAYERS:
             msg = fstart_min.format(
@@ -77,14 +77,15 @@ class Start(Gameplay, name = bot_text["system"]["gameplay_cog"]):
 
             # Reached the number of votes needed. Start the game.
             if len(globvars.start_votes) == votes_needed:
-                game = botutils.GameChooser().get_selected_game()
+                game = globvars.master_state.game_chooser.get_selected_game()
                 globvars.master_state.game = game
                 await globvars.master_state.game.start_game()
                 botutils.update_state_machine()
 
-                # Clear the start votes
+                # Clear the start and gamemode votes
                 globvars.start_votes.clear()
-
+                globvars.master_state.game_chooser.clear_votes()
+                
                 return
 
             votes_left = votes_needed - len(globvars.start_votes)

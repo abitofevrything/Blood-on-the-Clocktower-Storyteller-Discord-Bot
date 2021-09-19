@@ -3,6 +3,7 @@
 import time
 
 from .BotState import BotState
+from .GameChooser import GameChooser
 from .Pregame import Pregame
 
 
@@ -98,6 +99,7 @@ class MasterState:
         self._game = None
         self._session = BotState.empty
         self._game_packs = dict()
+        self._game_chooser = GameChooser()
 
         self.state_machine = StateMachine(self)
         self.state_machine.run(self)
@@ -129,6 +131,10 @@ class MasterState:
     @property
     def game_packs(self):
         return self._game_packs
+    
+    @property
+    def game_chooser(self):
+        return self._game_chooser
 
     def add_pack(self, pack):
         self._game_packs.update(pack)
@@ -157,7 +163,8 @@ class MasterState:
             botutils.lobby_timeout.cancel()
         self._session = BotState.game
         self.pregame.clear()
-
+        self.game_chooser.enable_voting()
+    
     def __str__(self):
         return f"Master State at pregame: {str(self.pregame)}, and game:{str(self.game)}"
 

@@ -10,8 +10,8 @@ from discord.ext import commands
 
 import botutils
 import globvars
-from botc import (AlreadyDead, Category, PlayerConverter, PlayerNotFound,
-                  game_text)
+from botc import (AlreadyDead, Category, Flags, PlayerConverter,
+                  PlayerNotFound, game_text)
 from botc.BOTCUtils import BOTCUtils
 from botc.gamemodes.troublebrewing import Imp
 from botutils import bot_text
@@ -69,7 +69,9 @@ class Modkill(commands.Cog, name = game_text["misc"]["debug_cog"]):
                                 except discord.Forbidden:
                                     pass
 
-        await player.exec_real_death()
+        await player.exec_real_death(True)
+        if player.role.true_self.inventory.has_item_in_inventory(Flags.zombuul_unique_death_escape):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.zombuul_unique_death_escape)
         player.ghost_vote = 0
         if not NO_INVALIDATE:
             globvars.master_state.game.invalidated = True

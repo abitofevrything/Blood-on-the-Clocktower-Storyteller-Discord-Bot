@@ -2,7 +2,9 @@
 
 import json
 
-from botc import Character, Townsfolk
+from botc import (Character, Flags, Inventory, NonRecurringAction, StatusList,
+                  Townsfolk)
+from botutils import BotEmoji
 
 from . import character_texts
 from ._utils import BadMoonRising, BMRRole
@@ -12,8 +14,27 @@ character_text = character_texts[BMRRole.fool.value.lower()]
 from botc import emojis
 
 
-class Fool(Townsfolk, BadMoonRising, Character):
+class Fool(Townsfolk, BadMoonRising, Character, NonRecurringAction):
     """Fool: The first time you die, you don't.
+
+    ===== FOOl ===== 
+
+    true_self = fool
+    ego_self = fool
+    social_self = fool
+
+    commands:
+
+    initialize setup? -> NO
+    initialize role? -> NO
+
+    ----- First night
+    START:
+    override first night instruction? -> NO
+
+    ----- Regular night
+    START:
+    override regular night instruction? -> NO
     """
 
     def __init__(self):
@@ -35,3 +56,75 @@ class Fool(Townsfolk, BadMoonRising, Character):
 
         self._role_enum = BMRRole.fool
         self._emoji = emojis["badmoonrising"]["fool"]
+
+        self.inventory = Inventory(
+            Flags.fool_death_evasion
+        )
+
+    def create_n1_instr_str(self):
+        """Create the instruction field on the opening dm card"""
+
+        # First line is the character instruction string
+        msg = f"{self.emoji} {self.instruction}"
+        addendum = character_text["n1_addendum"]
+        
+        # Some characters have a line of addendum
+        if addendum:
+            scroll_emoji = BotEmoji.scroll
+            msg += f"\n{scroll_emoji} {addendum}"
+            
+        return msg
+
+    # The following three methods are only as the last check before death,
+    # so we can safely assume that we should remove the flag if these
+    # methods are called
+
+    def can_be_executed(self, player):
+        """Can the player be executed?
+        Default is to check whether the player has the safety_from_execution status.
+        To be overriden in child classes.
+        """
+        if not super(Fool, self).can_be_executed(player):
+            return False
+
+        if player.is_droisoned():
+            return True
+
+        if player.role.true_self.inventory.has_item_in_inventory(Flags.fool_death_evasion):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
+            return False
+
+        return True
+
+    def can_be_demon_killed(self, player):
+        """Can the player be demon killed?
+        Default is to check if the player has the safety_from_demon status.
+        To  be overriden in child classes.
+        """
+        if not super(Fool, self).can_be_demon_killed(player):
+            return False
+
+        if player.is_droisoned():
+            return True
+
+        if player.role.true_self.inventory.has_item_in_inventory(Flags.fool_death_evasion):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
+            return False
+
+        return True
+
+    def can_be_killed(self, player):
+        """Can the player be killed in any way other than execution or demon kill?
+        To be overriden by child classes.
+        """
+        if not super(Fool, self).can_be_killed(player):
+            return False
+
+        if player.is_droisoned():
+            return True
+
+        if player.role.true_self.inventory.has_item_in_inventory(Flags.fool_death_evasion):
+            player.role.true_self.inventory.remove_item_from_inventory(Flags.fool_death_evasion)
+            return False
+
+        return True

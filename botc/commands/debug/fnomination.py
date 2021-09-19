@@ -26,6 +26,7 @@ class Fnomination(commands.Cog, name = game_text["misc"]["debug_cog"]):
         pass_context = True,
         name = "fnomination",
         hidden = False,
+        aliases = ["fnom"],
         brief = game_text["doc"]["fnomination"]["brief"],
         help = game_text["doc"]["fnomination"]["help"],
         description = game_text["doc"]["fnomination"]["description"]

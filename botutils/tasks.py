@@ -44,6 +44,8 @@ async def after_lobby_timeout():
     # Only send the lobby timeout message if someone is still in the game
     if not lobby_timeout.is_being_cancelled():
         await botutils.send_lobby(lobby_timeout_str.format(botutils.make_role_ping(ALIVE_ROLE_ID)))
+    # Remove all votes
+    globvars.master_state.game_chooser.clear_votes()
     # Remove the alive role from everyone
     await botutils.remove_all_alive_roles_pregame()
     # Clear the master pregame state

@@ -5,6 +5,7 @@ from .github import Github
 from .ping import Ping
 from .playerstats import Playerstats
 from .role import Role
+from .statements import Statements
 from .streak import Streak
 from .sync import Sync
 from .top import Top
@@ -23,3 +24,4 @@ def setup(client):
     client.add_cog(Top(client))
     client.add_cog(Sync(client))
     client.add_cog(Streak(client))
+    client.add_cog(Statements(client))

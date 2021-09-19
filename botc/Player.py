@@ -1,11 +1,12 @@
 """Contains the Player class"""
 
+from botc.Phase import Phase
 import botutils
 import globvars
 from botc.status import StatusList
 
 from .abilities import ActionGrid
-from .errors import AlreadyDead
+from .errors import AlreadyAlive, AlreadyDead
 from .Notes import Notes
 from .PlayerState import PlayerState
 
@@ -33,6 +34,12 @@ class Player:
         self._reminder_tokens = []
         self._persistent_reminder_tokens = []
 
+        self._death_phase = None
+        self._apparent_death_phase = None
+
+        # For display state purposes, players are "revived" when the game starts (phase 0)
+        self._revive_phase = 0
+    
         # Notes will be initialized upon first access, as player list may not be complete when this Player object is created
         self._notes = None
 
@@ -63,26 +70,56 @@ class Player:
         self._role_obj = new_role
         await globvars.master_state.game.check_winning_conditions()
 
-    async def exec_real_death(self):
+    async def revive(self, force = False):
+        """Turn the player's real state into the alive state"""
+        import globvars
+        if self.is_alive():
+            raise AlreadyAlive("Player is already alive, you are trying to revive them again.")
+        self._state_obj = PlayerState.alive
+        self._apparent_state_obj = PlayerState.alive
+        self._death_phase = None
+        self._apparent_death_phase = None
+        self._revive_phase = globvars.master_state.game._chrono.phase_id
+        self.role.__init__()
+        # Roles that modify setup won't actually change the current setup,
+        # but roles that set some flags (i.e grandmother / lunatic) will
+        # need to be reinitialised
+        await self.role.exec_init_role(globvars.master_state.game.setup)
+        from botc import Phase
+        if not globvars.master_state.game._chrono.phase == Phase.night  or force:
+            await botutils.add_alive_role(self.user)
+            await botutils.remove_dead_role(self.user)
+        elif self not in globvars.master_state.game.night_revives:
+            globvars.master_state.game.night_revives.append(self)
+        if self in globvars.master_state.game.night_deaths:
+            globvars.master_state.game.night_deaths.remove(self)
+        await globvars.master_state.game.check_winning_conditions()
+    
+    async def exec_real_death(self, force = False):
         """Turn the player's real state into the death state"""
         import globvars
         if self.is_dead():
             raise AlreadyDead("Player is already dead, you are trying to kill them again.")
         self._state_obj = PlayerState.dead
+        self._death_phase = globvars.master_state.game._chrono.phase_id
+        if self._apparent_death_phase is None:
+            self._apparent_death_phase = globvars.master_state.game._chrono.phase_id
         self._apparent_state_obj = PlayerState.dead
         from botc import Phase
-        if not globvars.master_state.game._chrono.phase == Phase.night:
+        if not (globvars.master_state.game._chrono.phase == Phase.night or globvars.master_state.game._chrono.phase == Phase.dawn) or force:
             await botutils.add_dead_role(self.user)
             await botutils.remove_alive_role(self.user)
         elif self not in globvars.master_state.game.night_deaths:
             globvars.master_state.game.night_deaths.append(self)
+        if self in globvars.master_state.game.night_revives:
+            globvars.master_state.game.night_revives.remove(self)
         for player in globvars.master_state.game.sitting_order:
             for status in player.status_effects:
                 if status.source_player == player:
                     status.manually_disable()
         await globvars.master_state.game.check_winning_conditions()
 
-    async def exec_apparent_death(self):
+    async def exec_apparent_death(self, force = False):
         """Turn the player's apparent state into the death state, but the real state
         remains alive
         """
@@ -91,12 +128,15 @@ class Player:
             raise AlreadyDead("Player is already 'apparently' dead, you are trying to " \
                 "kill them again.")
         self._apparent_state_obj = PlayerState.dead
+        self._apparent_death_phase = globvars.master_state.game._chrono.phase_id
         from botc import Phase
-        if not globvars.master_state.game._chrono.phase == Phase.night:
+        if not (globvars.master_state.game._chrono.phase == Phase.night or globvars.master_state.game._chrono.phase == Phase.dawn) or force:
             await botutils.add_dead_role(self.user)
             await botutils.remove_alive_role(self.user)
         elif self not in globvars.master_state.game.night_deaths:
             globvars.master_state.game.night_deaths.append(self)
+        if self in globvars.master_state.game.night_revives:
+            globvars.master_state.game.night_revives.remove(self)
 
     def has_status_effect(self, status_effect):
         """Check if a player has a status effect"""
@@ -127,6 +167,15 @@ class Player:
         """Add a status effect"""
         self._status_effects.append(new_status_effect)
 
+    def remove_status_effect(self, status_effect, source_player=None):
+        """Remove a status effect"""
+        effect_list = self.status_effects.copy()
+        for effect in effect_list:
+            if effect.effect == status_effect:
+                if source_player and not effect.source_player == source_player:
+                    continue
+                self.status_effects.remove(effect)
+    
     def is_apparently_alive(self):
         return self.apparent_state == PlayerState.alive
 
@@ -208,11 +257,114 @@ class Player:
         return self._status_effects
 
     @property
+    def neighbours(self):
+        import globvars
+        self_idx = globvars.master_state.game.player_obj_list.index(self)
+        list_len = len(globvars.master_state.game.player_obj_list)
+        player_list = globvars.master_state.game.player_obj_list
+        return [player_list[self_idx + 1 % list_len], player_list[self_idx - 1 % list_len]]
+
+    @property
+    def alive_neighbours(self):
+        import globvars
+        self_idx = globvars.master_state.game.player_obj_list.index(self)
+        list_len = len(globvars.master_state.game.player_obj_list)
+        player_list = globvars.master_state.game.player_obj_list
+        neighbours = list()
+        # left neighbour
+        i = self_idx - 1
+        l_neighbour_idx = 0
+        while i % list_len != self_idx:
+            if player_list[i % list_len].is_alive():
+                neighbours.append(player_list[i % list_len])
+                l_neighbour_idx = i % list_len
+                break
+            i -= 1
+
+        # right neighbour
+        i = self_idx + 1
+        while i % list_len != l_neighbour_idx:
+            if player_list[i % list_len].is_alive():
+                neighbours.append(player_list[i % list_len])
+                l_neighbour_idx = i % list_len
+                break
+            i += 1
+        return neighbours
+
+    @property
+    def apparently_alive_neighbours(self):
+        import globvars
+        self_idx = globvars.master_state.game.player_obj_list.index(self)
+        list_len = len(globvars.master_state.game.player_obj_list)
+        player_list = globvars.master_state.game.player_obj_list
+        neighbours = list()
+        # left neighbour
+        i = self_idx - 1
+        l_neighbour_idx = 0
+        while i % list_len != self_idx:
+            if player_list[i % list_len].is_apparently_alive():
+                neighbours.append(player_list[i % list_len])
+                l_neighbour_idx = i % list_len
+                break
+            i -= 1
+
+        # right neighbour
+        i = self_idx + 1
+        while i % list_len != l_neighbour_idx:
+            if player_list[i % list_len].is_apparently_alive():
+                neighbours.append(player_list[i % list_len])
+                l_neighbour_idx = i % list_len
+                break
+            i += 1
+        return neighbours
+
+    @property
+    def death_phase_id(self):
+        return self._death_phase
+
+    @property
+    def apparent_death_phase_id(self):
+        return self._apparent_death_phase
+
+    @property
     def notes(self):
         if self._notes is None:
             self._notes = Notes(globvars.master_state.game.sitting_order, self)
         return self._notes
 
+    @property
+    def display_state(self):
+        """The player state to display to other players (synced with night/dawn deaths/revives)
+        """
+        # If it is currently day, return the apparent state obj
+        if globvars.master_state.game._chrono.phase == Phase.day:
+            return self._apparent_state_obj
+
+        if self._apparent_state_obj == PlayerState.fleaved:
+            # If player is fleaved, display them as such immediately
+            return PlayerState.fleaved
+        elif self._apparent_state_obj == PlayerState.dead:
+            # If player is dead:
+            # - If they died before the current night/dawn, return the dead state
+            if self._apparent_death_phase <= globvars.master_state.game._chrono.phase_id - (globvars.master_state.game._chrono.phase_id % 3): # At night, check if died at least 1 phase before (previous day). At dawn, check if died at least 2 phases before (previous day)
+                return PlayerState.dead
+            # - Else return the alive state (died this night or dawn, appears alive until daybreak)
+            return PlayerState.alive
+        elif self._apparent_state_obj == PlayerState.alive:
+            # If player is alive:
+            # - If they were revived before the current night/dawn (or have not been revived), return the alive state
+            if self._revive_phase <= globvars.master_state.game._chrono.phase_id - (globvars.master_state.game._chrono.phase_id % 3): # At night, check if revived at least 1 phase before (previous day). At dawn, check if revived at least 2 phases before (previous day)
+                return PlayerState.alive
+            # - Else return the dead state (revived this night or dawn, appears dead until daybreak)
+            return PlayerState.dead
+
+        assert 0, f"Invalid playerstate for player {self.__repr__()}"
+                
+    def is_display_alive(self):
+        return self.display_state == PlayerState.alive
+
+    def is_display_dead(self):
+        return self.display_state == PlayerState.dead 
 
     def __repr__(self):
         return f"{str(self.user.display_name)} ({self.user.id}) is {str(self.role)}"

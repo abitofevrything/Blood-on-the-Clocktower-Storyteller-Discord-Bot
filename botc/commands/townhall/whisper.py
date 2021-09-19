@@ -8,9 +8,10 @@ from discord.ext import commands
 
 import botutils
 import globvars
-from botc import (BOTCUtils, NotAPlayer, NotDay, NotDMChannel, PlayerConverter,
-                  WhisperConverter, WhisperTooLong, check_if_dm,
-                  check_if_is_day, check_if_is_player, game_text)
+from botc import (
+    BOTCUtils, NotAPlayer, NotDay, NotDMChannel, PlayerConverter,
+    PlayerWhisper, WhisperConverter, WhisperTooLong, check_if_dm,
+    check_if_is_day, check_if_is_player, game_text)
 from botutils import bot_text
 from config import WHISPER_COOLDOWN, WHISPER_SHOW_TIME
 from library import display_time
@@ -85,6 +86,7 @@ class Whisper(commands.Cog, name = game_text["misc"]["townhall_cog"]):
             msg = recipient_blocked.format(botutils.BotEmoji.warning_sign)
             await ctx.send(msg)
         else:
+            globvars.master_state.game.register_whisper(PlayerWhisper(player, recipient, content, globvars.master_state.game._chrono.phase_id))
             msg = to_str.format(
                 botutils.BotEmoji.whisper,
                 recipient.game_nametag,

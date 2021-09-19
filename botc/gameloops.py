@@ -46,6 +46,7 @@ day_over_soon = game_text["gameplay"]["day_over_soon"]
 no_execution = game_text["gameplay"]["no_execution"]
 execution = game_text["gameplay"]["execution"]
 copyrights_str = game_text["misc"]["copyrights"]
+execution_no_death = game_text["gameplay"]["execution_no_death"]
 
 error_str = bot_text["system"]["error"]
 
@@ -362,7 +363,7 @@ async def dawn_loop(game):
     await game.make_dawn()
     # Query for dawn actions
     for player in game.sitting_order:
-        await player.role.ego_self.send_regular_dawn_start_dm(player)
+        await player.role.ego_self.send_regular_dawn_start_dm(player.user)
     # Base dawn length
     for _ in range(BASE_DAWN):
         if botc.switches.master_proceed_to_day:
@@ -459,16 +460,23 @@ async def day_loop(game):
                 if game.chopping_block:
                     player_about_to_die = game.chopping_block.player_about_to_die
                     if player_about_to_die:
+                        survives = ""
+                        if player_about_to_die.role.true_self.can_be_executed(player_about_to_die):
+                            await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
+                            msg = botutils.BotEmoji.guillotine + " " + execution.format(
+                                game.chopping_block.player_about_to_die.game_nametag, 
+                                game.chopping_block.nb_votes
+                            )
+                        else:
+                            survives = ", but does not die"
+                            msg = botutils.BotEmoji.guillotine + " " + execution_no_death.format(
+                                game.chopping_block.player_about_to_die.game_nametag, 
+                                game.chopping_block.nb_votes
+                            )
 
                         # Add information to replay
                         game.replay += f"- {player_about_to_die.user.name} "\
-                                        f"({player_about_to_die.role.true_self}) is executed\n"
-
-                        await player_about_to_die.role.true_self.on_being_executed(player_about_to_die)
-                        msg = botutils.BotEmoji.guillotine + " " + execution.format(
-                            game.chopping_block.player_about_to_die.game_nametag,
-                            game.chopping_block.nb_votes
-                        )
+                                        f"({player_about_to_die.role.true_self}) is executed{survives}\n"
                     else:
                         msg = botutils.BotEmoji.clocktower + " " + no_execution
                     await botutils.send_lobby(msg)
@@ -581,6 +589,10 @@ async def master_game_loop(game_obj):
         for player in game_obj.sitting_order:
             for status in player.status_effects:
                 status.wear_off()
+
+        # Check winning conditions after day anyways (for generic win checks)
+        await game_obj.check_winning_conditions()
+    
 
 @master_game_loop.after_loop
 async def after_master_game_loop():

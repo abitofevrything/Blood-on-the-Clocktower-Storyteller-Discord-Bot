@@ -9,21 +9,25 @@ import toml
 import botutils
 import globvars
 from botc import game_text
+from botutils import BotEmoji
 from config import (DEMON_CARD_COLOR, DISABLE_DMS, MINION_CARD_COLOR,
                     OUTSIDER_CARD_COLOR, PREFIX, TOWNSFOLK_CARD_COLOR)
 
 from .abilities import Action, ActionTypes
-from .BOTCUtils import GameLogic, LorePicker
+from .BOTCUtils import BOTCUtils, GameLogic, LorePicker, validate_statement
 from .Category import Category
 from .errors import AlreadyDead
 from .flag_inventory import Flags, Inventory
+from .status import StatusList
 from .Team import Team
 
 copyrights_str = game_text["misc"]["copyrights"]
 role_dm = game_text["gameplay"]["role_dm"]
 welcome_dm = game_text["gameplay"]["welcome_dm"]
 blocked = game_text["gameplay"]["blocked"]
+pass_action = game_text["gameplay"]["pass"]
 
+x_emoji = BotEmoji.x_emoji
 
 class Character:
     """Character class
@@ -188,11 +192,8 @@ class Character:
 
     # -------------------- Character Mechanics --------------------
 
-    async def send_role_card_embed(self, ctx):
+    def create_role_card_embed(self):
         """Create the role card embed object and return it"""
-
-        if DISABLE_DMS:
-            return
 
         def make_embed(emote,
                        role_name,
@@ -239,7 +240,8 @@ class Character:
                            self.examples,
                            pic_link,
                            wiki_link)
-        await ctx.send(embed=embed)
+        
+        return embed
 
     def exec_init_setup(self, townsfolk_obj_list, outsider_obj_list, minion_obj_list, demon_obj_list):
         """Allow for roles that change the setup to modify the role list
@@ -265,6 +267,60 @@ class Character:
         To be overriden in child classes
         """
         return True
+
+    def can_be_executed(self, player):
+        """Can the player be executed?
+        Default is to check whether the player has the safety_from_execution status or has an active tea lady as a neighbour.
+        To be overriden in child classes. Should only be called when no other means of death avoidance is possible.
+        """
+        from .gamemodes.badmoonrising._utils import BMRRole
+
+        neighbours = player.alive_neighbours
+        neighbour_roles = [p.role.true_self.name for p in neighbours]
+        if BMRRole.tealady.value in neighbour_roles:
+            tealady_player = neighbours[0] if neighbours[0].role.true_self.name == BMRRole.tealady.value else neighbours[1]
+            if not tealady_player.is_droisoned():
+                tealady_neighours = tealady_player.alive_neighbours
+                if not Team.evil in [p.role.social_self.team for p in tealady_neighours]:
+                    return False
+
+        return not player.has_status_effect(StatusList.safety_from_execution)
+
+    def can_be_demon_killed(self, player):
+        """Can the player be demon killed?
+        Default is to check if the player has the safety_from_demon status or has an active tea lady as a neighbour.
+        To be overriden in child classes. Should only be called when no other means of death avoidance is possible.
+        """
+        from .gamemodes.badmoonrising._utils import BMRRole
+
+        neighbours = player.alive_neighbours
+        neighbour_roles = [p.role.true_self.name for p in neighbours]
+        if BMRRole.tealady.value in neighbour_roles:
+            tealady_player = neighbours[0] if neighbours[0].role.true_self.name == BMRRole.tealady.value else neighbours[1]
+            if not tealady_player.is_droisoned():
+                tealady_neighours = tealady_player.alive_neighbours
+                if not Team.evil in [p.role.social_self.team for p in tealady_neighours]:
+                    return False
+
+        return not player.has_status_effect(StatusList.safety_from_demon)
+
+    def can_be_killed(self, player):
+        """Can the player be killed in any way other than execution or demon kill?
+        Default is to check if the player has the safety_from_death status effect or has an active tea lady as a neighbour.
+        To be overriden by child classes. Should only be called when no other means of death avoidance is possible.
+        """
+        from .gamemodes.badmoonrising._utils import BMRRole
+
+        neighbours = player.alive_neighbours
+        neighbour_roles = [p.role.true_self.name for p in neighbours]
+        if BMRRole.tealady.value in neighbour_roles:
+            tealady_player = neighbours[0] if neighbours[0].role.true_self.name == BMRRole.tealady.value else neighbours[1]
+            if not tealady_player.is_droisoned():
+                tealady_neighours = tealady_player.alive_neighbours
+                if not Team.evil in [p.role.social_self.team for p in tealady_neighours]:
+                    return False
+
+        return not player.has_status_effect(StatusList.safety_from_death)
 
     # -------------------- Character DM's --------------------
 
@@ -302,7 +358,12 @@ class Character:
 
         # If we have an evil team member, send evil list (if 7p or more)
         if globvars.master_state.game.nb_players >= 7:
-            if self.is_evil():
+            player = BOTCUtils.get_player_from_id(recipient.id)
+            from .gamemodes.badmoonrising._utils import BMRRole
+            if player.role.true_self.name == BMRRole.lunatic.value:
+                msg = globvars.master_state.game.setup.create_fake_evil_team_string(player)
+                embed.add_field(name = "**「 Evil Team 」**", value = msg, inline = True)
+            elif player.role.true_self._category == Category.demon or player.role.true_self._category == Category.minion:
                 msg = globvars.master_state.game.setup.create_evil_team_string()
                 embed.add_field(name = "**「 Evil Team 」**", value = msg, inline = True)
 
@@ -362,6 +423,13 @@ class Character:
         """
         return
 
+    def check_winning_conditions(self, player):
+        """Performed at each game win check. Override by child classes.
+        @return A boolean indicating if the game should continue with further win checks
+        Default is to return True
+        """
+        return True
+    
     # -------------------- Event "Listeners" --------------------
 
     async def on_being_nominated(self, nominator_player, nominated_player):
@@ -389,13 +457,31 @@ class Character:
         Default behaviour is to make the player die (real death state)
         Override by child classes and / or other classes inherited by child classes.
         """
+        from botc.gamemodes.badmoonrising._utils import BMRRole
         try:
             await killed_player.exec_real_death()
+            # check if the player has a grandmother
+            # if so, activate the grandmother
+            for player in globvars.master_state.game.sitting_order:
+                if player.role.true_self.name == BMRRole.grandmother.value:
+                    if player.role.true_self._grandchild == killed_player:
+                        success = "unsuccessfully "
+                        if not player.is_droisoned():
+                            success = ""
+                            await player.exec_real_death()
+                        globvars.master_state.game.replay += f"- {player.user.name} (grandmother) {success}dies because their grandchild ({killed_player.user.name}) has died\n"
         except AlreadyDead:
             pass
         else:
             globvars.master_state.game.night_deaths.append(killed_player)
 
+    async def on_being_targeted(self, targeted_player, action):
+        """Function that runs when the player is the target of another player's action
+        Default behaviour is to do nothing.
+        Override by child classes and / or other classes inherited by child classes
+        """
+        pass
+    
     async def on_claim(self, player, claimed_category, claimed_role, self_claim):
         """Function that runs after a player claims a role.
         Default behaviour is to do nothing.
@@ -412,6 +498,13 @@ class Character:
         """
         return
 
+    async def process_dawn_ability(self, player):
+        """Process sawn ability for a character.
+        This is the sole function called by the dawn interaction processing function.
+        Default is to do nothing. Override by child classes
+        """
+        return
+    
     async def exec_serve(self, player, targets):
         """Serve command. Override by child classes."""
         raise NotImplementedError
@@ -492,4 +585,111 @@ class Character:
 
     async def register_protect(self, player, targets):
         """Protect command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_assassinate(self, player, targets):
+        """Assassinate command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_assassinate(self, player, targets):
+        """Assassinate command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_see(self, player, targets):
+        """See command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_see(self, player, targets):
+        """See command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_exorcise(self, player, targets):
+        """Exorcise command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_exorcise(self, player, targets):
+        """Exorcise command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_guess(self, player, targets):
+        """Guess command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_guess(self, player, targets):
+        """Guess command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_execute(self, player, targets):
+        """Execute command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_execute(self, player, targets):
+        """Execute command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_gossip(self, player, statement):
+        """Gossip command. Override by child classes."""
+        
+        from .gamemodes.badmoonrising._utils import register_gossip
+
+        # Validate the statement to still get the error messages
+        validate_statement(player, statement)
+        register_gossip(player)
+
+
+        from .gamemodes.badmoonrising import character_texts
+        gossip_feedback = character_texts["gossip"]["feedback"]
+        await botutils.send_lobby(gossip_feedback.format(statement))
+
+        globvars.master_state.game.replay += f"- {player.user.name} ({player.role.name}) states that {statement}\n"
+
+    async def exec_gossip(self, player, statement_truth):
+        """Gossip command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_visit(self, player, targets):
+        """Visit command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_visit(self, player, target):
+        """Visit command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_host(self, player, targets):
+        """Host command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_host(self, player, targets):
+        """Host command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_examine(self, player, targets):
+        """Examine command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_examine(self, player, targets):
+        """Examine command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_choose(self, player, targets):
+        """Choose command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_choose(self, player, target):
+        """Choose command. Override by child classes"""
+        raise NotImplementedError
+
+    async def register_pass(self, player, targets):
+        """Pass command. Override by child classes.
+        The pass command indicates this player has decided to not act tonight
+        """
+        player.action_grid.register_an_action(Action(player, targets, ActionTypes.ability_pass, globvars.master_state.game._chrono.phase_id), globvars.master_state.game._chrono.phase_id)
+        await player.user.send(pass_action)
+
+    async def register_curse(self, player, targets):
+        """Curse command. Override by child classes"""
+        raise NotImplementedError
+
+    async def exec_curse(self, player, targets):
+        """Curse command. Override by child classes"""
         raise NotImplementedError

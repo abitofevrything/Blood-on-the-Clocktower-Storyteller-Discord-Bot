@@ -27,9 +27,9 @@ class RevealRole(commands.Cog, name = game_text["misc"]["debug_cog"]):
         pass_context = True,
         name = "revealrole",
         aliases = ["rr", "revealroles"],
-        brief = game_text["doc"]["modkill"]["brief"],
-        help = game_text["doc"]["modkill"]["help"],
-        description = game_text["doc"]["modkill"]["description"]
+        brief = game_text["doc"]["revealroles"]["brief"],
+        help = game_text["doc"]["revealroles"]["help"],
+        description = game_text["doc"]["revealroles"]["description"]
     )
     async def reveal_roles(self, ctx, target: str):
         if target == 'all':

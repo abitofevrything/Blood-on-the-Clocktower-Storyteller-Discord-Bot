@@ -20,6 +20,7 @@ from config import (DAWN_CARD_COLOR, DAY_CARD_COLOR, DEBUG, DEMON_CARD_COLOR,
 from library import fancy
 from models import GameMeta
 
+from .abilities import _GrowingList
 from .BOTCUtils import BOTCUtils
 from .Category import Category
 from .chrono import GameChrono
@@ -85,11 +86,16 @@ class Setup:
         self.townsfolks = []
         self.outsiders = []
         self.role_dict = {}  # {"recluse" : player_obj1, "undertaker" : player_obj2}
+        self.gamemode = None
+        self.game = None
 
-    def create(self, player_ob_list):
+    def create(self, player_ob_list, gamemode, game):
+
+        self.gamemode = gamemode
+        self.game = game
 
         for player in player_ob_list:
-            self.role_dict.update({player.role.name.lower(): player})
+            self.role_dict.update({player.role.name: player})
             if player.role.category == Category.demon:
                 self.demon.append(player)
             elif player.role.category == Category.minion:
@@ -119,9 +125,48 @@ class Setup:
         msg += "```"
         return msg
 
+    def create_fake_evil_team_string(self, fake_demon):
+        """
+        :demonhead: Your Evil team consists of:
+        ```basic
+        Oliver (460105234748801024) (demon)
+        Johnny (159985870458322944) (minion)
+        Michel (614109280508968980) (minion)
+        ```
+        """
+
+        guide = RoleGuide(len(self.game._member_obj_list))
+        players = list(self.game.player_obj_list)
+
+        players.remove(fake_demon)
+
+        random.shuffle(players)
+
+        fake_demons = [fake_demon]
+        for _ in range(0, guide.nb_demons - 1):
+            fake_demons.append(players.pop())
+
+        fake_minions = list()
+        for _ in range(0, guide.nb_minions):
+            fake_minions.append(players.pop())
+
+        msg = Setup.DEMON_HEAD_EMOJI + " " + evilteammates + "```basic\n"
+        for demon in fake_demons:
+            msg += f"{demon.user.display_name} ({demon.user.id}) (demon)"
+            msg += "\n"
+        for minion in fake_minions:
+            msg += f"{minion.user.display_name} ({minion.user.id}) (minion)"
+            msg += "\n"
+        msg += "```"
+        return msg
+
+
     def clear(self):
 
         self.__init__()
+
+    def __str__(self):
+        return f"Game setup: townsfolk {self.townsfolks}, outsiders {self.outsiders}, minions {self.minions}, demons {self.demon}"
 
 
 class GameLog:
@@ -178,10 +223,10 @@ class GameLog:
 class Game(GameMeta):
     """BoTC Game class"""
 
-    MIN_PLAYERS = 5
-    MAX_PLAYERS = 15
-
     def __init__(self, gamemode = Gamemode.trouble_brewing):
+
+        self.MIN_PLAYERS = 5 if gamemode == Gamemode.trouble_brewing else 7
+        self.MAX_PLAYERS = 15
 
         self._gamemode = gamemode  # default gamemode will always be trouble brewing
 
@@ -193,6 +238,8 @@ class Game(GameMeta):
         self.gameloop = master_game_loop
         self.winners = None  # botc.Team object
         self.invalidated = False  # Don't count in win rates due to modkill/frole/player leaving guild
+        self._whispers = _GrowingList()
+
         self.replay = "```asciidoc\n"
 
         if any(x for x in DEBUG.values()) and not NO_INVALIDATE:
@@ -209,6 +256,7 @@ class Game(GameMeta):
 
         # Temporary night data
         self.night_deaths = []  # List of player objects
+        self.night_revives = [] # List of player objects
         self.night_start_time = None  # datetime()
 
         # Temporary dawn data
@@ -249,6 +297,10 @@ class Game(GameMeta):
     def setup(self):
         return self._setup
 
+    @property
+    def whispers(self):
+        return self._whispers
+
     def is_idle(self):
         return self.current_phase == Phase.idle
 
@@ -273,6 +325,7 @@ class Game(GameMeta):
         """Initialize temporary night data. To be called at the start of the night"""
         # Temporary night data
         self.night_deaths = []  # List of player objects
+        self.night_revives = [] # List of player objects
         self.night_start_time = None  # datetime()
 
     def init_temporary_dawn_data(self):
@@ -294,9 +347,9 @@ class Game(GameMeta):
 
         msg = "\n\n**Players**: ```css\n"
         for player in self.sitting_order:
-            if player.is_alive():
+            if player.is_display_alive():
                 line = f"{player.user.display_name} ({player.user.id}) [alive]\n"
-            elif player.is_dead():
+            elif player.is_display_dead():
                 if player.has_vote():
                     line = f"{player.user.display_name} ({player.user.id}) [dead] {botutils.BotEmoji.skull} {botutils.BotEmoji.vote}\n"
                 else:
@@ -656,14 +709,14 @@ class Game(GameMeta):
         self.generate_frozen_sitting()
         # Initialize the setup object
         self.setup.clear()
-        self.setup.create(self.player_obj_list)
-        # Initialize each role to set flags as needed, etc.
-        for player in self._player_obj_list:
-            player.role.exec_init_role(self.setup)
+        self.setup.create(self.player_obj_list, self.gamemode, self)
         # Send the lobby welcome message
         await self.send_lobby_welcome_message()
         # Lock the lobby channel
         await botutils.lock_lobby()
+        # Initialize each role to set flags as needed, etc.
+        for player in self._player_obj_list:
+            player.role.exec_init_role(self.setup)
         # Send the opening dm to all players
         for player in self._player_obj_list:
             await player.role.ego_self.send_opening_dm_embed(player.user)
@@ -696,6 +749,10 @@ class Game(GameMeta):
         # Start the game loop
         self.gameloop.start(self)
 
+        import botc.gamemodes.badmoonrising._utils as _utils
+
+        _utils.player_gossips = {}
+        
         self.working = False
 
     async def compute_dawn_ability_interactions(self):
@@ -715,16 +772,53 @@ class Game(GameMeta):
 
             ]
 
-            for character_enum in order:
-                list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
-                for character in list_of_characters:
-                    await character.role.ego_self.process_dawn_ability(character)
+        elif self.gamemode == Gamemode.bad_moon_rising:
+            
+            from botc.gamemodes.badmoonrising._utils import BMRRole
 
-        elif self.gamemode == Gamemode.trouble_brewing:
-            pass
+            order = [
+
+                BMRRole.goon,
+                BMRRole.moonchild,
+                BMRRole.tinker
+
+            ]
 
         elif self.gamemode == Gamemode.sects_and_violets:
-            pass
+
+            from botc.gamemodes.sectsandviolets._utils import SnVRole
+
+            order = [
+
+            ]
+
+        else: 
+            raise GameError("Gamemode is not one of available BoTC editions.")
+
+
+        for character_enum in order:
+            list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
+            for character in list_of_characters:
+                
+                if character.has_status_effect(StatusList.no_ability):
+                    continue
+
+                from botc import Character
+
+                action = character.action_grid.retrieve_an_action(self._chrono.phase_id)
+                if action:
+                    for target in action.target_player:
+                        if isinstance(target, Player):
+                            await target.role.true_self.on_being_targeted(target, action)
+                        elif isinstance(target, Character):
+                            target_players = BOTCUtils.get_players_from_role_name(target._role_enum)
+                            for player in target_players:
+                                await player.role.true_self.on_being_targeted(player, action)
+                        elif isinstance(target, tuple):
+                            # Gambler
+                            await target[0].role.true_self.on_being_targeted(target[0], action)
+
+                await character.role.ego_self.process_dawn_ability(character)
 
     async def compute_night_ability_interactions(self):
         """
@@ -812,7 +906,7 @@ class Game(GameMeta):
             9. pukka
             10. shabaloth
             11. po
-            12. assasin
+            12. assassin
             13. godfather
             14. gossip
             15. professor
@@ -836,6 +930,7 @@ class Game(GameMeta):
             ]
 
             night_regular_order = [
+                BMRRole.minstrel,
                 BMRRole.sailor,
                 BMRRole.courtier,
                 BMRRole.innkeeper,
@@ -930,11 +1025,31 @@ class Game(GameMeta):
         else:
             raise GameError("Gamemode is not one of available BoTC editions.")
 
+        from .Character import Character
+
         # Night 1 order
         if self._chrono.is_night_1():
             for character_enum in night_1_order:
                 list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
                 for character in list_of_characters:
+
+                    if character.has_status_effect(StatusList.no_ability):
+                        continue
+
+                    action = character.action_grid.retrieve_an_action(self._chrono.phase_id)
+                    if action:
+                        for target in action.target_player:
+                            if isinstance(target, Player):
+                                await target.role.true_self.on_being_targeted(target, action)
+                            elif isinstance(target, Character):
+                                target_players = BOTCUtils.get_players_from_role_name(target._role_enum)
+                                for player in target_players:
+                                    await player.role.true_self.on_being_targeted(player, action)
+                            elif isinstance(target, tuple):
+                                # Gambler
+                                await target[0].role.true_self.on_being_targeted(target[0], action)
+
+
                     await character.role.ego_self.process_night_ability(character)
 
         # Regular night order
@@ -942,6 +1057,23 @@ class Game(GameMeta):
             for character_enum in night_regular_order:
                 list_of_characters = BOTCUtils.get_players_from_role_name(character_enum)
                 for character in list_of_characters:
+
+                    if character.has_status_effect(StatusList.no_ability):
+                        continue
+
+                    action = character.action_grid.retrieve_an_action(self._chrono.phase_id)
+                    if action:
+                        for target in action.target_player:
+                            if isinstance(target, Player):
+                                await target.role.true_self.on_being_targeted(target, action)
+                            elif isinstance(target, Character):
+                                target_players = BOTCUtils.get_players_from_role_name(target._role_enum)
+                                for player in target_players:
+                                    await player.role.true_self.on_being_targeted(player, action)
+                            elif isinstance(target, tuple):
+                                # Gambler
+                                await target[0].role.true_self.on_being_targeted(target[0], action)
+
                     await character.role.ego_self.process_night_ability(character)
 
     def has_received_all_expected_dawn_actions(self):
@@ -984,6 +1116,13 @@ class Game(GameMeta):
         """Check if the game has reached the winning conditons. Promote new demons or
         end the game is necessary.
         """
+
+        responses = list()
+        for player in self._player_obj_list:
+            responses.append(player.role.true_self.check_winning_conditions(player))
+
+        if False in responses:
+            return
 
         # Less than or equal to 2 alive players. Winning condition is definitely triggered.
         if self.nb_alive_players <= 2:
@@ -1075,6 +1214,7 @@ class Game(GameMeta):
         globvars.master_state.game = None
         # Update the global state
         botutils.update_state_machine()
+        botutils.tasks.update_status = True
 
         self.working = False
 
@@ -1171,14 +1311,45 @@ class Game(GameMeta):
         # Not night 1 end, we look at the death list
         else:
 
+            night_deaths = list(set(self.night_deaths))
+            night_deaths = filter(lambda player: player.is_apparently_dead(), night_deaths)
+            night_deaths_names = [p.game_nametag for p in night_deaths]
+            if len(night_deaths_names) == 1:
+                night_deaths_string = night_deaths_names[0]
+            elif len(night_deaths_names) != 0:
+                night_deaths_string = ", ".join(night_deaths_names[:-1]) + ", and " + night_deaths_names[-1]
+
+            night_revives = list(set(self.night_revives))
+            night_revives = filter(lambda player: player.is_apparently_alive(), night_revives)
+            night_revives_names = [p.game_nametag for p in night_revives]
+            if len(night_revives_names) == 1:
+                night_revives_string = night_revives_names[0]
+            elif len(night_revives_names) != 0:
+                night_revives_string = ", ".join(night_revives_names[:-1]) + ", and " + night_revives_names[-1]
+
+            # Deaths Revives Message
+            # 0      0       zero
+            # 1      0       singular
+            # 2+     0       plural
+            # 0      1       no_death_single_revive
+            # 1      1       one_death_single_revive
+            # 2+     1       multiple_death_single_revive
+            # 0      2+      no_death_multiple_revive
+            # 1      2+      one_death_multiple_revive
+            # 2+     2+      multiple_death_multiple_revive
+
             for player in self.night_deaths:
                 await botutils.add_dead_role(player.user)
                 await botutils.remove_alive_role(player.user)
 
+            for player in self.night_revives:
+                await botutils.add_alive_role(player.user)
+                await botutils.remove_dead_role(player.user)
+
             night_deaths_names = [player.game_nametag for player in self.night_deaths]
             night_deaths_names = list(set(night_deaths_names))
 
-            if len(night_deaths_names) == 0:
+            if len(night_deaths_names) == 0 and len(night_revives_names) == 0:
                 death_messages = game_text["lore"]["night_death"]["zero"]["outputs"]
                 death_weights = game_text["lore"]["night_death"]["zero"]["weights"]
                 death_msg = random.choices(
@@ -1186,8 +1357,7 @@ class Game(GameMeta):
                       weights = death_weights
                 )
                 final_death_message = death_msg[0]
-
-            elif len(night_deaths_names) == 1:
+            elif len(night_deaths_names) == 1 and len(night_revives_names) == 0:
                 death_messages = game_text["lore"]["night_death"]["singular"]["outputs"]
                 death_weights = game_text["lore"]["night_death"]["singular"]["weights"]
                 death_msg = random.choices(
@@ -1196,11 +1366,10 @@ class Game(GameMeta):
                 )
                 final_death_message = death_msg[0]
                 final_death_message = final_death_message.format(
-                   botutils.BotEmoji.murder,
-                   night_deaths_names[0]
+                    botutils.BotEmoji.murder,
+                    night_deaths_string
                 )
-
-            else:
+            elif len(night_revives_names) == 0:
                 death_messages = game_text["lore"]["night_death"]["plural"]["outputs"]
                 death_weights = game_text["lore"]["night_death"]["plural"]["weights"]
                 death_msg = random.choices(
@@ -1209,9 +1378,93 @@ class Game(GameMeta):
                 )
                 final_death_message = death_msg[0]
                 final_death_message = final_death_message.format(
-                   botutils.BotEmoji.murder,
-                   ", ".join(night_deaths_names)
+                    botutils.BotEmoji.murder,
+                    night_deaths_string
                 )
+            elif len(night_deaths_names) == 0 and len(night_revives_names) == 1:
+                death_messages = game_text["lore"]["night_death"]["no_death_single_revive"]["outputs"]
+                death_weights = game_text["lore"]["night_death"]["no_death_single_revive"]["weights"]
+                death_msg = random.choices(
+                      death_messages,
+                      weights = death_weights
+                )
+                final_death_message = death_msg[0]
+                final_death_message = final_death_message.format(
+                    botutils.BotEmoji.revive,
+                    night_revives_string
+                )
+            elif len(night_deaths_names) == 1 and len(night_revives_names) == 1:
+                death_messages = game_text["lore"]["night_death"]["one_death_single_revive"]["outputs"]
+                death_weights = game_text["lore"]["night_death"]["one_death_single_revive"]["weights"]
+                death_msg = random.choices(
+                      death_messages,
+                      weights = death_weights
+                )
+                final_death_message = death_msg[0]
+                final_death_message = final_death_message.format(
+                    botutils.BotEmoji.murder,
+                    night_deaths_names[0],
+                    botutils.BotEmoji.revive,
+                    night_revives_string
+                )
+            elif len(night_revives_names) == 1:
+                death_messages = game_text["lore"]["night_death"]["multiple_death_single_revive"]["outputs"]
+                death_weights = game_text["lore"]["night_death"]["multiple_death_single_revive"]["weights"]
+                death_msg = random.choices(
+                      death_messages,
+                      weights = death_weights
+                )
+                final_death_message = death_msg[0]
+                final_death_message = final_death_message.format(
+                    botutils.BotEmoji.murder,
+                    night_deaths_string,
+                    botutils.BotEmoji.revive,
+                    night_revives_string
+                )
+            elif len(night_deaths_names) == 0:
+                death_messages = game_text["lore"]["no_death_multiple_revive"]["plural"]["outputs"]
+                death_weights = game_text["lore"]["no_death_multiple_revive"]["plural"]["weights"]
+                death_msg = random.choices(
+                      death_messages,
+                      weights = death_weights
+                )
+                final_death_message = death_msg[0]
+                final_death_message = final_death_message.format(
+                    botutils.BotEmoji.revive,
+                    night_revives_string
+                )
+            elif len(night_deaths_names) == 1:
+                death_messages = game_text["lore"]["one_death_multiple_revive"]["plural"]["outputs"]
+                death_weights = game_text["lore"]["one_death_multiple_revive"]["plural"]["weights"]
+                death_msg = random.choices(
+                      death_messages,
+                      weights = death_weights
+                )
+                final_death_message = death_msg[0]
+                final_death_message = final_death_message.format(
+                    botutils.BotEmoji.murder,
+                    night_deaths_names[0],
+                    botutils.BotEmoji.revive,
+                    night_revives_string
+                )
+            else:
+                death_messages = game_text["lore"]["multiple_death_multiple_revive"]["plural"]["outputs"]
+                death_weights = game_text["lore"]["multiple_death_multiple_revive"]["plural"]["weights"]
+                death_msg = random.choices(
+                      death_messages,
+                      weights = death_weights
+                )
+                final_death_message = death_msg[0]
+                final_death_message = final_death_message.format(
+                    botutils.BotEmoji.murder,
+                    night_deaths_string,
+                    botutils.BotEmoji.revive,
+                    night_revives_string
+                )
+
+            # Clear night and day deaths so that stats string is correct
+            self.night_deaths.clear()
+            self.night_revives.clear()
 
         embed = discord.Embed(
            description = botutils.BotEmoji.sun + " " + daybreak + " " + final_death_message,
@@ -1309,7 +1562,7 @@ class Game(GameMeta):
         globvars.logging.info(f"Sitting Order {str(self._sitting_order)}")
 
     def __repr__(self):
-        return "Blood on the Clocktower"
+        return f"Blood on the Clocktower played using the {fancy.bold(self.gamemode.value)} edition"
 
     async def remove_left_guild_players(self):
         for member in self.member_obj_list:
@@ -1327,6 +1580,9 @@ class Game(GameMeta):
                         break
         await self.check_winning_conditions()
 
+    def register_whisper(self, whisper):
+        self._whispers.append(whisper)
+        
     async def clear_working(self, seconds):
         await asyncio.sleep(seconds)
         self.working = False

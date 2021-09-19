@@ -9,8 +9,9 @@ import toml
 
 import botutils
 import globvars
-from botc import (BOTCUtils, Category, Character, NonRecurringAction, Outsider,
-                  Townsfolk, game_text)
+from botc import (
+    BOTCUtils, Category, Character, NonRecurringAction, Outsider, Townsfolk,
+    game_text)
 from botc.gamemodes.troublebrewing.Drunk import Drunk
 
 from . import character_texts

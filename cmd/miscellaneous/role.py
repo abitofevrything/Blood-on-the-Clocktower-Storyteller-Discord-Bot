@@ -35,7 +35,9 @@ class Role(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"]):
 
         # We found the role, send them that role card only
         else:
-            await found.send_role_card_embed(ctx)
+            embed = found.create_role_card_embed()
+
+            await ctx.send(embed=embed)
 
     @role.error
     async def role_error(self, ctx, error):

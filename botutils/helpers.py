@@ -79,11 +79,11 @@ def find_role_in_all(role_name):
 
     The game_packs variable is coded in the following way:
 
-    {'botc': {'game_obj': <botc.Game.Game object at 0x1187bffd0>, 'gamemodes': {'trouble-brewing':
-    [Baron Obj, Butler Obj, Chef Obj, Drunk Obj, Empath Obj, Fortune Teller Obj, Imp Obj,
-    Investigator Obj, Librarian Obj, Mayor Obj, Monk Obj, Poisoner Obj, Ravenkeeper Obj,
-    Recluse Obj, Saint Obj, Scarlet Woman Obj, Slayer Obj, Soldier Obj, Undertaker Obj,
-    Virgin Obj, Washerwoman Obj]}}}
+    {'botc': {'game_obj': <botc.Game.Game object at 0x1187bffd0>, 'gamemodes': {'trouble-brewing': 
+    [Baron Class, Butler Class, Chef Class, Drunk Class, Empath Class, Fortune Teller Class, Imp Class, 
+    Investigator Class, Librarian Class, Mayor Class, Monk Class, Poisoner Class, Ravenkeeper Class, 
+    Recluse Class, Saint Class, Scarlet Woman Class, Slayer Class, Soldier Class, Undertaker Class, 
+    Virgin Class, Washerwoman Class]}}}
     """
     match = None
     for game_pack_title in globvars.master_state.game_packs:
@@ -91,22 +91,75 @@ def find_role_in_all(role_name):
         for gamemode_title in pack_content["gamemodes"]:
             gamemode_content = pack_content["gamemodes"][gamemode_title]
             for role in gamemode_content:
-                if role_name.lower() == role.name.lower():
-                    return role
-                elif role_name.lower() in role.name.lower() and not match:
-                    match = role
+                instance = role()
+                if role_name.lower() == instance.name.lower():
+                    return instance
+                elif role_name.lower() in instance.name.lower() and not match:
+                    match = instance
     return match
 
+def get_gamemode_from_str(string: str):
+    """
+    Get the gamemode enum from a given string
+    If no gamemode is found, then None is returned
+    """
+
+    from botc.gamemodes.Gamemode import Gamemode
+
+    matches = {
+        Gamemode.trouble_brewing : [
+            "tb",
+            "troublebrewing",
+            "trouble brewing",
+            "t b"
+        ],
+        Gamemode.bad_moon_rising : [
+            "bmr",
+            "badmoonrising",
+            "bad moon rising",
+            "b m r"
+        ],
+        Gamemode.sects_and_violets : [
+            "snv",
+            "sv",
+            "s&v",
+            "sectsandviolets",
+            "sectsnviolets",
+            "sects&violets",
+            "sects and violets",
+            "sects n violets",
+            "sects & violets",
+            "s n v",
+            "s v",
+            "s & v"
+        ]
+    }
+
+    string = string.strip()
+    string = string.lower()
+
+    match = None
+    for gm in matches:
+        for elem in matches[gm]:
+            if string == elem:
+                return gm
+            elif string in elem:
+                match = gm
+
+    return match
 
 def get_emoji(s):
     """Get the emoji from a string"""
     if s in emoji.UNICODE_EMOJI['en']:
         return s
     else:
-        em = globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))
-        if em:
-            return em
-        else:
+        try:
+            em = globvars.client.get_emoji(int(re.split(r'[<:>]', s)[-2]))
+            if em:
+                return str(em)
+            else:
+                return None
+        except Exception:
             return None
 
 

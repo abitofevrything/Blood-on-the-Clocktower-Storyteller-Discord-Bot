@@ -44,6 +44,7 @@ class Fleave(Admin, name = bot_text["system"]["admin_cog"]):
                 if fetched_member:
                     await botutils.remove_alive_role(fetched_member)
                 count -= 1
+                globvars.master_state.game_chooser.remove_vote(player)
             globvars.master_state.pregame.clear()
             lobby_timeout.cancel()
             if start_votes_timer.is_running():
@@ -62,6 +63,7 @@ class Fleave(Admin, name = bot_text["system"]["admin_cog"]):
                     # If the player has voted to start, then remove the start vote
                     if member.id in globvars.start_votes:
                         globvars.start_votes.remove(member.id)
+                    globvars.master_state.game_chooser.remove_vote(ctx.author.id)
                     # Cancel the start clear timer if no one has voted to start
                     if len(globvars.start_votes) == 0 and start_votes_timer.is_running():
                         start_votes_timer.cancel()

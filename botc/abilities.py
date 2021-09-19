@@ -5,6 +5,8 @@ import enum
 
 class ActionTypes(enum.Enum):
     """Ability commands:
+
+    ==== TROUBLE BREWING ====
     - serve: butler
     - poison: poisoner
     - learn: ravenkeeper
@@ -12,6 +14,22 @@ class ActionTypes(enum.Enum):
     - kill: imp
     - slay: slayer
     - protect: monk
+
+    ==== BAD MOON RISING ====
+    - assassinate: assassin
+    - host: innkeeper
+    - see: chambermaid
+    - poison: courtier
+    - protect: devil's advocate
+    - exorcise: exorcist
+    - guess: gambler
+    - execute: godfather
+    - gossip: gossip
+    - choose: moonchild
+    - kill: po, shabaloth and zombuul (all three would use the same command, since there can only be one per game)
+    - examine: professor
+    - curse: pukka
+    - visit: sailor
     """
 
     serve = "serve"
@@ -21,7 +39,19 @@ class ActionTypes(enum.Enum):
     kill = "kill"
     slay = "slay"
     protect = "protect"
+
     assassinate = "assassinate"
+    host = "host"
+    see = "see"
+    exorcise = "exorcise"
+    guess = "guess"
+    execute = "execute"
+    gossip = "gossip"
+    choose = "choose"
+    examine = "examine"
+    curse = "curse"
+    visit = "visit"
+    ability_pass = "pass"
 
 
 class Action:
@@ -81,9 +111,10 @@ class ActionGrid:
     def register_an_action(self, action, phase_id):
         """Save an action within the grid based on a phase ID"""
         import globvars
-        globvars.logging.info(f"{action.source_player} :  registering action {action.action_type.value} for phase {phase_id} with targets {action.target_player.target_list}")
         self.grid[phase_id] = action
 
     def retrieve_an_action(self, phase_id):
         """Retrieve an action within the grid based on a phase ID"""
+        if phase_id not in range(0, len(self.grid)):
+            return None
         return self.grid[phase_id]

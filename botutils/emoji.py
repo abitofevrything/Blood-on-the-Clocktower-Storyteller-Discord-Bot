@@ -53,6 +53,7 @@ class BotEmoji:
     clocktower = emojis["clocktower"]
     gallows = emojis["gallows"]
     murder = emojis["murder"]
+    revive = emojis["revive"]
     sun = emojis["sun"]
     moon = emojis["moon"]
     sunrise = emojis["sunrise"]

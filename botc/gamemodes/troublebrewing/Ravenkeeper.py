@@ -92,19 +92,19 @@ class Ravenkeeper(Townsfolk, TroubleBrewing, Character, NonRecurringAction):
             received_action = player.action_grid.retrieve_an_action(current_phase_id)
             return received_action is not None and received_action.action_type == ActionTypes.learn
         return True
-
-    async def send_regular_dawn_start_dm(self, player):
-        """Send the query message at dawn for the learn ability, if the ravenkeeper
+    
+    async def send_regular_dawn_start_dm(self, recipient):
+        """Send the query message at dawn for the learn ability, if the ravenkeeper 
         ability is activated. Otherwise send nothing.
         """
 
         if DISABLE_DMS:
             return
 
+        player = BOTCUtils.get_player_from_id(recipient.id)
+
         if player.has_status_effect(StatusList.ravenkeeper_activated):
-
-            recipient = player.user
-
+            
             # Construct the message to send
             msg = f"***{recipient.name}#{recipient.discriminator}***, the **{self.name}**:"
             msg += "\n"

@@ -58,7 +58,7 @@ class Playerstats(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"])
 
         if user_or_role and role:
             try:
-                role = next(x for x in roles if role.lower() in x.name.lower()).name
+                role = next(x() for x in roles if role.lower() in x().name.lower()).name
             except StopIteration:
                 return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
 
@@ -75,7 +75,7 @@ class Playerstats(Miscellaneous, name = bot_text["system"]["miscellaneous_cog"])
 
                 if user is None:
                     try:
-                        role = next(x for x in roles if user_or_role.lower() in x.name.lower()).name
+                        role = next(x() for x in roles if user_or_role.lower() in x().name.lower()).name
                     except StopIteration:
                         return await ctx.send(role_not_found_str.format(ctx.author.mention, botutils.BotEmoji.x_emoji))
                     user = ctx.author

@@ -5,6 +5,8 @@ import toml
 import globvars
 from config import SERVER_ID
 
+from . import tasks
+
 
 class Pregame:
     """Pregame class: for storing session before game start"""
@@ -26,12 +28,14 @@ class Pregame:
         """Add a player based on its user ID"""
         userid = int(userid)
         if userid not in self._userid_list:
+            tasks.update_status = True
             self._userid_list.append(userid)
 
     def remove_player(self, userid):
         """Remove a player based on its user ID"""
         userid = int(userid)
         if userid in self._userid_list:
+            tasks.update_status = True
             self._userid_list.remove(userid)
 
     def is_joined(self, userid):
