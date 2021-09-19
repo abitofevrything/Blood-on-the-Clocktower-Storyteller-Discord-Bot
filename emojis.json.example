@@ -39,8 +39,8 @@
     "opened_letter" : "<:opened_letter:736685575620395161>",
     "warning_sign" : "<:warning_sign:736685689038700554>",
     "clocktower" : "<:clocktower:736685385924739152>",
-    "murder" : "<:murder:736685555487735918>",
-    "revive" : "<:murder:736685555487735918>",
+    "murder" : "<:murder:889136540054347836>",
+    "revive" : "<:alive:736685349010538538>",
     "gallows" : "<:gallows:736685473753202798>",
     "moon" : "<:custom_moon:736685403590885376>",
     "sun" : "<:custom_sun:736685424591896589>",
@@ -49,8 +49,8 @@
     "skull" : "💀",
     "fquit" : "❌",
     "vote" : "🗳️",
-    "facebook": "<:facebook:796740874917773382>",
-    "youtube": "<:youtube:796741210554499143>",
-    "twitter": "<:twitter:796741229877919804>",
-    "reddit": "<:reddit:796741241974685756>"
+    "facebook": "<:facebook:889136539597164655>",
+    "youtube": "<:youtube:889136539668480000>",
+    "twitter": "<:twitter:889136539722981386>",
+    "reddit": "<:reddit:889136539907526747>"
 }
