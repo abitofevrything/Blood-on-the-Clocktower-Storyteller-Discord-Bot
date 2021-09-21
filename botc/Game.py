@@ -1104,7 +1104,7 @@ class Game(GameMeta):
         """Return the number of alive players"""
         count = 0
         for player in self.sitting_order:
-            if player.isalive():
+            if player.is_alive():
                 count += 1
         return count
 
