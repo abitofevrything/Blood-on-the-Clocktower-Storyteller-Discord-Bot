@@ -6,6 +6,7 @@ import re
 
 import toml
 from discord.ext import commands, tasks
+from unidecode import unidecode
 
 import globvars
 from botc import game_text
@@ -773,7 +774,7 @@ class BOTCUtils:
         """
         import globvars
         game = globvars.master_state.game
-        string = string.lower()
+        string = unidecode(string.lower())
         usernames = []
         discriminators = []
         nicknames = []
@@ -783,15 +784,15 @@ class BOTCUtils:
         for player in game.sitting_order:
             if string == str(player.user.id) or string.strip('<@!>') == str(player.user.id):
                 return player
-            if str(player.user).lower().startswith(string):
+            if unidecode(str(player.user).lower()).startswith(string):
                 usernames.append(player)
             if string.strip('#') == player.user.discriminator:
                 discriminators.append(player)
-            if player.user.display_name.lower().startswith(string):
+            if unidecode(player.user.display_name.lower()).startswith(string):
                 nicknames.append(player)
-            if string in player.user.name.lower():
+            if string in unidecode(player.user.name.lower()):
                 usernames_contains.append(player)
-            if string in player.user.display_name.lower():
+            if string in unidecode(player.user.display_name.lower()):
                 nicknames_contains.append(player)
             if string in str(player.user.id):
                 ids_contains.append(player)
