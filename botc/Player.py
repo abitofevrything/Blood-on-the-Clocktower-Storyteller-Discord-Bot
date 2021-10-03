@@ -84,7 +84,7 @@ class Player:
         # Roles that modify setup won't actually change the current setup,
         # but roles that set some flags (i.e grandmother / lunatic) will
         # need to be reinitialised
-        await self.role.exec_init_role(globvars.master_state.game.setup)
+        self.role.exec_init_role(globvars.master_state.game.setup)
         from botc import Phase
         if not globvars.master_state.game._chrono.phase == Phase.night  or force:
             await botutils.add_alive_role(self.user)
