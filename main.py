@@ -88,6 +88,7 @@ if __name__ == "__main__":
     intents = discord.Intents.default()
     intents.members = True
     intents.presences = True
+    intents.message_content = True
 
     if DISABLE_PINGS:
         allowed_mentions = discord.AllowedMentions.none()
