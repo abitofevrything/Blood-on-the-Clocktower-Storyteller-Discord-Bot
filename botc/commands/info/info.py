@@ -71,7 +71,7 @@ class Info(commands.Cog, name = game_text["misc"]["info_cog"]):
         description = game_text["doc"]["notes"]["info"]["remove"]["description"]
     )
     @commands.check(check_if_dm)
-    async def info_remove(self, ctx, n_or_player: Union[int, PlayerConverter] = None, player: PlayerConverter() = None):
+    async def info_remove(self, ctx, n_or_player: Union[int, PlayerConverter] = None, player: PlayerConverter() = None): # type: ignore
         await self.notes_info_remove_command.callback(self, ctx, n_or_player, player)
 
     @info.error

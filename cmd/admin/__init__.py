@@ -9,15 +9,8 @@ from .op import Op
 from .playtest import Playtest
 from .update import Update
 
+class _AdminCommands(Ignore, Op, Deop, Fstart, Fjoin, Fleave, Playtest, Frestart, Update, FGame):
+    pass
 
 def setup(client):
-    client.add_cog(Ignore(client))
-    client.add_cog(Op(client))
-    client.add_cog(Deop(client))
-    client.add_cog(Fstart(client))
-    client.add_cog(Fjoin(client))
-    client.add_cog(Fleave(client))
-    client.add_cog(Playtest(client))
-    client.add_cog(Frestart(client))
-    client.add_cog(Update(client))
-    client.add_cog(FGame(client))
+    client.add_cog(_AdminCommands(client))

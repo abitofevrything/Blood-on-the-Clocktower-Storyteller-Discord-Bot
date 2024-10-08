@@ -26,7 +26,7 @@ import pytz
 
 import globvars  # isort: split
 
-import cmd
+import cmd # type: ignore
 
 import botc
 import botutils

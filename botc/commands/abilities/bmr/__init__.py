@@ -15,20 +15,8 @@ from .kill import Kill
 from .pass_ability import Pass
 from .visit import Visit
 
+class _BmrAbilitiesCommands(Assassinate, See, Poison, Protect, Exorcise, Guess, Execute, Gossip, Visit, Host, Examine, Choose, Kill, Pass, Curse):
+	pass
 
 def setup(client):
-	client.add_cog(Assassinate(client))
-	client.add_cog(See(client))
-	client.add_cog(Poison(client))
-	client.add_cog(Protect(client))
-	client.add_cog(Exorcise(client))
-	client.add_cog(Guess(client))
-	client.add_cog(Execute(client))
-	client.add_cog(Gossip(client))
-	client.add_cog(Visit(client))
-	client.add_cog(Host(client))
-	client.add_cog(Examine(client))
-	client.add_cog(Choose(client))
-	client.add_cog(Kill(client))
-	client.add_cog(Pass(client))
-	client.add_cog(Curse(client))
+	client.add_cog(_BmrAbilitiesCommands(client))

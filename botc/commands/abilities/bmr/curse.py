@@ -42,7 +42,7 @@ class Curse(commands.Cog, name = game_text["misc"]["abilities_cog"]):
     @commands.check(check_if_dm)  # Correct channel -> NotDMChannel
     @commands.check(check_if_player_really_alive)  # Player alive -> AliveOnlyCommand
     @commands.check(check_if_can_curse)  # Correct character -> RoleCannotUseCommand
-    async def curse(self, ctx, *, cursed: PlayerParser()):
+    async def curse(self, ctx, *, cursed: PlayerParser()): # type: ignore
         """curse command
         usage: curse <player> and <player> and...
         characters: pukka

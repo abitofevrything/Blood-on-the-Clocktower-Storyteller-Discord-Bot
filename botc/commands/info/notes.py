@@ -9,6 +9,8 @@ import discord
 from discord.ext import commands
 from discord.ext.commands.errors import MissingRequiredArgument
 
+from unidecode import unidecode
+
 import botutils
 import globvars
 from botc import (BOTCUtils, Category, NotAPlayer, NotDMChannel, NotNight,
@@ -32,6 +34,23 @@ role_not_found_str = game_text["cmd_warnings"]["role_not_found"]
 player_not_found_str = game_text["cmd_warnings"]["player_not_found"]
 
 error_str = bot_text["system"]["error"]
+
+# Claim strings
+claim_matches = {
+    r"^(ok( *, *| )|but )?im [^,.]+(\.|,|$)": r"(?<=im )[^,.]+(?=(\.|,|$))",
+    r"^(ok( *, *| )|but )?i'm [^,.]+(\.|,|$)": r"(?<=i'm )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i am [^,.]+(\.|,|$)": r"(?<=i am )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i was [^,.]+(\.|,|$)": r"(?<=i was )[^,.]+(?=\.|,|$)",
+
+    r"^(ok( *, *| )|but )?i(m|'m| am| was) the [^,.]+(\.|,|$)": r"(?<= the )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i(m|'m| am| was) an [^,.]+(\.|,|$)": r"(?<= an )[^,.]+(?=\.|,|$)",
+    r"^(ok( *, *| )|but )?i(m|'m| am| was) a [^,.]+(\.|,|$)": r"(?<= a )[^,.]+(?=\.|,|$)",
+
+    r"^(ok( *, *| ))?[^,.]+(?<!^im)(?<!^i'm)(?<!^i)(?<!^i am) here(\.|,|$)": r"((?<!,)(?<= )|(?<=,)(?! )|(?<=^)(?!ok))[^,.\n]+(?= here)",
+    r"^your [^,.]+ here(\.|,|$)": r"(?<=your )[^,.]+(?= here)",
+}
+
+claim_matches = {re.compile(k, re.IGNORECASE): re.compile(v, re.IGNORECASE) for k, v in claim_matches.items()}
 
 class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
@@ -117,10 +136,10 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         help = game_text["doc"]["notes"]["info"]["help"],
         description = game_text["doc"]["notes"]["info"]["description"]
     )
-    async def info(self, ctx, *, args: str):
-        await self.info_add.callback(self, ctx, args=args)
+    async def info_group(self, ctx, *, args: str):
+        await self.info_group_add.callback(self, ctx, args=args)
 
-    @info.command(
+    @info_group.command(
         pass_context = True,
         name = "add",
         brief = game_text["doc"]["notes"]["info"]["add"]["brief"],
@@ -128,7 +147,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         description = game_text["doc"]["notes"]["info"]["add"]["description"]
     )
     @commands.check(check_if_dm)
-    async def info_add(self, ctx, *, args: str):
+    async def info_group_add(self, ctx, *, args: str):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         args = re.split(' +', args)
@@ -182,7 +201,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         await ctx.send(info_add_feedback_str.format(BotEmoji.check))
 
-    @info.command(
+    @info_group.command(
         pass_context = True,
         name = "remove",
         aliases = ["rem", "rm"],
@@ -191,7 +210,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         description = game_text["doc"]["notes"]["info"]["remove"]["description"]
     )
     @commands.check(check_if_dm)
-    async def info_remove(self, ctx, player_or_id: Union[int, PlayerConverter] = None, id: PlayerConverter() = None):
+    async def info_group_remove(self, ctx, player_or_id: Union[int, PlayerConverter] = None, id: PlayerConverter() = None): # type: ignore
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         if isinstance(player_or_id, int):
@@ -216,10 +235,10 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         description = game_text["doc"]["notes"]["claim"]["description"]
     )
     @commands.check(check_if_dm)
-    async def claim(self, ctx, player_or_claim: str, claim: str = None):
-        await self.claim_add.callback(self, ctx, player_or_claim, claim)
+    async def claim_group(self, ctx, player_or_claim: str, claim: str = None):
+        await self.claim_group_add.callback(self, ctx, player_or_claim, claim)
 
-    @claim.command(
+    @claim_group.command(
         pass_context = True,
         name = "add",
         brief = game_text["doc"]["notes"]["claim"]["add"]["brief"],
@@ -227,7 +246,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         description = game_text["doc"]["notes"]["claim"]["add"]["description"]
     )
     @commands.check(check_if_dm)
-    async def claim_add(self, ctx, player_or_claim: str, claim: str = None):
+    async def claim_group_add(self, ctx, player_or_claim: str, claim: str = None):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         # Overloading a command
@@ -314,7 +333,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         await ctx.send(private_claim_role_str.format(BotEmoji.check))
 
-    @claim.command(
+    @claim_group.command(
         pass_context = True,
         name = "remove",
         aliases = ["rem", "rm", "clear"],
@@ -323,7 +342,7 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
         description = game_text["doc"]["notes"]["claim"]["remove"]["description"]
     )
     @commands.check(check_if_dm)
-    async def claim_remove(self, ctx, player: PlayerConverter = None):
+    async def claim_group_remove(self, ctx, player: PlayerConverter = None):
         invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
 
         if player is None:
@@ -336,16 +355,173 @@ class Notes(commands.Cog, name = game_text["misc"]["info_cog"]):
 
         await ctx.send(private_remove_claim_str.format(BotEmoji.check))
 
+    @commands.group(
+        pass_context = True,
+        name = "info",
+        aliases = ['i'],
+        invoke_without_command = True,
+        brief = game_text["doc"]["notes"]["info"]["brief"],
+        help = game_text["doc"]["notes"]["info"]["help"],
+        description = game_text["doc"]["notes"]["info"]["description"]
+    )
+    @commands.check(check_if_is_player)
+    async def info(self, ctx, *, args: str = None):
+        invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
+
+        if args is None:
+            # Claims summary
+            if isinstance(ctx.channel, discord.channel.DMChannel):
+                await botutils.send_long_message(ctx.channel, globvars.master_state.game.note_manager.format_notes(invoking_player), make_code=True, delete_after=CLAIM_SHOW_TIME)
+            else:
+                await botutils.send_long_message(ctx.channel, globvars.master_state.game.note_manager.format_notes(), make_code=True, delete_after=CLAIM_SHOW_TIME)
+            return
+        else:
+            if isinstance(ctx.channel, discord.channel.DMChannel):
+                await self.info_group.callback(self, ctx, args=args)
+
+    @info.command(
+        pass_context = True,
+        name = "add",
+        brief = game_text["doc"]["notes"]["info"]["add"]["brief"],
+        help = game_text["doc"]["notes"]["info"]["add"]["help"],
+        description = game_text["doc"]["notes"]["info"]["add"]["description"]
+    )
+    @commands.check(check_if_dm)
+    async def info_add(self, ctx, *, args: str):
+        await self.info_group_add.callback(self, ctx, args=args)
+
+    @info.command(
+        pass_context = True,
+        name = "remove",
+        aliases = ["rem", "rm"],
+        brief = game_text["doc"]["notes"]["info"]["remove"]["brief"],
+        help = game_text["doc"]["notes"]["info"]["remove"]["help"],
+        description = game_text["doc"]["notes"]["info"]["remove"]["description"]
+    )
+    @commands.check(check_if_dm)
+    async def info_remove(self, ctx, n_or_player: Union[int, PlayerConverter] = None, player: PlayerConverter() = None): # type: ignore
+        await self.info_group_remove.callback(self, ctx, n_or_player, player)
+
+
+    @commands.group(
+        pass_context = True,
+        name = "claim",
+        aliases = ["cl", "c", "claims"],
+        invoke_without_command = True,
+        brief = game_text["doc"]["notes"]["claim"]["brief"],
+        help = game_text["doc"]["notes"]["claim"]["help"],
+        description = game_text["doc"]["notes"]["claim"]["description"]
+    )
+    @commands.check(check_if_is_player)
+    async def claim(self, ctx, player_or_claim = None, claim: str = None):
+        invoking_player = BOTCUtils.get_player_from_id(ctx.author.id)
+
+        if player_or_claim is None:
+            # Claims summary
+            if isinstance(ctx.channel, discord.channel.DMChannel):
+                await botutils.send_long_message(ctx.channel, globvars.master_state.game.note_manager.format_notes(invoking_player), make_code=True, delete_after=CLAIM_SHOW_TIME)
+            else:
+                await botutils.send_long_message(ctx.channel, globvars.master_state.game.note_manager.format_notes(), make_code=True, delete_after=CLAIM_SHOW_TIME)
+            return
+        else:
+            if isinstance(ctx.channel, discord.channel.DMChannel):
+                await self.claim_group.callback(self, ctx, player_or_claim, claim)
+
+    @claim.command(
+        pass_context = True,
+        name = "add",
+        brief = game_text["doc"]["notes"]["claim"]["add"]["brief"],
+        help = game_text["doc"]["notes"]["claim"]["add"]["help"],
+        description = game_text["doc"]["notes"]["claim"]["add"]["description"]
+    )
+    @commands.check(check_if_dm)
+    async def claim_add(self, ctx, player_or_claim: str, claim: str = None):
+        await self.claim_group_add.callback(self, ctx, player_or_claim, claim)
+
+    @claim.command(
+        pass_context = True,
+        name = "remove",
+        aliases = ["rem", "rm", "clear"],
+        brief = game_text["doc"]["notes"]["claim"]["remove"]["brief"],
+        help = game_text["doc"]["notes"]["claim"]["remove"]["help"],
+        description = game_text["doc"]["notes"]["claim"]["remove"]["description"]
+    )
+    @commands.check(check_if_dm)
+    async def claim_remove(self, ctx, player: PlayerConverter = None):
+        await self.claim_group_remove.callback(self, ctx, player)
+
+    @commands.Cog.listener('on_message')
+    async def on_message(self, message: discord.Message):
+        ctx = await globvars.client.get_context(message)
+        # Empty messages (image uploads) may cause issues, we ignore them
+        if not isinstance(message.content, str):
+            return
+
+        s = unidecode(message.content)
+        try:
+            if botutils.check_if_lobby(ctx):
+                player = BOTCUtils.get_player_from_id(message.author.id)
+                if player is not None:
+                    if globvars.master_state.game._chrono.phase == Phase.night:
+                        return
+                    for k, v in claim_matches.items():
+                        if k.search(s):
+                            claim_str = v.search(s).group().lower()
+
+                            claimed_character = None
+                            claimed_category = None
+
+                            temp = botutils.find_role_in_all(claim_str)
+                            if temp is not None:
+                                if temp.gm_of_appearance != globvars.master_state.game.gamemode:
+                                    continue
+                                claimed_character = temp
+                                claimed_category = temp.category
+                            else:
+                                if claim_str in ('town', 'townsfolk'):
+                                    claimed_category = Category.townsfolk
+                                elif claim_str in ('os', 'outsider'):
+                                    claimed_category = Category.outsider
+                                elif claim_str in ('minion'):
+                                    claimed_category = Category.minion
+                                elif claim_str in ('demon'):
+                                    claimed_category = Category.demon
+                                else:
+                                    continue
+
+                            an_a_the = "the"
+                            if claimed_character == None:
+                                if claimed_category == Category.outsider:
+                                    an_a_the = "an"
+                                else:
+                                    an_a_the = "a"
+
+
+                            old_claim_role = globvars.master_state.game.note_manager.public_notes().get_entry(player).claimed_role
+                            old_claim_category = globvars.master_state.game.note_manager.public_notes().get_entry(player).claimed_category
+
+                            globvars.master_state.game.note_manager.claim(player, claimed_category, claimed_character)
+
+                            if old_claim_role != claimed_character or old_claim_category != claimed_category:
+                                await botutils.send_lobby(claim_role_str.format(message.author.mention, an_a_the, (claimed_character.name if claimed_character else claimed_category.value)), delete_after=CLAIM_SHOW_TIME)
+                            return
+        except Exception:
+            await ctx.send(error_str)
+            await botutils.log(botutils.Level.error, traceback.format_exc())
+
 
     @notes.error
     @notes_add.error
     @notes_remove.error
+    @info_group.error
+    @info_group_add.error
+    @info_group_remove.error
+    @claim_group.error
+    @claim_group_add.error
+    @claim_group_remove.error
     @info.error
     @info_add.error
     @info_remove.error
-    @claim.error
-    @claim_add.error
-    @claim_remove.error
     async def notes_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             msg = game_text["cmd_warnings"]["missing_arguments"]

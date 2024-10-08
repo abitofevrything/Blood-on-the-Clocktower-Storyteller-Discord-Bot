@@ -6,13 +6,9 @@ from .stats import Stats
 from .time import Time
 from .votes import Votes
 
+class _GameplayCommands(Join, Quit, Time, Stats, Start, Notify, Votes):
+    pass
 
 def setup(client):
-    client.add_cog(Join(client))
-    client.add_cog(Quit(client))
-    client.add_cog(Time(client))
-    client.add_cog(Stats(client))
-    client.add_cog(Start(client))
-    client.add_cog(Notify(client))
-    client.add_cog(Votes(client))
+    client.add_cog(_GameplayCommands(client))
 

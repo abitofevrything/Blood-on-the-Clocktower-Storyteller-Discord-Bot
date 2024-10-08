@@ -6,12 +6,8 @@ from .read import Read
 from .serve import Serve
 from .slay import Slay
 
+class _TbGameplayCommands(Kill, Learn, Poison, Protect, Read, Serve, Slay):
+    pass
 
 def setup(client):
-    client.add_cog(Kill(client))
-    client.add_cog(Learn(client))
-    client.add_cog(Poison(client))
-    client.add_cog(Protect(client))
-    client.add_cog(Read(client))
-    client.add_cog(Serve(client))
-    client.add_cog(Slay(client))
+    client.add_cog(_TbGameplayCommands(client))
