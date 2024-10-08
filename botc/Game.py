@@ -46,7 +46,7 @@ CONFLICTING_CMDS = [
    "cmd.gameplay"
 ]
 
-random.seed(datetime.datetime.now())
+random.seed(datetime.datetime.now().timestamp())
 
 nightfall = game_text["gameplay"]["nightfall"]
 daybreak = game_text["gameplay"]["daybreak"]
