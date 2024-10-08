@@ -11,18 +11,18 @@ authors = [
 license = "AGPLv3"
 
 [tool.poetry.dependencies]
-python = "^3.6"
-demoji = "^0.4.0"
-emoji = "^1.2.0"
-Pillow = "^8.2.0"
-psutil = "^5.8.0"
-py-cord = "^1.7.3"
-pytz = "^2021.1"
+python = "^3.8"
+demoji = "^1.1.0"
+emoji = "^2.14.0"
+pillow = "^10.4.0"
+psutil = "^6.0.0"
+py-cord = "^2.6.1"
+pytz = "^2024.2"
 toml = "^0.10.2"
-unidecode = "^1.2.0"
+unidecode = "^1.3.8"
 
 [tool.poetry.dev-dependencies]
-isort = "^5.8.0"
+isort = "^5.13.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
